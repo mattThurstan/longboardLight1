@@ -1,4 +1,4 @@
-# longboardLight1_A
+# longboardLight1
 LED longboard light setup, by Thurstan
 
 Repository is an Arduino project
