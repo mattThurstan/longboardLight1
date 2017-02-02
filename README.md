@@ -15,7 +15,10 @@ Lighting system for a longboard. Using sensors to control brake lights, indicato
   * 1K EEPROM
 - WS2812B addressable LED strips
   * pixel order = GRB
-- Movement sensor
+- 3-Axis and Movement sensor
+- Wheel tracking sensor
+- 7.4V LiPo Battery
+- 7.4V-5V Convertor
   
 #### Software
 - Arduino
