@@ -1,7 +1,10 @@
-# deskLight1_A
+# longboardLight1_A
 LED longboard light setup, by Thurstan
 
 Repository is an Arduino project
+
+### Concept
+Lighting system for a longboard. Using sensors to control brake lights, indicator lights and ground tracking effects.
 
 ### Equipment
 #### Hardware
