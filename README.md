@@ -17,10 +17,11 @@ Lighting system for a longboard. Using sensors to control brake lights, indicato
   * pixel order = GRB
 - Movement sensors
   * ~~ADXL335~~
-  * MPU6050
+  * MPU6050 (GY-521 breakout board)
 - Wheel tracking sensor
+  * probably hall effect sensor and magnets
 - 7.4V LiPo Battery
-- 7.4V-5V Convertor
+- >6V to 5V Convertor
   
 #### Software
 - Arduino
