@@ -37,7 +37,7 @@ This software is provided on an "AS-IS-BASIS"
 #### Contains code based on:
 - I2CdevLib by Jeff Rowberg Copyright (c) 2011
  * https://github.com/jrowberg/i2cdevlib/blob/master/Arduino/MPU6050/examples/MPU6050_raw/MPU6050_raw.ino
- - Arduino MPU6050 auto-calibration script by Luis Ródenas  <luisrodenaslorda@gmail.com>
+- Arduino MPU6050 auto-calibration script by Luis Ródenas  <luisrodenaslorda@gmail.com>
  * http://42bots.com/tutorials/arduino-script-for-mpu-6050-auto-calibration/ 
  * (also) Based on the I2Cdev library and previous work by Jeff Rowberg <jeff@rowberg.net>
 
