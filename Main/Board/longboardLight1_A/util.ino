@@ -1,15 +1,10 @@
 /*----------------------------util----------------------------*/
 
 void setupSerial() {
-
-
-    // initialize serial communication
-    // (38400 chosen because it works as well at 8MHz as it does at 16MHz, but
-    // it's really up to you depending on your project)
-    //Serial.begin(38400);                    //for doing MPU6050 stuff - don't really need it this fast cos not controlling it over serial
   
   #ifdef DEBUG
     Serial.begin(9600);                     //usb
+    //Serial.begin(38400);                    //for doing MPU6050 stuff - don't really need it this fast cos not controlling it over serial
     _inputString.reserve(200);              // reserve 200 bytes for the inputString:
     Serial.println();
     Serial.print(_progName);
@@ -19,6 +14,7 @@ void setupSerial() {
     Serial.print("..");
     Serial.println();
   #endif
+  
 }
 
 /*

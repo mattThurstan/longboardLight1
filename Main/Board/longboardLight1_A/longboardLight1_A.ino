@@ -30,7 +30,6 @@
  ..for now only use serial when in debug. this will be changed when wireless communication is implemented.
 */
 #define DEBUG 1                           //comment/un-comment
-#define DEBUG_ADXL335 1                   //comment/un-comment  - make sure DEBUG is active as this controls the serial at the moment - change later
 #define DEBUG_MPU6050 1                   //..
 //#ifdef DEBUG     
 ////
@@ -63,8 +62,6 @@ const int _ledDOutPin0 = 5; //6
 const int _ledDOutPin1 = 6; //7
 const int _ledDOutPin2 = 9; //8
 const int _buttonPin[_buttonTotal] = { 10 };  //array of user input buttons - uses _buttonTotal
-//prob going to remove ADXL335
-const int _adxl335xyzPin[3] = { 0, 1, 2 };      //ADXL335 Accelerometer, XYZ pins - Note: these are analog pins { A0, A1, A2 } as ints
 const int _ledPin = 13;                         //built-in LED
 
 
@@ -112,60 +109,8 @@ Bounce button[1] = {
 /*----------------------------sensors----------------------------*/
 //hall effect sensor mounted on chassis, with 4 magents mounted on wheel
 //3-axis accelerometer
-//int _accelMinX = 511;   //accelerometer X minimum value
-typedef struct {
-  int x;      //the read value
-  int xMin; //might need to change these back to const
-  int xZero;  //center the desk - don't think i am going to need this!
-  int xMax;
-  int y;
-  int yMin;
-  int yZero;
-  int yMax;
-  int z;
-  int zMin;
-  int zZero;
-  int zMax;
-} ACCELERATION;
 
-ACCELERATION _acceleration = { 0, 257, 358, 445, 0, 242, 361, 444, 0, 247, 444, 527 };  //1st test calibration on desk
-//ACCELERATION _adxl335AccelCur = { 0, 1023, 511, 0, 0, 1023, 511, 0, 0, 1023, 511, 0};  //use this to start when running calibration read - max starts low, min starts high
-//ACCELERATION _adxl335AccelCur = { 0, 214, 428, 642, 0, 216, 432, 648, 0, 259, 518, 777 };
-//ACCELERATION _adxl335AccelCur = { 0, 512, 428, 512, 0, 512, 432, 512, 0, 512, 518, 512};
-ACCELERATION _adxl335AccelCur = { 0, 304, 428, 486, 0, 306, 432, 492, 0, 241, 518, 490};
-
-ACCELERATION _adxl335AccelPrev = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-/*
- * raw readings taken on desk with spirit-level
- * 0=flat         380, 379, 464
- * 1=upside-down  390, 390, 312
- * 2=up           378, 300, 385
- * 3=down         430, 520, 430
- * 4=left-side    462, 383, 389
- * 5=right-side   302, 382, 384
- * 
- * 6=left indicator turn on (lean left on board)
- * 7=right indicator turn on (lean right on board)
- */
  //eg. 'place board on flat ground and press calibrate'  ..will get saved here - '_orientationCalibrationXYZ'
-//int _orientationCalibrationXYZ[6][3] = {
-//  { 380, 379, 464 },
-//  { 390, 390, 312 },
-//  { 378, 300, 385 },
-//  { 430, 520, 430 },
-//  { 462, 383, 389 },
-//  { 302, 382, 384 }
-//  };
-//..****, already have to add in more for when the indicators come on
-/*
- * 1, 1, 2
- * 1, 1, 0
- * 1, 0, 1
- * 2, 2, 2
- * 2, 1, 1
- * 0, 1, 1
- */
 int _orientationCalibrationXYZ[6][3] = {
   { 400, 398, 488 },
   { 408, 404, 328 },
@@ -181,48 +126,48 @@ int _orientationCalibrationXYZminMaxDist[3][3] = {
   { 0, 0, 0 }
 };
 int _orientationXYZdistTriggerDivide = 3; //xt = (xm-xmi)/_orientationXYZdistTriggerDivide;
-
-const int _adxl335AccelSampleTotal = 10;        //how many samples to take
-const long _adxl335AccelSampleInterval = 1000;   //sampling interval in milliseconds
-long _adxl335AccelSamplePrevMillis = 0;          //previous time for reference
-int _adxl335AccelMapMin = -10;                  //reduction mapping values for ADXL335 orientation
-int _adxl335AccelMapMax = 10;
-int _adxl335AccelOrientationThreshold = 5;      //what point to trigger orientation change?
-int _adxl335AccelIndicatorThreshold = 3;        //what point to trigger indicators?
+//
 int _orientation = 0;                           //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
 
-double _xDeg360;                                //out here cos don't want to be creating new doubles every loop
-double _yDeg360;
-double _zDeg360;
 
 /*----------------------------sensors - MPU6050 6-axis----------------------------*/
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation is used in I2Cdev.h - ???
   #include "Wire.h"
 #endif
-MPU6050 _mpu6050;  //accelgyro;
-int16_t _mpu6050AccelCurX, _mpu6050AccelCurY, _mpu6050AccelCurZ;
-int16_t _mpu6050GyroCurX, _mpu6050GyroCurY, _mpu6050GyroCurZ;
-int _mpu6050AccelAverageX, _mpu6050AccelAverageY, _mpu6050AccelAverageZ, _mpu6050GyroAverageX, _mpu6050GyroAverageY, _mpu6050GyroAverageZ;
+MPU6050 _mpu6050;  //accel gyro;
+//int16_t _mpu6050AccelCurX, _mpu6050AccelCurY, _mpu6050AccelCurZ;
+//int16_t _mpu6050GyroCurX, _mpu6050GyroCurY, _mpu6050GyroCurZ;
+//int _mpu6050AccelAverageX, _mpu6050AccelAverageY, _mpu6050AccelAverageZ, _mpu6050GyroAverageX, _mpu6050GyroAverageY, _mpu6050GyroAverageZ;
 int _mpu6050AccelOffsetX, _mpu6050AccelOffsetY, _mpu6050AccelOffsetZ, _mpu6050GyroOffsetX, _mpu6050GyroOffsetY, _mpu6050GyroOffsetZ;
-const int _mpu6050AccelSampleTotal = 100;        //how many samples to take at once
-const int _mpu6050AccelThreshold = 10;             //threshold tolerance for 'dead zone' at center of readings
-const int _mpu6050GyroThreshold = 3;              //..for gyro
+const int _mpu6050CalibrateSampleTotal = 100;     //how many samples to take at once when calibrating
+const int _mpu6050CalibrateAccelThreshold = 10;  //threshold tolerance for 'dead zone' at center of readings
+const int _mpu6050CalibrateGyroThreshold = 3;     //..for gyro
 long _mpu6050CalibratePrevMillis = 0;             //previous time for reference
-const long _mpu6050CalibrateInterval = 1000;    //sampling interval in milliseconds
-const long _mpu6050CalibrateTimeout = 30000;    //sampling interval in milliseconds
-boolean _doCalibrateMPU6050 = false;            //set to true to run MPU6050 calibration. it will reset itself to false when finished.
+const long _mpu6050CalibrateInterval = 1000;      //sampling interval in milliseconds
+const long _mpu6050CalibrateTimeout = 30000;      //sampling interval in milliseconds
+boolean _doCalibrateMPU6050 = false;              //set to true to run MPU6050 calibration. it will reset itself to false when finished.
 
 //stuff for filtering
-const long _mpu6050ReadInterval = 2;                                        //read loop interval in milliseconds   1000
-long _mpu6050ReadPrevMillis = 0;                                            //previous time for reference
+const unsigned long _mpu6050ReadInterval = 40;                                        //read loop interval in milliseconds   1000
+unsigned long _mpu6050ReadPrevMillis = 0;                                            //previous time for reference
 int16_t _mpu6050AccelReadX, _mpu6050AccelReadY, _mpu6050AccelReadZ;           //the current raw accel reading
 int16_t _mpu6050GyroReadX, _mpu6050GyroReadY, _mpu6050GyroReadZ;           //the current raw gyro reading
-float _mpu6050GyroZeroX, _mpu6050GyroZeroY, _mpu6050GyroZeroZ;              //calibrating zero average for gyro (don't need accel at moment)
+float _mpu6050AccelZeroX, _mpu6050AccelZeroY, _mpu6050AccelZeroZ;
+float _mpu6050GyroZeroX, _mpu6050GyroZeroY, _mpu6050GyroZeroZ;              //calibrating zero average for gyro
 float _mpu6050FilteredCurX, _mpu6050FilteredCurY, _mpu6050FilteredCurZ;     //final filtered combined gyro readings for then calculating orientation
 float _mpu6050FilteredPrevX, _mpu6050FilteredPrevY, _mpu6050FilteredPrevZ;  //previous final filtered combined yadayada.. = last_x_angle
 float _mpu6050GyroPrevX, _mpu6050GyroPrevY, _mpu6050GyroPrevZ;              //last_gyro_x_angle; 
 
+
+/*----------------------------orientation----------------------------*/
+int orMatrix[9] = { 0, 0, 0 }; //TEMP x =  0(low) / 1(mid) / 2(hi)       - wanted to use -1, 0, 1 but too convoluted    -- XYZ timed
+int orMatrixPrev[3] = { 0, 0, 0 };
+boolean orFlag[9] = { false }; //flag 0 x
+unsigned long orCounter[9] = { 0 };  //TEMP time
+const unsigned long orInterval = 50;  //interval at which to check whether flags have changed
+const unsigned long _orientationInterval = 100;                                        //read loop interval in milliseconds   1000
+unsigned long _orientationPrevMillis = 0;                                            //previous time for reference
 
 /*----------------------------LED----------------------------*/
 #define UPDATES_PER_SECOND 120                  //main loop FastLED show delay  //100
@@ -255,6 +200,8 @@ int _ledState = LOW;                        //use to toggle LOW/HIGH (ledState =
 
 /*----------------------------MAIN----------------------------*/
 void setup() {
+  blinkStatusLED1();
+  
   // join I2C bus (I2Cdev library doesn't do this automatically)
   #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
       Wire.begin();

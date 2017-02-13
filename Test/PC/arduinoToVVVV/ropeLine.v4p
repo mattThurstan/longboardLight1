@@ -1,5 +1,5 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50beta35.dtd" >
-   <PATCH nodename="C:\TEMP\vvvv\projects\lightControl\ropeLine.v4p" systemname="ropeLine" filename="C:\TEMP\vvvv\projects\lightControl\ropeLine.v4p" scrollx="15" scrolly="75">
+   <PATCH nodename="C:\TEMP\software_dev\Arduino\projects\lightControl\longboardLight1_A\Test\PC\arduinoToVVVV\ropeLine.v4p" systemname="ropeLine" filename="C:\TEMP\vvvv\projects\lightControl\ropeLine.v4p" scrollx="0" scrolly="0">
    <NODE id="0" nodename="ROPE (DX9)" systemname="Rope (DX9)">
    <BOUNDS height="0" left="1500" top="6720" type="Node" width="0">
    </BOUNDS>
@@ -9,7 +9,7 @@
    </PIN>
    <PIN pinname="Closed" slicecount="1" values="0">
    </PIN>
-   <PIN pinname="Enabled" slicecount="1" values="1" visible="1">
+   <PIN pinname="Enabled" slicecount="1" visible="1" values="1">
    </PIN>
    <PIN pinname="Resolution" visible="1" slicecount="1" values="2">
    </PIN>

@@ -1,5 +1,5 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50beta35.dtd" >
-   <PATCH nodename="C:\TEMP\vvvv\projects\lightControl\channel.v4p" systemname="channel" filename="C:\TEMP\vvvv\projects\lightControl\channel.v4p">
+   <PATCH nodename="C:\TEMP\software_dev\Arduino\projects\lightControl\longboardLight1_A\Test\PC\arduinoToVVVV\channel.v4p" systemname="channel" filename="C:\TEMP\vvvv\projects\lightControl\channel.v4p">
    <NODE id="0" nodename="Group (EX9)" systemname="Group (EX9)">
    <BOUNDS height="270" left="1770" top="7080" type="Node" width="9645">
    </BOUNDS>
@@ -250,12 +250,6 @@
    <LINKPOINT x="2145" y="4508">
    </LINKPOINT>
    </LINK>
-   <LINK srcnodeid="14" srcpinname="OnChange" dstnodeid="5" dstpinname="Insert" linkstyle="Bezier">
-   <LINKPOINT x="3930" y="4905">
-   </LINKPOINT>
-   <LINKPOINT x="2325" y="4905">
-   </LINKPOINT>
-   </LINK>
    <LINK srcnodeid="17" srcpinname="Output 1" dstnodeid="5" dstpinname="Color" linkstyle="Bezier" hiddenwhenlocked="1">
    <LINKPOINT x="5755" y="4005">
    </LINKPOINT>
@@ -334,12 +328,6 @@
    <LINKPOINT x="5395" y="4500">
    </LINKPOINT>
    </LINK>
-   <LINK srcnodeid="15" srcpinname="OnChange" dstnodeid="7" dstpinname="Insert" linkstyle="Bezier">
-   <LINKPOINT x="4760" y="4905">
-   </LINKPOINT>
-   <LINKPOINT x="5560" y="4905">
-   </LINKPOINT>
-   </LINK>
    <LINK srcnodeid="17" srcpinname="Output 2" dstnodeid="7" dstpinname="Color" linkstyle="Bezier" hiddenwhenlocked="1">
    <LINKPOINT x="5910" y="3998">
    </LINKPOINT>
@@ -414,12 +402,6 @@
    <LINKPOINT x="8490" y="4538">
    </LINKPOINT>
    </LINK>
-   <LINK srcnodeid="16" srcpinname="OnChange" dstnodeid="8" dstpinname="Insert" linkstyle="Bezier">
-   <LINKPOINT x="5715" y="4935">
-   </LINKPOINT>
-   <LINKPOINT x="8640" y="4935">
-   </LINKPOINT>
-   </LINK>
    <LINK srcnodeid="20" srcpinname="Y Output Value" dstnodeid="8" dstpinname="Reset" linkstyle="VHV">
    <LINKPOINT x="10800" y="5745">
    </LINKPOINT>
@@ -438,7 +420,7 @@
    <PIN pinname="Y Output Value" visible="1">
    </PIN>
    </NODE>
-   <BOUNDS type="Window" left="2100" top="945" width="14670" height="8850">
+   <BOUNDS type="Window" left="2100" top="945" width="12720" height="8850">
    </BOUNDS>
    <PACK Name="addonpack" Version="35.0.0">
    </PACK>
@@ -597,5 +579,27 @@
    </LINKPOINT>
    <LINKPOINT x="8550" y="1088">
    </LINKPOINT>
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="35">
+   <BOUNDS type="Node" left="4035" top="4515" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="4035" top="4515" width="480" height="480">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="35" srcpinname="Y Output Value" dstnodeid="5" dstpinname="Insert">
+   </LINK>
+   <LINK srcnodeid="35" srcpinname="Y Output Value" dstnodeid="7" dstpinname="Insert">
+   </LINK>
+   <LINK srcnodeid="35" srcpinname="Y Output Value" dstnodeid="8" dstpinname="Insert">
    </LINK>
    </PATCH>

@@ -56,7 +56,7 @@ void setupMPU6050() {
     Serial.println("Initializing MPU6050 on I2C...");
   #endif
   _mpu6050.initialize();    //this gets stuck sometimes on the mini pro
-  blinkStatusLED2();        //so..
+  blinkStatusLED2();        //so.. we know
   
   //verify connection
   #ifdef DEBUG_MPU6050
@@ -77,6 +77,13 @@ void setupMPU6050() {
   //TEMP
   //_doCalibrateMPU6050 = true;
   //calibrateMPU6050();
+  _mpu6050AccelZeroX = 0;
+  _mpu6050AccelZeroY = 0;
+  _mpu6050AccelZeroZ = 0;
+  _mpu6050GyroZeroX = 0;
+  _mpu6050GyroZeroY = 0;
+  _mpu6050GyroZeroZ = 0;
+  
 }
 
 /*----------------------------sensors - MPU6050 - calibrate----------------------------*/
@@ -119,16 +126,16 @@ void calibrateMPU6050() {
   //  long gyroSampleZ = 0;
   
   //  //get motion data averages
-  //  while (i < (_mpu6050AccelSampleTotal + 101)) {
+  //  while (i < (_mpu6050CalibrateSampleTotal + 101)) {
   //    _mpu6050.getMotion6(&_mpu6050AccelCurX, &_mpu6050AccelCurY, &_mpu6050AccelCurZ, &_mpu6050GyroCurX, &_mpu6050GyroCurY, &_mpu6050GyroCurZ);
-  //    if (i > 100 && i <= (_mpu6050AccelSampleTotal + 100)) { 
+  //    if (i > 100 && i <= (_mpu6050CalibrateSampleTotal + 100)) { 
   //      //discarded first 100 measures
   //      accelSampleX += _mpu6050AccelCurX;  //add 'em up
   //      ..
   //    }
-  //    if (i == (_mpu6050AccelSampleTotal + 100)) {
+  //    if (i == (_mpu6050CalibrateSampleTotal + 100)) {
   //      //sum 'em up
-  //      _mpu6050AccelAverageX = accelSampleX / _mpu6050AccelSampleTotal;
+  //      _mpu6050AccelAverageX = accelSampleX / _mpu6050CalibrateSampleTotal;
   //      ..
   //    }
   //    //step it up
@@ -144,23 +151,31 @@ void calibrateMPU6050() {
       int16_t gyroSampleY = 0;
       int16_t gyroSampleZ = 0;
   
-      for (int i=0; i<_mpu6050AccelSampleTotal; i++) {
-        _mpu6050.getMotion6(&_mpu6050AccelCurX, &_mpu6050AccelCurY, &_mpu6050AccelCurZ, &_mpu6050GyroCurX, &_mpu6050GyroCurY, &_mpu6050GyroCurZ);
-        accelSampleX += _mpu6050AccelCurX;
-        accelSampleY += _mpu6050AccelCurY;
-        accelSampleZ += _mpu6050AccelCurZ;
-        gyroSampleX += _mpu6050GyroCurX;
-        gyroSampleY += _mpu6050GyroCurY;
-        gyroSampleZ += _mpu6050GyroCurZ;
+      for (int i=0; i<_mpu6050CalibrateSampleTotal; i++) {
+        //_mpu6050.getMotion6(&_mpu6050AccelCurX, &_mpu6050AccelCurY, &_mpu6050AccelCurZ, &_mpu6050GyroCurX, &_mpu6050GyroCurY, &_mpu6050GyroCurZ);
+        _mpu6050.getMotion6(&_mpu6050AccelReadX, &_mpu6050AccelReadY, &_mpu6050AccelReadZ, &_mpu6050GyroReadX, &_mpu6050GyroReadY, &_mpu6050GyroReadZ);
+
+        accelSampleX += _mpu6050AccelReadX;
+        accelSampleY += _mpu6050AccelReadY;
+        accelSampleZ += _mpu6050AccelReadZ;
+        gyroSampleX += _mpu6050GyroReadX;
+        gyroSampleY += _mpu6050GyroReadY;
+        gyroSampleZ += _mpu6050GyroReadZ;
         //delay(2); //Needed so we don't get repeated measures ???
       }
 
-      _mpu6050AccelCurX = (accelSampleX / _mpu6050AccelSampleTotal);
-      _mpu6050AccelCurY = (accelSampleY / _mpu6050AccelSampleTotal);
-      _mpu6050AccelCurZ = (accelSampleZ / _mpu6050AccelSampleTotal);
-      _mpu6050GyroCurX = (gyroSampleX / _mpu6050AccelSampleTotal);
-      _mpu6050GyroCurY = (gyroSampleY / _mpu6050AccelSampleTotal);
-      _mpu6050GyroCurZ = (gyroSampleZ / _mpu6050AccelSampleTotal);
+//      _mpu6050AccelCurX = (accelSampleX / _mpu6050CalibrateSampleTotal);
+//      _mpu6050AccelCurY = (accelSampleY / _mpu6050CalibrateSampleTotal);
+//      _mpu6050AccelCurZ = (accelSampleZ / _mpu6050CalibrateSampleTotal);
+//      _mpu6050GyroCurX = (gyroSampleX / _mpu6050CalibrateSampleTotal);
+//      _mpu6050GyroCurY = (gyroSampleY / _mpu6050CalibrateSampleTotal);
+//      _mpu6050GyroCurZ = (gyroSampleZ / _mpu6050CalibrateSampleTotal);
+      _mpu6050AccelReadX = (accelSampleX / _mpu6050CalibrateSampleTotal);
+      _mpu6050AccelReadY = (accelSampleY / _mpu6050CalibrateSampleTotal);
+      _mpu6050AccelReadZ = (accelSampleZ / _mpu6050CalibrateSampleTotal);
+      _mpu6050GyroReadX = (gyroSampleX / _mpu6050CalibrateSampleTotal);
+      _mpu6050GyroReadY = (gyroSampleY / _mpu6050CalibrateSampleTotal);
+      _mpu6050GyroReadZ = (gyroSampleZ / _mpu6050CalibrateSampleTotal);
       
       //get motion
       //_mpu6050.getMotion6(&_mpu6050AccelCurX, &_mpu6050AccelCurY, &_mpu6050AccelCurZ, &_mpu6050GyroCurX, &_mpu6050GyroCurY, &_mpu6050GyroCurZ);
@@ -174,23 +189,23 @@ void calibrateMPU6050() {
       _mpu6050GyroOffsetZ = _mpu6050.getZGyroOffset();
       
       //nudge offsets towards motion data
-      if (_mpu6050AccelCurX > 0) _mpu6050AccelOffsetX--;
-      else if (_mpu6050AccelCurX < 0) _mpu6050AccelOffsetX++;
+      if (_mpu6050AccelReadX > 0) _mpu6050AccelOffsetX--;
+      else if (_mpu6050AccelReadX < 0) _mpu6050AccelOffsetX++;
 
-      if (_mpu6050AccelCurY > 0) _mpu6050AccelOffsetY--;
-      else if (_mpu6050AccelCurY < 0) _mpu6050AccelOffsetY++;
+      if (_mpu6050AccelReadY > 0) _mpu6050AccelOffsetY--;
+      else if (_mpu6050AccelReadY < 0) _mpu6050AccelOffsetY++;
 
-      if (_mpu6050AccelCurZ > 0) _mpu6050AccelOffsetZ--;
-      else if (_mpu6050AccelCurZ < 0) _mpu6050AccelOffsetZ++;
+      if (_mpu6050AccelReadZ > 0) _mpu6050AccelOffsetZ--;
+      else if (_mpu6050AccelReadZ < 0) _mpu6050AccelOffsetZ++;
       
-      if (_mpu6050GyroCurX > 0) _mpu6050GyroOffsetX--;
-      else if (_mpu6050GyroCurX < 0) _mpu6050GyroOffsetX++;
+      if (_mpu6050GyroReadX > 0) _mpu6050GyroOffsetX--;
+      else if (_mpu6050GyroReadX < 0) _mpu6050GyroOffsetX++;
       
-      if (_mpu6050GyroCurY > 0) _mpu6050GyroOffsetY--;
-      else if (_mpu6050GyroCurY < 0) _mpu6050GyroOffsetY++;
+      if (_mpu6050GyroReadY > 0) _mpu6050GyroOffsetY--;
+      else if (_mpu6050GyroReadY < 0) _mpu6050GyroOffsetY++;
       
-      if (_mpu6050GyroCurZ > 0) _mpu6050GyroOffsetZ--;
-      else if (_mpu6050GyroCurZ < 0) _mpu6050GyroOffsetZ++;
+      if (_mpu6050GyroReadZ > 0) _mpu6050GyroOffsetZ--;
+      else if (_mpu6050GyroReadZ < 0) _mpu6050GyroOffsetZ++;
     
       //set offsets
       _mpu6050.setXAccelOffset(_mpu6050AccelOffsetX);
@@ -202,41 +217,41 @@ void calibrateMPU6050() {
 
       #ifdef DEBUG_MPU6050
         Serial.print("MPU6050 acceleration XYZ: ");
-        Serial.print(_mpu6050AccelCurX);
+        Serial.print(_mpu6050AccelReadX);
         Serial.print(" - ");
         Serial.print(_mpu6050AccelOffsetX);
         Serial.print(", ");
-        Serial.print(_mpu6050AccelCurY);
+        Serial.print(_mpu6050AccelReadY);
         Serial.print(" - ");
         Serial.print(_mpu6050AccelOffsetY);
         Serial.print(", ");
-        Serial.print(_mpu6050AccelCurZ);
+        Serial.print(_mpu6050AccelReadZ);
         Serial.print(" - ");
         Serial.print(_mpu6050AccelOffsetZ);
         Serial.print(" | MPU6050 gyro XYZ: ");
-        Serial.print(_mpu6050GyroCurX);
+        Serial.print(_mpu6050GyroReadX);
         Serial.print(" - ");
         Serial.print(_mpu6050GyroOffsetX);
         Serial.print(", ");
-        Serial.print(_mpu6050GyroCurY);
+        Serial.print(_mpu6050GyroReadY);
         Serial.print(" - ");
         Serial.print(_mpu6050GyroOffsetY);
         Serial.print(", ");
-        Serial.print(_mpu6050GyroCurZ);
+        Serial.print(_mpu6050GyroReadZ);
         Serial.print(" - ");
         Serial.print(_mpu6050GyroOffsetZ);
         Serial.println();
       #endif
       
       //repeat x times, for a time period, or until within tolerance
-      if (_mpu6050AccelCurX <= _mpu6050AccelThreshold && _mpu6050AccelCurX >= -_mpu6050AccelThreshold) { allOk++; }
-      //else { ax_offset=ax_offset-mean_ax / _mpu6050AccelThreshold; }
-      if (_mpu6050AccelCurY <= _mpu6050AccelThreshold && _mpu6050AccelCurY >= -_mpu6050AccelThreshold) { allOk++; }
-      if (_mpu6050AccelCurZ <= _mpu6050AccelThreshold && _mpu6050AccelCurZ >= -_mpu6050AccelThreshold) { allOk++; }
+      if (_mpu6050AccelReadX <= _mpu6050CalibrateAccelThreshold && _mpu6050AccelReadX >= -_mpu6050CalibrateAccelThreshold) { allOk++; }
+      //else { ax_offset=ax_offset-mean_ax / __mpu6050CalibrateAccelThreshold; }
+      if (_mpu6050AccelReadY <= _mpu6050CalibrateAccelThreshold && _mpu6050AccelReadY >= -_mpu6050CalibrateAccelThreshold) { allOk++; }
+      if (_mpu6050AccelReadZ <= _mpu6050CalibrateAccelThreshold && _mpu6050AccelReadZ >= -_mpu6050CalibrateAccelThreshold) { allOk++; }
     
-      if (_mpu6050GyroCurX <= _mpu6050GyroThreshold && _mpu6050GyroCurX >= -_mpu6050GyroThreshold) { allOk++; }
-      if (_mpu6050GyroCurY <= _mpu6050GyroThreshold && _mpu6050GyroCurY >= -_mpu6050GyroThreshold) { allOk++; }
-      if (_mpu6050GyroCurZ <= _mpu6050GyroThreshold && _mpu6050GyroCurZ >= -_mpu6050GyroThreshold) { allOk++; }
+      if (_mpu6050GyroReadX <= _mpu6050CalibrateGyroThreshold && _mpu6050GyroReadX >= -_mpu6050CalibrateGyroThreshold) { allOk++; }
+      if (_mpu6050GyroReadY <= _mpu6050CalibrateGyroThreshold && _mpu6050GyroReadY >= -_mpu6050CalibrateGyroThreshold) { allOk++; }
+      if (_mpu6050GyroReadZ <= _mpu6050CalibrateGyroThreshold && _mpu6050GyroReadZ >= -_mpu6050CalibrateGyroThreshold) { allOk++; }
       
       if (allOk == 6) {
         _doCalibrateMPU6050 = false;
@@ -263,57 +278,6 @@ void calibrateMPU6050() {
 
 
 /*----------------------------sensors - MPU6050 - read----------------------------*/
+//see.. 'readMPU6050filtered'  with  'MPU6050buffer'
 
-void readMPU6050() {
-  //get motion
-
-  int16_t accelSampleX = 0;
-  int16_t accelSampleY = 0;
-  int16_t accelSampleZ = 0;
-  int16_t gyroSampleX = 0;
-  int16_t gyroSampleY = 0;
-  int16_t gyroSampleZ = 0;
-  
-  //_mpu6050.getMotion6(&_mpu6050AccelCurX, &_mpu6050AccelCurY, &_mpu6050AccelCurZ, &_mpu6050GyroCurX, &_mpu6050GyroCurY, &_mpu6050GyroCurZ);
-  for (int i = 0; i < _mpu6050AccelSampleTotal; i++) {
-    _mpu6050.getMotion6(&_mpu6050AccelCurX, &_mpu6050AccelCurY, &_mpu6050AccelCurZ, &_mpu6050GyroCurX, &_mpu6050GyroCurY, &_mpu6050GyroCurZ);
-    accelSampleX += _mpu6050AccelCurX;
-    accelSampleY += _mpu6050AccelCurY;
-    accelSampleZ += _mpu6050AccelCurZ;
-    gyroSampleX += _mpu6050GyroCurX;
-    gyroSampleY += _mpu6050GyroCurY;
-    gyroSampleZ += _mpu6050GyroCurZ;
-
-    if (i == (_mpu6050AccelSampleTotal - 1)) {
-      _mpu6050AccelCurX = (accelSampleX / _mpu6050AccelSampleTotal);
-      _mpu6050AccelCurY = (accelSampleY / _mpu6050AccelSampleTotal);
-      _mpu6050AccelCurZ = (accelSampleZ / _mpu6050AccelSampleTotal);
-      _mpu6050GyroCurX = (gyroSampleX / _mpu6050AccelSampleTotal);
-      _mpu6050GyroCurY = (gyroSampleY / _mpu6050AccelSampleTotal);
-      _mpu6050GyroCurZ = (gyroSampleZ / _mpu6050AccelSampleTotal);
-    }
-    //delay(2); //Needed so we don't get repeated measures ???
-  }
-  
-  #ifdef DEBUG_MPU6050
-    //Serial.print("MPU6050 acceleration XYZ: ");
-    Serial.print(_mpu6050AccelCurX);
-    Serial.print(", ");
-    Serial.print(_mpu6050AccelCurY);
-    Serial.print(", ");
-    Serial.print(_mpu6050AccelCurZ);
-    //linebreak
-    Serial.write(10);
-    Serial.write(13);
-//    Serial.print(" | MPU6050 gyro XYZ: ");
-//    Serial.print(_mpu6050GyroCurX);
-//    Serial.print(", ");
-//    Serial.print(_mpu6050GyroCurY);
-//    Serial.print(", ");
-//    Serial.print(_mpu6050GyroCurZ);
-//    Serial.println();
-  #endif
-}
-
- 
 

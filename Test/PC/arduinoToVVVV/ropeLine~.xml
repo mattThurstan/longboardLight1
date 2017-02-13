@@ -249,9 +249,9 @@
    <NODE id="21" systemname="IOBox (Value Advanced)" componentmode="InABox" nodename="IOBox (Value Advanced)">
    <PIN pinname="Descriptive Name" slicecount="1" values="From">
    </PIN>
-   <BOUNDS type="Box" left="3825" top="480" width="750" height="240">
+   <BOUNDS type="Box" left="3825" top="465" width="750" height="240">
    </BOUNDS>
-   <BOUNDS type="Node" left="3825" top="480" width="750" height="240">
+   <BOUNDS type="Node" left="3825" top="465" width="750" height="240">
    </BOUNDS>
    </NODE>
    <LINK srcnodeid="21" srcpinname="Y Output Value" dstnodeid="12" dstpinname="Source Maximum">
@@ -317,9 +317,9 @@
    <NODE id="26" systemname="IOBox (Value Advanced)" componentmode="InABox" nodename="IOBox (Value Advanced)">
    <PIN pinname="Descriptive Name" slicecount="1" values="To">
    </PIN>
-   <BOUNDS type="Box" left="4920" top="450" width="750" height="240">
+   <BOUNDS type="Box" left="4920" top="465" width="750" height="240">
    </BOUNDS>
-   <BOUNDS type="Node" left="4920" top="450" width="750" height="240">
+   <BOUNDS type="Node" left="4920" top="465" width="750" height="240">
    </BOUNDS>
    <PIN pinname="Y Input Value" slicecount="1" values="1">
    </PIN>

@@ -10,15 +10,54 @@
  * http://theboredengineers.com/2012/09/the-quadcopter-get-its-orientation-from-sensors/
  */
 
-int indexBuffer = 0;
-const int BUFFER_SIZE = 100; // Number of samples you want to filter on.
-int16_t circularBuffer[6][BUFFER_SIZE];
+//int indexBuffer = 0;
+const int _bufferVectorTotal = 3;   //how many vectors do we want to store?
+int _indexBuffer[_bufferVectorTotal];
+const int BUFFER_SIZE = 5;      // Number of samples you want to filter on.
+int16_t circularBuffer[_bufferVectorTotal][BUFFER_SIZE];
 //float sensorDataCircularSum;
-int16_t sensorDataCircularSum[6];
-int16_t filteredOutput;
-//float sensorRawData; // typically the value you read from your sensor
- //in your loop() function
+int16_t sensorDataCircularSum[_bufferVectorTotal];
+//int16_t filteredOutput;
+//float sensorRawData;            // typically the value you read from your sensor in your loop() function
 
+/*
+ * bufferSmoothInsert(int cbIndex, int16_t a)
+ * 
+ * eg.
+ * _mpu6050FilteredCurX = bufferSmoothInsert(0, (int16_t) angle_x);
+ * 
+ * cbIndex = the 1st array index of the circular buffer
+ * indexBuffer = the 2nd array index of the circular buffer
+ * a = the int16_t value to be buffered and smoothed
+ */
+int16_t bufferSmoothInsert(int cbIndex, int16_t a) {
+  //cbIndex should not exceed _bufferVectorTotal
+
+  //remove the oldest value from the buffer
+  sensorDataCircularSum[cbIndex] = sensorDataCircularSum[cbIndex] - circularBuffer[cbIndex][_indexBuffer[cbIndex]];
+  
+  // The new input from the sensor is placed in the buffer
+  circularBuffer[cbIndex][_indexBuffer[cbIndex]] = a;
+  
+  // It is also added to the total sum of the last  BUFFER_SIZE readings
+  // This method avoids to sum all the elements every time this function is called.
+  sensorDataCircularSum[cbIndex] += a;
+
+  // We increment the cursor
+  _indexBuffer[cbIndex]++;
+
+  // We test if we arrived to the end of the buffer, in which case we start again from index 0
+  if (_indexBuffer[cbIndex] >= BUFFER_SIZE) {
+    _indexBuffer[cbIndex] = 0;
+  }
+
+  a = (sensorDataCircularSum[cbIndex] / BUFFER_SIZE);             //running averaged total
+  //int16_t b = (sensorDataCircularSum[cbIndex] / BUFFER_SIZE);
+
+  return a;
+}
+
+/*
 //void smoothSensorReadings(float sensorRawData){
 void bufferSmoothMPU6050Read() {
   // We remove the oldest value from the buffer
@@ -66,5 +105,5 @@ void bufferSmoothMPU6050Read() {
  _mpu6050GyroReadZ = (sensorDataCircularSum[5] / BUFFER_SIZE);
  
 }
-
+*/
 
