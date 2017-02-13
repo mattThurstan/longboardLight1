@@ -11,41 +11,44 @@
 
 void orientation() {
 
+  //orientation matrix: 9 -> 3 -> 1
 
   //timed-loop
   unsigned long orientationCurMillis = millis();     //get current time
   if((unsigned long) (orientationCurMillis - _orientationPrevMillis) >= _orientationInterval) {
-  
-    if ( _mpu6050FilteredCurX < ( _mpu6050AccelZeroX - (90/2) ) ) {
+
+    //set the 9-matrix
+    if ( _mpu6050FilteredCurX < ( _mpu6050AccelZeroX - 45 ) ) {
       if (orFlag[0] == false) { orCounter[0] = millis(); orFlag[0] = true; }  //if already true then don't reset the counter
     }
-    else if ( _mpu6050FilteredCurX < ( _mpu6050AccelZeroX + (90/2) ) && _mpu6050FilteredCurX > ( _mpu6050AccelZeroX - (90/2) ) ) {
+    else if ( _mpu6050FilteredCurX < ( _mpu6050AccelZeroX + 45 ) && _mpu6050FilteredCurX > ( _mpu6050AccelZeroX - 45 ) ) {
       if (orFlag[1] == false) { orCounter[1] = millis(); orFlag[1] = true; }
     } 
-    else if ( _mpu6050FilteredCurX > ( _mpu6050AccelZeroX + (90/2) ) ) { 
+    else if ( _mpu6050FilteredCurX > ( _mpu6050AccelZeroX + 45 ) ) { 
       if (orFlag[2] == false) { orCounter[2] = millis(); orFlag[2] = true; }
     }
   
-    if ( _mpu6050FilteredCurY < ( _mpu6050AccelZeroY - (90/2) ) ) {
+    if ( _mpu6050FilteredCurY < ( _mpu6050AccelZeroY - 45 ) ) {
       if (orFlag[3] == false) { orCounter[3] = millis(); orFlag[3] = true; }  //if already true then don't reset the counter
     }
-    else if ( _mpu6050FilteredCurY < ( _mpu6050AccelZeroY + (90/2) ) && _mpu6050FilteredCurY > ( _mpu6050AccelZeroY - (90/2) ) ) {
+    else if ( _mpu6050FilteredCurY < ( _mpu6050AccelZeroY + 45 ) && _mpu6050FilteredCurY > ( _mpu6050AccelZeroY - 45 ) ) {
       if (orFlag[4] == false) { orCounter[4] = millis(); orFlag[4] = true; }
     } 
-    else if ( _mpu6050FilteredCurY > ( _mpu6050AccelZeroY + (90/2) ) ) { 
+    else if ( _mpu6050FilteredCurY > ( _mpu6050AccelZeroY + 45 ) ) { 
       if (orFlag[5] == false) { orCounter[5] = millis(); orFlag[5] = true; }
     }
   
-    if ( _mpu6050FilteredCurZ < ( _mpu6050AccelZeroZ - (90/2) ) ) {
+    if ( _mpu6050FilteredCurZ < ( _mpu6050AccelZeroZ - 45 ) ) {
       if (orFlag[6] == false) { orCounter[6] = millis(); orFlag[6] = true; }  //if already true then don't reset the counter
     }
-    else if ( _mpu6050FilteredCurZ < ( _mpu6050AccelZeroZ + (90/2) ) && _mpu6050FilteredCurZ > ( _mpu6050AccelZeroZ - (90/2) ) ) {
+    else if ( _mpu6050FilteredCurZ < ( _mpu6050AccelZeroZ + 45 ) && _mpu6050FilteredCurZ > ( _mpu6050AccelZeroZ - 45 ) ) {
       if (orFlag[7] == false) { orCounter[7] = millis(); orFlag[7] = true; }
     } 
-    else if ( _mpu6050FilteredCurZ > ( _mpu6050AccelZeroZ + (90/2) ) ) { 
+    else if ( _mpu6050FilteredCurZ > ( _mpu6050AccelZeroZ + 45 ) ) { 
       if (orFlag[8] == false) { orCounter[8] = millis(); orFlag[8] = true; }
     }
 
+    //compare 9-matrix and set 3-matrix
     unsigned long orGetMillis = millis();
     for (int i = 0; i < 9; i++) {
       if (orFlag[i] == true) {
@@ -71,6 +74,7 @@ void orientation() {
       }
     }
 
+    //compare 3-matrix and set orientation
     if (orMatrix[0] == 1
           && orMatrix[1] == 1
           //&& orMatrix[2] == 1
@@ -96,6 +100,7 @@ void orientation() {
           ) { _orientation = 5; }  //1, 2, 1 - right
   
     #ifdef DEBUG_MPU6050
+      //stil sending 10 values here cos outputing to same VVVV test patch as readMPU6050filtered
       Serial.print("0");
       Serial.print(", ");
       Serial.print("0");
@@ -115,6 +120,7 @@ void orientation() {
       Serial.print(_mpu6050FilteredCurZ);
       Serial.print(", ");
       Serial.print(_orientation); 
+      
       //linebreak
       Serial.write(10);
       Serial.write(13);
