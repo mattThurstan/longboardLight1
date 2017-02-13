@@ -11,23 +11,22 @@
 unsigned long last_read_time;
 
 inline unsigned long get_last_time() {return last_read_time;}
-inline float get_last_x_angle() {return _mpu6050FilteredPrevX;}
-inline float get_last_y_angle() {return _mpu6050FilteredPrevY;}
-inline float get_last_z_angle() {return _mpu6050FilteredPrevZ;}
-inline float get_last_gyro_x_angle() {return _mpu6050GyroPrevX;}
-inline float get_last_gyro_y_angle() {return _mpu6050GyroPrevY;}
-inline float get_last_gyro_z_angle() {return _mpu6050GyroPrevZ;}
+inline float get_last_x_angle() {return _mpu6050FilteredPrev[0];}
+inline float get_last_y_angle() {return _mpu6050FilteredPrev[1];}
+inline float get_last_z_angle() {return _mpu6050FilteredPrev[2];}
+inline float get_last_gyro_x_angle() {return _mpu6050GyroPrev[0];}
+inline float get_last_gyro_y_angle() {return _mpu6050GyroPrev[1];}
+inline float get_last_gyro_z_angle() {return _mpu6050GyroPrev[2];}
 
 void set_last_read_angle_data(unsigned long time, float x, float y, float z, float x_gyro, float y_gyro, float z_gyro) {
   last_read_time = time;
-  _mpu6050FilteredPrevX = x;
-  _mpu6050FilteredPrevY = y;
-  _mpu6050FilteredPrevZ = z;
-  _mpu6050GyroPrevX = x_gyro;
-  _mpu6050GyroPrevY = y_gyro;
-  _mpu6050GyroPrevZ = z_gyro;
+  _mpu6050FilteredPrev[0] = x;
+  _mpu6050FilteredPrev[1] = y;
+  _mpu6050FilteredPrev[2] = z;
+  _mpu6050GyroPrev[0] = x_gyro;
+  _mpu6050GyroPrev[1] = y_gyro;
+  _mpu6050GyroPrev[2] = z_gyro;
 }
-
 
 void readMPU6050filtered() {
   
@@ -36,20 +35,20 @@ void readMPU6050filtered() {
   if((unsigned long) (mpu6050ReadCurMillis - _mpu6050ReadPrevMillis) >= _mpu6050ReadInterval) {
     
     //read raw values
-    _mpu6050.getMotion6(&_mpu6050AccelReadX, &_mpu6050AccelReadY, &_mpu6050AccelReadZ, &_mpu6050GyroReadX, &_mpu6050GyroReadY, &_mpu6050GyroReadZ);
+    _mpu6050.getMotion6(&_mpu6050AccelRead[0], &_mpu6050AccelRead[1], &_mpu6050AccelRead[2], &_mpu6050GyroRead[0], &_mpu6050GyroRead[1], &_mpu6050GyroRead[2]);
     
     // Convert gyro values to degrees/sec
     float FS_SEL = 131;
 
-    float gyro_x = ((float)_mpu6050GyroReadX - _mpu6050GyroZeroX)/FS_SEL;
-    float gyro_y = ((float)_mpu6050GyroReadY - _mpu6050GyroZeroY)/FS_SEL;
-    float gyro_z = ((float)_mpu6050GyroReadZ - _mpu6050GyroZeroZ)/FS_SEL;
+    float gyro_x = ((float)_mpu6050GyroRead[0] - _mpu6050GyroZero[0])/FS_SEL;
+    float gyro_y = ((float)_mpu6050GyroRead[1] - _mpu6050GyroZero[1])/FS_SEL;
+    float gyro_z = ((float)_mpu6050GyroRead[2] - _mpu6050GyroZero[2])/FS_SEL;
   
     // Get raw acceleration values
     //float G_CONVERT = 16384;
-    float accel_x = (float)_mpu6050AccelReadX;
-    float accel_y = (float)_mpu6050AccelReadY;
-    float accel_z = (float)_mpu6050AccelReadZ;
+    float accel_x = (float)_mpu6050AccelRead[0];
+    float accel_y = (float)_mpu6050AccelRead[1];
+    float accel_z = (float)_mpu6050AccelRead[2];
     
     // Get angle values from accelerometer
     float RADIANS_TO_DEGREES = 180/3.14159;
@@ -78,18 +77,20 @@ void readMPU6050filtered() {
     float angle_y = alpha*gyro_angle_y + (1.0 - alpha)*accel_angle_y;
     float angle_z = gyro_angle_z;  //Accelerometer doesn't give z-angle
 
-    //..this is annoying me ..so ..abracadabra, make minus, plus, stop annoying me
-    if (angle_x > 180) { _mpu6050FilteredCurX = -abs(angle_x); }
-    else if (angle_x < -180) { _mpu6050FilteredCurX = abs(angle_x); }
-    else { _mpu6050FilteredCurX = (int16_t) angle_x; }  //oops, forgot these
+    //..this is annoying me ..so ..abracadabra, make minus, plus, stop annoying me..
+    //
+    //hohum, does effectively turn them from floats to ints, but one does not really require the accuracy
+    if (angle_x > 180) { _mpu6050FilteredCur[0] = -abs(angle_x); }
+    else if (angle_x < -180) { _mpu6050FilteredCur[0] = abs(angle_x); }
+    else { _mpu6050FilteredCur[0] = angle_x; }  //oops, forgot these
     
-    if (angle_y > 180) { _mpu6050FilteredCurY = -abs(angle_y); }
-    else if (angle_y < -180) { _mpu6050FilteredCurY = abs(angle_y); }
-    else { _mpu6050FilteredCurY = (int16_t) angle_y; }  //..
+    if (angle_y > 180) { _mpu6050FilteredCur[1] = -abs(angle_y); }
+    else if (angle_y < -180) { _mpu6050FilteredCur[1] = abs(angle_y); }
+    else { _mpu6050FilteredCur[1] = angle_y; }  //..
     
-    if (angle_z > 180) { _mpu6050FilteredCurZ = -abs(angle_z); }
-    else if (angle_z < -180) { _mpu6050FilteredCurZ = abs(angle_z); }
-    else  {_mpu6050FilteredCurZ = (int16_t) angle_z; }
+    if (angle_z > 180) { _mpu6050FilteredCur[2] = -abs(angle_z); }
+    else if (angle_z < -180) { _mpu6050FilteredCur[2] = abs(angle_z); }
+    else  {_mpu6050FilteredCur[2] = angle_z; }
 
     // Update the saved data with the latest values - saving un-adjusted values to previous, not minus/plus values..
     set_last_read_angle_data(mpu6050ReadCurMillis, angle_x, angle_y, angle_z, unfiltered_gyro_angle_x, unfiltered_gyro_angle_y, unfiltered_gyro_angle_z);
@@ -131,7 +132,8 @@ void readMPU6050filtered() {
     
     _mpu6050ReadPrevMillis = millis();               //store the current time
   } //END timed-loop
-}
+  
+} //END readMPU6050filtered
 
 
 

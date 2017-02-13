@@ -31,6 +31,7 @@
 */
 #define DEBUG 1                           //comment/un-comment
 #define DEBUG_MPU6050 1                   //..
+#define DEBUG_ORIENTATION 1               //
 //#ifdef DEBUG     
 ////
 //#endif
@@ -52,7 +53,7 @@ const int _wheelMagnetTotal = 4;          //how many magnets are mounted on each
  
 //ArduinoMiniPro A4 -> GY-521 (MPU6050) SDA
 //ArduinoMiniPro A5 -> GY-521 (MPU6050) SCL
-//GY-521 (MPU6050) INT (interrupt) pin optional
+//GY-521 (MPU6050) INT (interrupt) pin optional - needs interrupt pin to check its fancy onboard calculations such as no-motion status
  
 const int _wheelSensorPin[_wheelSensorTotal] = { 2 };     //array of wheel sensor inputs (!!all interrupt pins!!!) - uses _wheelSensorTotal
 //const int _mpu6050InterruptPin = 2;                       //??? - don't think will need interrupt stuff, even with wireless. use it for wheels
@@ -75,7 +76,7 @@ const int _ledPin = 13;                         //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.2";             //working version, with LEDs and MPU6050 setting orientation
+const String _progVers = "0.25";             //trying to fix major inherent flaw in orientation algorithm. ie. it shouldn't have been working!
 //const int _mainLoopDelay = 0;               //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;        //starts false
 #ifdef DEBUG
@@ -111,21 +112,22 @@ Bounce button[1] = {
 //3-axis accelerometer
 
  //eg. 'place board on flat ground and press calibrate'  ..will get saved here - '_orientationCalibrationXYZ'
-int _orientationCalibrationXYZ[6][3] = {
-  { 400, 398, 488 },
-  { 408, 404, 328 },
-  { 410, 490, 410 },
-  { 420, 330, 420 },
-  { 450, 372, 375 },
-  { 290, 365, 370 }
-  };
-//then the following is filled-in by the computer for XYZ
-int _orientationCalibrationXYZminMaxDist[3][3] = {
-  { 0, 0, 0 },  //eg. 302, 462, 40
-  { 0, 0, 0 },
-  { 0, 0, 0 }
-};
-int _orientationXYZdistTriggerDivide = 3; //xt = (xm-xmi)/_orientationXYZdistTriggerDivide;
+ //..this i think is replaced by _mpu6050AccelZeroX etc.
+//int _orientationCalibrationXYZ[6][3] = {
+//  { 400, 398, 488 },
+//  { 408, 404, 328 },
+//  { 410, 490, 410 },
+//  { 420, 330, 420 },
+//  { 450, 372, 375 },
+//  { 290, 365, 370 }
+//  };
+////then the following is filled-in by the computer for XYZ
+//int _orientationCalibrationXYZminMaxDist[3][3] = {
+//  { 0, 0, 0 },  //eg. 302, 462, 40
+//  { 0, 0, 0 },
+//  { 0, 0, 0 }
+//};
+//int _orientationXYZdistTriggerDivide = 3; //xt = (xm-xmi)/_orientationXYZdistTriggerDivide;
 //
 int _orientation = 0;                           //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
 
@@ -139,7 +141,9 @@ MPU6050 _mpu6050;  //accel gyro;
 //int16_t _mpu6050AccelCurX, _mpu6050AccelCurY, _mpu6050AccelCurZ;
 //int16_t _mpu6050GyroCurX, _mpu6050GyroCurY, _mpu6050GyroCurZ;
 //int _mpu6050AccelAverageX, _mpu6050AccelAverageY, _mpu6050AccelAverageZ, _mpu6050GyroAverageX, _mpu6050GyroAverageY, _mpu6050GyroAverageZ;
-int _mpu6050AccelOffsetX, _mpu6050AccelOffsetY, _mpu6050AccelOffsetZ, _mpu6050GyroOffsetX, _mpu6050GyroOffsetY, _mpu6050GyroOffsetZ;
+int16_t _mpu6050AccelOffset[3]; //XYZ accel offsets to write to the MPU6050 - get from full calibration and save memory
+int16_t _mpu6050GyroOffset[3]; //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
+//int16_t _mpu6050AccelOffsetX, _mpu6050AccelOffsetY, _mpu6050AccelOffsetZ, _mpu6050GyroOffsetX, _mpu6050GyroOffsetY, _mpu6050GyroOffsetZ;
 const int _mpu6050CalibrateSampleTotal = 100;     //how many samples to take at once when calibrating
 const int _mpu6050CalibrateAccelThreshold = 10;  //threshold tolerance for 'dead zone' at center of readings
 const int _mpu6050CalibrateGyroThreshold = 3;     //..for gyro
@@ -149,23 +153,32 @@ const long _mpu6050CalibrateTimeout = 30000;      //sampling interval in millise
 boolean _doCalibrateMPU6050 = false;              //set to true to run MPU6050 calibration. it will reset itself to false when finished.
 
 //stuff for filtering
-const unsigned long _mpu6050ReadInterval = 40;                                        //read loop interval in milliseconds   1000
-unsigned long _mpu6050ReadPrevMillis = 0;                                            //previous time for reference
-int16_t _mpu6050AccelReadX, _mpu6050AccelReadY, _mpu6050AccelReadZ;           //the current raw accel reading
-int16_t _mpu6050GyroReadX, _mpu6050GyroReadY, _mpu6050GyroReadZ;           //the current raw gyro reading
-float _mpu6050AccelZeroX, _mpu6050AccelZeroY, _mpu6050AccelZeroZ;
-float _mpu6050GyroZeroX, _mpu6050GyroZeroY, _mpu6050GyroZeroZ;              //calibrating zero average for gyro
-float _mpu6050FilteredCurX, _mpu6050FilteredCurY, _mpu6050FilteredCurZ;     //final filtered combined gyro readings for then calculating orientation
-float _mpu6050FilteredPrevX, _mpu6050FilteredPrevY, _mpu6050FilteredPrevZ;  //previous final filtered combined yadayada.. = last_x_angle
-float _mpu6050GyroPrevX, _mpu6050GyroPrevY, _mpu6050GyroPrevZ;              //last_gyro_x_angle; 
+const unsigned long _mpu6050ReadInterval = 40;                            //read loop interval in milliseconds   1000
+unsigned long _mpu6050ReadPrevMillis = 0;                                 //previous time for reference
+float _mpu6050AccelZero[3];                                               //XYZ quick calibration zero average save for accel - quick offsets to use whilst running
+float _mpu6050GyroZero[3];                                                //XYZ quick calibration zero average save for gyro
+int16_t _mpu6050AccelRead[3];                                             //XYZ Current accel reading
+int16_t _mpu6050GyroRead[3];                                              //XYZ Current gyro reading
+float _mpu6050GyroPrev[3];                                                //XYZ last_gyro_x_angle;
+float _mpu6050FilteredCur[3];                                             //XYZ FINAL filtered combined gyro readings for calculating orientation
+float _mpu6050FilteredPrev[3];                                            //XYZ Previous FINAL readings..
+//int16_t _mpu6050AccelReadX, _mpu6050AccelReadY, _mpu6050AccelReadZ;       //the current raw accel reading
+//int16_t _mpu6050GyroReadX, _mpu6050GyroReadY, _mpu6050GyroReadZ;           //the current raw gyro reading
+//float _mpu6050AccelZeroX, _mpu6050AccelZeroY, _mpu6050AccelZeroZ;
+//float _mpu6050GyroZeroX, _mpu6050GyroZeroY, _mpu6050GyroZeroZ;              //calibrating zero average for gyro
+//float _mpu6050FilteredCurX, _mpu6050FilteredCurY, _mpu6050FilteredCurZ;     //final filtered combined gyro readings for then calculating orientation
+//float _mpu6050FilteredPrevX, _mpu6050FilteredPrevY, _mpu6050FilteredPrevZ;  //previous final filtered combined yadayada.. = last_x_angle
+//float _mpu6050GyroPrevX, _mpu6050GyroPrevY, _mpu6050GyroPrevZ;              //last_gyro_x_angle; 
 
 
 /*----------------------------orientation----------------------------*/
-int orMatrix[9] = { 0, 0, 0 }; //TEMP x =  0(low) / 1(mid) / 2(hi)       - wanted to use -1, 0, 1 but too convoluted    -- XYZ timed
-int orMatrixPrev[3] = { 0, 0, 0 };
-boolean orFlag[9] = { false }; //flag 0 x
-unsigned long orCounter[9] = { 0 };  //TEMP time
-const unsigned long orInterval = 50;  //interval at which to check whether flags have changed
+int orMatrix[3] = { 0, 0, 0 };        //TEMP x =  0(low) / 1(mid) / 2(hi)       - wanted to use -1, 0, 1 but too convoluted    -- XYZ timed
+//int orMatrixPrev[3] = { 0, 0, 0 };
+int _orOrientationSave = 0;            //used to hold the orientation during comparison
+int _orOrientationTemp = 0;            //used to hold the orientation (then convert to _orientation)
+boolean orFlag = false;        //flag 0 x
+unsigned long orCounter = 0;   //TEMP time
+const unsigned long orInterval = 400;  //interval at which to check whether flags have changed - are we still in the same orientation - how long to trigger
 const unsigned long _orientationInterval = 100;                                        //read loop interval in milliseconds   1000
 unsigned long _orientationPrevMillis = 0;                                            //previous time for reference
 
