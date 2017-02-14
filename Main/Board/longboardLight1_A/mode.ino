@@ -19,7 +19,7 @@ void loopModes() {
     if (_sleepActive == false) {
       fadeToBlackBy( _leds, _ledNum, 10);   //anything not used gets set to fade off
       if (_orientation == 0) { loopMainLights(); }
-      if (_orientation == 1) { loopEmergencyFlash(); }
+      //if (_orientation == 1) { loopEmergencyFlash(); }  //upside-down not working yet
       if (_orientation == 2) { loopBreathing(); _headLightsActive = false; } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
       else { _headLightsActive = true; }  //turn the headlights back on when you put the board down.
       if (_orientation == 4 || _orientation == 5) { loopSideLight(); }

@@ -19,9 +19,21 @@
 */
 
 /*
+ * Reference:
+ * 
+ * https://www.arduino.cc/en/Main/ArduinoBoardProMini
  * https://www.arduino.cc/en/Guide/Troubleshooting#upload
+ * https://github.com/FastLED/FastLED/wiki/Pixel-reference
  * http://forum.arduino.cc/index.php?topic=140494.0
  * http://bildr.org/2011/04/sensing-orientation-with-the-adxl335-arduino/
+ * http://42bots.com/tutorials/arduino-script-for-mpu-6050-auto-calibration/
+ * https://www.i2cdevlib.com/devices/mpu6050#source
+ * https://www.i2cdevlib.com/docs/html/class_m_p_u6050.html
+ * http://www.geekmomprojects.com/gyroscopes-and-accelerometers-on-a-chip/
+ * http://engineering.stackexchange.com/questions/3348/calculating-pitch-yaw-and-roll-from-mag-acc-and-gyro-data
+ * http://www.nxp.com/assets/documents/data/en/application-notes/AN3461.pdf
+ * http://theboredengineers.com/2012/09/the-quadcopter-get-its-orientation-from-sensors/
+ * https://forum.arduino.cc/index.php?topic=383064.0
  */
 
 /* 
@@ -76,7 +88,7 @@ const int _ledPin = 13;                         //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.25";             //trying to fix major inherent flaw in orientation algorithm. ie. it shouldn't have been working!
+const String _progVers = "0.252";             //calibration and clean-up
 //const int _mainLoopDelay = 0;               //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;        //starts false
 #ifdef DEBUG
@@ -110,27 +122,8 @@ Bounce button[1] = {
 /*----------------------------sensors----------------------------*/
 //hall effect sensor mounted on chassis, with 4 magents mounted on wheel
 //3-axis accelerometer
-
- //eg. 'place board on flat ground and press calibrate'  ..will get saved here - '_orientationCalibrationXYZ'
- //..this i think is replaced by _mpu6050AccelZeroX etc.
-//int _orientationCalibrationXYZ[6][3] = {
-//  { 400, 398, 488 },
-//  { 408, 404, 328 },
-//  { 410, 490, 410 },
-//  { 420, 330, 420 },
-//  { 450, 372, 375 },
-//  { 290, 365, 370 }
-//  };
-////then the following is filled-in by the computer for XYZ
-//int _orientationCalibrationXYZminMaxDist[3][3] = {
-//  { 0, 0, 0 },  //eg. 302, 462, 40
-//  { 0, 0, 0 },
-//  { 0, 0, 0 }
-//};
-//int _orientationXYZdistTriggerDivide = 3; //xt = (xm-xmi)/_orientationXYZdistTriggerDivide;
-//
-int _orientation = 0;                           //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
-
+boolean _doFullCalibration = false;               //set to true to run full calibration. it will reset itself to false when finished.
+boolean _doQuickCalibration = false;              //set to true to run quick calibration. it will reset itself to false when finished.
 
 /*----------------------------sensors - MPU6050 6-axis----------------------------*/
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
@@ -141,46 +134,40 @@ MPU6050 _mpu6050;  //accel gyro;
 //int16_t _mpu6050AccelCurX, _mpu6050AccelCurY, _mpu6050AccelCurZ;
 //int16_t _mpu6050GyroCurX, _mpu6050GyroCurY, _mpu6050GyroCurZ;
 //int _mpu6050AccelAverageX, _mpu6050AccelAverageY, _mpu6050AccelAverageZ, _mpu6050GyroAverageX, _mpu6050GyroAverageY, _mpu6050GyroAverageZ;
-int16_t _mpu6050AccelOffset[3]; //XYZ accel offsets to write to the MPU6050 - get from full calibration and save memory
-int16_t _mpu6050GyroOffset[3]; //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
-//int16_t _mpu6050AccelOffsetX, _mpu6050AccelOffsetY, _mpu6050AccelOffsetZ, _mpu6050GyroOffsetX, _mpu6050GyroOffsetY, _mpu6050GyroOffsetZ;
+int16_t _mpu6050AccelOffset[3] = {436, 1956, 1318};   //XYZ accel offsets to write to the MPU6050 - get from full calibration and save memory
+int16_t _mpu6050GyroOffset[3] = {9, -32, 69};     //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
 const int _mpu6050CalibrateSampleTotal = 100;     //how many samples to take at once when calibrating
-const int _mpu6050CalibrateAccelThreshold = 10;  //threshold tolerance for 'dead zone' at center of readings
+const int _mpu6050CalibrateAccelThreshold = 10;   //threshold tolerance for 'dead zone' at center of readings
 const int _mpu6050CalibrateGyroThreshold = 3;     //..for gyro
 long _mpu6050CalibratePrevMillis = 0;             //previous time for reference
 const long _mpu6050CalibrateInterval = 1000;      //sampling interval in milliseconds
 const long _mpu6050CalibrateTimeout = 30000;      //sampling interval in milliseconds
-boolean _doCalibrateMPU6050 = false;              //set to true to run MPU6050 calibration. it will reset itself to false when finished.
 
 //stuff for filtering
-const unsigned long _mpu6050ReadInterval = 40;                            //read loop interval in milliseconds   1000
-unsigned long _mpu6050ReadPrevMillis = 0;                                 //previous time for reference
-float _mpu6050AccelZero[3];                                               //XYZ quick calibration zero average save for accel - quick offsets to use whilst running
-float _mpu6050GyroZero[3];                                                //XYZ quick calibration zero average save for gyro
-int16_t _mpu6050AccelRead[3];                                             //XYZ Current accel reading
-int16_t _mpu6050GyroRead[3];                                              //XYZ Current gyro reading
-float _mpu6050GyroPrev[3];                                                //XYZ last_gyro_x_angle;
-float _mpu6050FilteredCur[3];                                             //XYZ FINAL filtered combined gyro readings for calculating orientation
-float _mpu6050FilteredPrev[3];                                            //XYZ Previous FINAL readings..
-//int16_t _mpu6050AccelReadX, _mpu6050AccelReadY, _mpu6050AccelReadZ;       //the current raw accel reading
-//int16_t _mpu6050GyroReadX, _mpu6050GyroReadY, _mpu6050GyroReadZ;           //the current raw gyro reading
-//float _mpu6050AccelZeroX, _mpu6050AccelZeroY, _mpu6050AccelZeroZ;
-//float _mpu6050GyroZeroX, _mpu6050GyroZeroY, _mpu6050GyroZeroZ;              //calibrating zero average for gyro
-//float _mpu6050FilteredCurX, _mpu6050FilteredCurY, _mpu6050FilteredCurZ;     //final filtered combined gyro readings for then calculating orientation
-//float _mpu6050FilteredPrevX, _mpu6050FilteredPrevY, _mpu6050FilteredPrevZ;  //previous final filtered combined yadayada.. = last_x_angle
-//float _mpu6050GyroPrevX, _mpu6050GyroPrevY, _mpu6050GyroPrevZ;              //last_gyro_x_angle; 
+const unsigned long _mpu6050ReadInterval = 40;    //read loop interval in milliseconds   1000
+unsigned long _mpu6050ReadPrevMillis = 0;         //previous time for reference
+float _mpu6050AccelZero[3] = {0, 0, 0};           //XYZ quick calibration zero average save for accel - quick offsets to use whilst running
+float _mpu6050GyroZero[3] = {0, 0, 0};            //XYZ quick calibration zero average save for gyro
+int16_t _mpu6050AccelRead[3];                     //XYZ Current accel reading
+int16_t _mpu6050GyroRead[3];                      //XYZ Current gyro reading
+int16_t _mpu6050AccelReadAverage[3];              //XYZ averaged current accel reading
+int16_t _mpu6050GyroReadAverage[3];               //XYZ averaged current gyro reading
+float _mpu6050GyroPrev[3];                        //XYZ last_gyro_x_angle;
 
+//FINAL calculated numbers
+float _mpu6050FilteredCur[3];                     //XYZ FINAL filtered combined gyro/accel readings for use in calculating orientation
+float _mpu6050FilteredPrev[3];                    //XYZ Previous FINAL readings..
 
 /*----------------------------orientation----------------------------*/
-int orMatrix[3] = { 0, 0, 0 };        //TEMP x =  0(low) / 1(mid) / 2(hi)       - wanted to use -1, 0, 1 but too convoluted    -- XYZ timed
-//int orMatrixPrev[3] = { 0, 0, 0 };
-int _orOrientationSave = 0;            //used to hold the orientation during comparison
-int _orOrientationTemp = 0;            //used to hold the orientation (then convert to _orientation)
-boolean orFlag = false;        //flag 0 x
-unsigned long orCounter = 0;   //TEMP time
-const unsigned long orInterval = 400;  //interval at which to check whether flags have changed - are we still in the same orientation - how long to trigger
-const unsigned long _orientationInterval = 100;                                        //read loop interval in milliseconds   1000
-unsigned long _orientationPrevMillis = 0;                                            //previous time for reference
+int _orientation = 0;                             //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
+int orMatrix[3] = { 0, 0, 0 };                    //TEMP x =  0(low) / 1(mid) / 2(hi)       - wanted to use -1, 0, 1 but too convoluted    -- XYZ timed
+int _orOrientationSave = 0;                       //used to hold the orientation during comparison
+int _orOrientationTemp = 0;                       //used to hold the orientation (then convert to _orientation)
+boolean orFlag = false;                           //flag 0 x
+unsigned long orCounter = 0;                      //TEMP time
+const unsigned long orInterval = 400;             //interval at which to check whether flags have changed - are we still in the same orientation - how long to trigger
+const unsigned long _orientationInterval = 100;   //read loop interval in milliseconds   1000
+unsigned long _orientationPrevMillis = 0;         //previous time for reference
 
 /*----------------------------LED----------------------------*/
 #define UPDATES_PER_SECOND 120                  //main loop FastLED show delay  //100
@@ -201,11 +188,6 @@ LED_SEGMENT ledSegment[_segmentTotal] = {
   { 2, 19, 18 },    //left side
   { 20, 37, 18 },   //right side
   { 38, 39, 2 },     //rear brake lights
-  //can only utilise the following if can get loop to wrap-around using _ledNum
-  //if use remember to change _segmentTotal
-  //{ 1, 38, 20 },     //left half (split down centre of board)
-  //{ 39, 0, 20 },     //right half
-  //{ 1, 0, 40 }      //loop round board from back to front
 };
 CRGB _leds[_ledNum];                         //global RGB array
 int _ledState = LOW;                        //use to toggle LOW/HIGH (ledState = !ledState)
@@ -223,9 +205,10 @@ void setup() {
   #endif
   setupSerial();                          //..see 'util'
   //loadSettings();                         //load any saved settings eg. save state when turn board power off. - not implemented yet !!!
-  setupSensors();                         //setup all sensor inputs (note: sensors on wheels use interrupt pins)
+  //set any interrupts..
   delay(3000);                            //..after setting interrupts, give the power, LED strip, etc. a couple of secs to stabilise
-  setupLEDs();
+  setupLEDs();                            //setup LEDs first and then use as setup indicator lights
+  setupSensors();                         //setup all sensor inputs (note: sensors on wheels use interrupt pins)
   setupUserInputs();                      //setup any user inputs - buttons, WIFI, bluetooth etc.
   //
   #ifdef DEBUG
@@ -249,14 +232,20 @@ void loop() {
     #endif
     _firstTimeSetupDone = true;
   }
-  //
-  loopUserInputs();
-  loopSensors();
-  loopModes();
-  //
+
+  if (_doQuickCalibration == true) {
+    //cut everything out of the loop and do calibrations - put board flat and press button to start these loops
+    fullCalibration();
+  } else if (_doFullCalibration == true) {
+    quickCalibration();
+  } else {
+    //run the loop normally
+    loopUserInputs();
+    loopSensors();
+    loopModes();
+  }
+  
   FastLED.show();                           //send all the data to the strips
   FastLED.delay(1000 / UPDATES_PER_SECOND);
-  //
-  //delay(_mainLoopDelay);                  //using FastLED.delay instead..
 }
 
