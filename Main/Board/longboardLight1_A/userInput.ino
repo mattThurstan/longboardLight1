@@ -30,6 +30,8 @@ void loopButtons() {
       //button pressed (connected to ground) - NC ON STATE
       //..do something
       //_buttonToggled[i] = true;     //toggle the button state so we can use it elswhere
+      //if (i == 0) { swap sub-modes }
+      //if (i == 1) { _doQuickCalibration = true; }
     } //end fallingEdge
     
     if (button[i].risingEdge()) {

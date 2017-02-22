@@ -25,6 +25,7 @@ void setupLEDs() {
   FastLED.setBrightness(_ledGlobalBrightness);      //set global brightness
   FastLED.setTemperature(UncorrectedTemperature);   //set first temperature
 
+  //calculateBreathRiseFallRates(); //recalculate if used changes max breath brightness
 }
 
 /*-----------display - status------------*/

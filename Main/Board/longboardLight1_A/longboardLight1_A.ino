@@ -43,7 +43,7 @@
 */
 #define DEBUG 1                           //comment/un-comment
 #define DEBUG_MPU6050 1                   //..
-#define DEBUG_ORIENTATION 1               //
+//#define DEBUG_ORIENTATION 1               //
 //#ifdef DEBUG     
 ////
 //#endif
@@ -88,7 +88,6 @@ const int _ledPin = 13;                         //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.252";             //calibration and clean-up
 //const int _mainLoopDelay = 0;               //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;        //starts false
 #ifdef DEBUG
@@ -120,10 +119,47 @@ Bounce button[1] = {
 //boolean _buttonToggled[_butttonTotal] = { false };        //array of button toggle states
 
 /*----------------------------sensors----------------------------*/
-//hall effect sensor mounted on chassis, with 4 magents mounted on wheel
+//latching bipolar hall effect sensor mounted on chassis, with 4 magents mounted on wheel
+volatile byte _wheelCounter = 0;                          //byte may not be large enough (0-255), might have to use an int - starts at 0, uses 1-4
+const unsigned long _wheelSensorReadInterval = 1000;      //read loop interval in milliseconds   1000
+unsigned long _wheelSensorReadPrevMillis = 0;             //previous time for reference
+// NEXT ..these all need to be long or somit ???
+//double _wheelSpeedRps = 0;
+double _wheelSpeedMps = 0;                                   //wheel speed in Meters Per Second
+//int _wheelSpeedMpm = 0;                                   //wheel speed in Meters Per Minute    - don't think need to save these..
+//int _wheelSpeedKph = 0;                                   //wheel speed in Kilometers Per Hour
+//int _wheelSpeedMph = 0;                                   //wheel speed in Miles Per Hour
+//byte == 0 to 255
+//int == -32,768 to 32,767
+//unsigned int == 0 to 65,535
+//long == -2,147,483,648 to 2,147,483,647
+//unsigned long == 0 to 4,294,967,295
+//6.5km per day (bout 4nabit miles) * 365 = 2372.5 kilometers per year
+//6500m per day * 365 = 2,372,500 meters per year
+//..int far too small, long far too big..
+//using int will let me store data for bout 10 days
+//using long will let me store data for bout 1,809 years ?
+//..or could rollover meters and increment kilometers as seperate ints
+//if ((unsigned int)distInMeters >= 1000) {
+//  (unsigned int)distInMeters = 0;
+//  (unsigned int)distInKm += 1;
+//meters will roll over 6.5 times a day (using unsigned int)
+//kilometers will roll over in about 30 years (using unsigned int)
+unsigned long _distTraveledForward = 0;                   //total distance traveled forward in meters
+//unsigned long _distTraveledBackward = 0;                  //total distance traveled backward in meters
+//_distanceTraveledLeft                                   //gotta get these in later..
+//_distanceTraveledRight
+//_distanceTraveledUp
+//_distanceTraveledDown
+//_distanceTraveledOtherWays
+//int _wheelRadius = 0.07;                                  //radius (dist from center to the edge) of wheels in use (meters ..cos) eg. 70mm
+const float _wheelRadius = 0.07;
+//const int _wheelMagnetRadius = 0.01;                      //radius of the magnet positioning (millimeters). prob about 10mm
+//const int _wheelCircumference = 2 * PI * _wheelRadius;    //circumference = 2 * PI * radius (meters)
+const float _wheelCircumference = 2 * PI * _wheelRadius;
 //3-axis accelerometer
-boolean _doFullCalibration = false;               //set to true to run full calibration. it will reset itself to false when finished.
-boolean _doQuickCalibration = false;              //set to true to run quick calibration. it will reset itself to false when finished.
+boolean _doFullCalibration = false;                       //set to true to run full calibration. it will reset itself to false when finished.
+boolean _doQuickCalibration = false;                      //set to true to run quick calibration. it will reset itself to false when finished.
 
 /*----------------------------sensors - MPU6050 6-axis----------------------------*/
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
@@ -134,14 +170,14 @@ MPU6050 _mpu6050;  //accel gyro;
 //int16_t _mpu6050AccelCurX, _mpu6050AccelCurY, _mpu6050AccelCurZ;
 //int16_t _mpu6050GyroCurX, _mpu6050GyroCurY, _mpu6050GyroCurZ;
 //int _mpu6050AccelAverageX, _mpu6050AccelAverageY, _mpu6050AccelAverageZ, _mpu6050GyroAverageX, _mpu6050GyroAverageY, _mpu6050GyroAverageZ;
-int16_t _mpu6050AccelOffset[3] = {436, 1956, 1318};   //XYZ accel offsets to write to the MPU6050 - get from full calibration and save memory
-int16_t _mpu6050GyroOffset[3] = {9, -32, 69};     //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
-const int _mpu6050CalibrateSampleTotal = 100;     //how many samples to take at once when calibrating
-const int _mpu6050CalibrateAccelThreshold = 10;   //threshold tolerance for 'dead zone' at center of readings
-const int _mpu6050CalibrateGyroThreshold = 3;     //..for gyro
-long _mpu6050CalibratePrevMillis = 0;             //previous time for reference
-const long _mpu6050CalibrateInterval = 1000;      //sampling interval in milliseconds
-const long _mpu6050CalibrateTimeout = 30000;      //sampling interval in milliseconds
+int16_t _mpu6050AccelOffset[3] = {436, 1956, 1318};       //XYZ accel offsets to write to the MPU6050 - get from full calibration and save memory
+int16_t _mpu6050GyroOffset[3] = {9, -32, 69};             //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
+const int _mpu6050CalibrateSampleTotal = 100;             //how many samples to take at once when calibrating
+const int _mpu6050CalibrateAccelThreshold = 10;           //threshold tolerance for 'dead zone' at center of readings
+const int _mpu6050CalibrateGyroThreshold = 3;             //..for gyro
+long _mpu6050CalibratePrevMillis = 0;                     //previous time for reference
+const long _mpu6050CalibrateInterval = 1000;              //sampling interval in milliseconds
+const long _mpu6050CalibrateTimeout = 30000;              //sampling interval in milliseconds
 
 //stuff for filtering
 const unsigned long _mpu6050ReadInterval = 40;    //read loop interval in milliseconds   1000
@@ -165,8 +201,8 @@ int _orOrientationSave = 0;                       //used to hold the orientation
 int _orOrientationTemp = 0;                       //used to hold the orientation (then convert to _orientation)
 boolean orFlag = false;                           //flag 0 x
 unsigned long orCounter = 0;                      //TEMP time
-const unsigned long orInterval = 400;             //interval at which to check whether flags have changed - are we still in the same orientation - how long to trigger
-const unsigned long _orientationInterval = 100;   //read loop interval in milliseconds   1000
+const unsigned long orInterval = 450;    //400         //interval at which to check whether flags have changed - are we still in the same orientation - how long to trigger
+const unsigned long _orientationInterval = 200;//100   //read loop interval in milliseconds   1000
 unsigned long _orientationPrevMillis = 0;         //previous time for reference
 
 /*----------------------------LED----------------------------*/
@@ -178,7 +214,7 @@ typedef struct {
 } LED_SEGMENT;
 const int _ledNum = 40;                         //18 LED strip each side and 2 each end = 40 LEDs (2280mA max)
 const int _segmentTotal = 4;                    //2 sides, 2 ends
-const int _ledGlobalBrightness = 255;           //global brightness
+const int _ledGlobalBrightness = 255;           //global brightness - used to cap - might remove..
 int _ledGlobalBrightnessCur = 255;              //current global brightness - adjust this
 int _ledBrightnessIncDecAmount = 10;            //the brightness amount to increase or decrease
 int _headLightsBrightness = 200;
@@ -205,20 +241,45 @@ void setup() {
   #endif
   setupSerial();                          //..see 'util'
   //loadSettings();                         //load any saved settings eg. save state when turn board power off. - not implemented yet !!!
-  //set any interrupts..
+  setupInterrupts();                       //set any interrupts..
   delay(3000);                            //..after setting interrupts, give the power, LED strip, etc. a couple of secs to stabilise
   setupLEDs();                            //setup LEDs first and then use as setup indicator lights
+  //_leds[ledSegment[1].first] = CRGB::Yellow;
+  //_leds[ledSegment[2].first] = CRGB::Yellow;
+  fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Yellow, ledSegment[1].first+1, CRGB::Yellow);
+  fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::Yellow, ledSegment[2].first+1, CRGB::Yellow);
+  delay(1);
+  FastLED.show();
   setupSensors();                         //setup all sensor inputs (note: sensors on wheels use interrupt pins)
+  delay(1);
+  //_leds[ledSegment[1].first+1] = CRGB::Fuchsia;
+  //_leds[ledSegment[2].first+1] = CRGB::Fuchsia;
+  fill_gradient_RGB(_leds, ledSegment[1].first+2, CRGB::Fuchsia, ledSegment[1].first+3, CRGB::Fuchsia);
+  fill_gradient_RGB(_leds, ledSegment[2].first+2, CRGB::Fuchsia, ledSegment[2].first+3, CRGB::Fuchsia);
+  FastLED.show();
   setupUserInputs();                      //setup any user inputs - buttons, WIFI, bluetooth etc.
+  delay(1);
+  //_leds[ledSegment[1].first+2] = CRGB::Green;
+  //_leds[ledSegment[2].first+2] = CRGB::Green;
+  fill_gradient_RGB(_leds, ledSegment[1].first+4, CRGB::Green, ledSegment[1].first+5, CRGB::Green);
+  fill_gradient_RGB(_leds, ledSegment[2].first+4, CRGB::Green, ledSegment[2].first+5, CRGB::Green);
+  FastLED.show();
   //
   #ifdef DEBUG
   //everything done? ok then..
     Serial.print(F("Setup done"));
     Serial.println();
+    blinkStatusLED();
   #endif
-  blinkStatusLED();
+  delay(1);
+  //_leds[ledSegment[1].first+3] = CRGB::MediumTurquoise;
+  //_leds[ledSegment[2].first+3] = CRGB::MediumTurquoise;
+  fill_gradient_RGB(_leds, ledSegment[1].first+6, CRGB::MediumTurquoise, ledSegment[1].first+7, CRGB::MediumTurquoise);
+  fill_gradient_RGB(_leds, ledSegment[2].first+6, CRGB::MediumTurquoise, ledSegment[2].first+7, CRGB::MediumTurquoise);
+  FastLED.show();
 
   //TEMP for testing
+  _sleepActive = true;
   _headLightsActive = true;
   _rearLightsActive = true;
   _indicatorsEnabled = true;
@@ -235,9 +296,9 @@ void loop() {
 
   if (_doQuickCalibration == true) {
     //cut everything out of the loop and do calibrations - put board flat and press button to start these loops
-    fullCalibration();
-  } else if (_doFullCalibration == true) {
     quickCalibration();
+  } else if (_doFullCalibration == true) {
+    fullCalibration();
   } else {
     //run the loop normally
     loopUserInputs();
