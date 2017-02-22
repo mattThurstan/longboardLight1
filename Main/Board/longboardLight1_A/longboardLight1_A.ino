@@ -88,6 +88,7 @@ const int _ledPin = 13;                         //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
+const String _progVers = "0.26";             //breathing and hall effect sensor interrupt
 //const int _mainLoopDelay = 0;               //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;        //starts false
 #ifdef DEBUG
@@ -309,4 +310,5 @@ void loop() {
   FastLED.show();                           //send all the data to the strips
   FastLED.delay(1000 / UPDATES_PER_SECOND);
 }
+
 
