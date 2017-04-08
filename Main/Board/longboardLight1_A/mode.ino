@@ -26,7 +26,7 @@ void loopModes() {
       loopHeadLights(); //..after the main bits
       loopRearLights(); //..
       loopIndicatorFlash();
-    } else { 
+    } else {
       //sleep - defined by a period of no movement, a switch, or a wireless command.
       //fadeToBlackBy( _leds, _ledNum, 64); //(array, count, percent) eg. 192/256 = 75% (use 192), 64 = 25%
       //fill_solid(_leds, _ledNum, CRGB::Black);  //TEMP colour
@@ -35,9 +35,8 @@ void loopModes() {
   } //END test
 }
 
-
 void loopHeadLights() {
-  if (_headLightsActive == true) { 
+  if (_headLightsActive == true) {
     //fill_solid( leds, _ledNum, CRGB::White);
     fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::White, ledSegment[0].last, CRGB::White );
   }
@@ -66,7 +65,7 @@ void loopMainLights() {
     fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::White, ledSegment[1].last, CRGB::Red );
     fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::White, ledSegment[2].last, CRGB::Red );
   } else if (_mainLightsSubMode == 3) {
-    //
+    loopTrackLights();
   }
 }
 
@@ -95,6 +94,51 @@ void loopIndicatorFlash() {
       // 
     }
   }
+}
+
+void loopTrackLights() {
+  //wheel tracked lights
+  if (_directionCur == 0) {
+    //
+  } else if (_directionCur == 1) {
+    //
+  } else {
+    //
+  }
+  //_ledMovePos
+  // a colored dot sweeping back and forth, with fading trails
+  // Dim a color by 25% (64/256ths) eventually fading to full black
+  //fadeToBlackBy( _leds, _ledNum, 64);
+  fadeToBlackBy( _leds, _ledNum, 2);
+  //int pos = beatsin16( 13, 0, ledSegment[1].total );
+  //_ledMovePos = _wheelCounter;
+//  if (_ledMovePos > ledSegment[1].total) {
+//    _ledMovePos = _ledMovePos - (ledSegment[1].total + 1);
+//  } else if (_ledMovePos < 1) {
+//    _ledMovePos = _ledMovePos + (ledSegment[1].total + 1);
+//  }
+//  if (_ledMovePos < ledSegment[1].first) {
+//    _ledMovePos = _ledMovePos + (ledSegment[1].total - 1);
+//  }
+  //wrap-around for segments 1 and 2  
+  if (_ledMovePos > ledSegment[1].total) {
+    _ledMovePos = _ledMovePos - ledSegment[1].total;
+  } else if (_ledMovePos < 1) {
+    _ledMovePos = _ledMovePos + ledSegment[1].total;
+  }
+//  if (_ledMovePos > ledSegment[1].last) {
+//    _ledMovePos = ledSegment[1].first);
+//  } else if (_ledMovePos < ledSegment[1].first) {
+//    _ledMovePos = _ledMovePos + (ledSegment[1].total + 1);
+//  }
+  //_leds[ledSegment[1].first + pos] += CHSV( gHue, 255, 192);
+  //_leds[ledSegment[2].first + pos] += CHSV( gHue, 255, 192);
+  _leds[ledSegment[1].last - _ledMovePos] = CRGB::White;
+  _leds[ledSegment[2].last - _ledMovePos] = CRGB::White;
+
+//  Serial.print("_ledMovePos = ");
+//  Serial.print(_ledMovePos);
+//  Serial.println();
 }
 
 /* 12 times a sec

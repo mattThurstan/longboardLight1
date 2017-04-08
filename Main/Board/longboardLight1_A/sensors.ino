@@ -28,15 +28,14 @@ void loopWheel() {
   //speed = distance / time
   //distance = speed x time
   //time = distance / speed
-  //pos = map(pos, 0, ?, 0, 18);
+  //pos = map(pos, 0, ?, 0, 18);  //map only does int, have to rewrite for float
   //pos = constrain(pos, 0, 18);
   //pos = constrain(map(pos, 0, ?, 0, 18), 0, 18);
   //how many revolutions does it take to move 1 meter?
   //revs per meter = 1000 / circumference
-  //eg. 70mm wheel radius
-  //circumference = 2 x 3.142 (pi) x 70 = 439.88
-  //revs per meter = 1000 / 439.88 = 2.733(472765)
-  //revs per meter = 1000 / 440 = 2.272(727272)
+  //eg. 70mm wheel diameter
+  //circumference = 2 x 3.142 (pi) x 35 (radius) = 219.94
+  //revs per meter = 1000 / 219.94 = 5.546
   //pos = map(pos, 0, 4.54, 0, 18);
 
   //http://www.aqua-calc.com/convert/speed/
@@ -45,7 +44,7 @@ void loopWheel() {
 
   //_wheelSensorTotal = 1;
   //_wheelMagnetTotal = 4;
-  ////int _wheelRadius = 70;                  //radius (dist from center to the edge) of wheels in use in millimeters
+  ////int _wheelRadius = 35;                  //radius (dist from center to the edge) of wheels in use in millimeters
   //int _wheelMagnetRadius = 10             //radius of the magnet positioning. prob about 10mm
   //_wheelCounter = 0;
   //double _wheelSpeedMps
@@ -55,6 +54,8 @@ void loopWheel() {
   //_wheelSensorReadInterval = 1000;        //read loop interval in milliseconds   1000
   //_wheelSensorReadPrevMillis = 0;         //previous time for reference
   //_wheelCircumference
+
+  //_ledMovePos
   
   //timed-loop
   unsigned long wheelSensorReadCurMillis = millis();    //get current time
@@ -76,8 +77,8 @@ void loopWheel() {
     //or.. int rpm = _wheelCounter * 15;                  //quarter minute
 
     //speed = RPM * circumference
-    _wheelSpeedMps = rps * _wheelCircumference;              //speed in meters per second - distance travelled in 1 second
-    // _wheelSpeedMpm = rpm * _wheelCircumference;              //speed in meters per minute - distance travelled in 1 minute
+    _wheelSpeedMps = rps * _wheelCircumference;              //speed in meters per second. distance travelled in 1 second
+    // _wheelSpeedMpm = rpm * _wheelCircumference;              //speed in meters per minute. distance travelled in 1 minute
 
     //if (direction == forward)..
     _distTraveledForward = (_distTraveledForward + (unsigned long)_wheelSpeedMps);
@@ -89,19 +90,19 @@ void loopWheel() {
     //_wheelSpeedMph = 0.0372822715 * _wheelSpeedMpm;     //miles per hour = 0.0372822715 * (meters per minute)
     _wheelSpeedMph = 0.621371192 * _wheelSpeedKph;      //miles per hour = 0.621371192 * (kilometers per hour)
 */    
-//    #ifdef DEBUG
-//      Serial.print("RPS=");
-//      Serial.print(rps);
-//      Serial.print(", MPS=");
-//      Serial.print(_wheelSpeedMps);
-//      Serial.print(", Total Distance=");
-//      Serial.print(_distTraveledForward);
-//      Serial.print(", Orientation=");
-//      Serial.print(_orientation); 
-//      Serial.println();
-//    #endif
-//  
-    _wheelCounter = 1;                                  //reset counter to 1
+    #ifdef DEBUG_WHEEL
+      Serial.print("RPS=");
+      Serial.print(rps);
+      Serial.print(", MPS=");
+      Serial.print(_wheelSpeedMps);
+      Serial.print(", Total Distance=");
+      Serial.print(_distTraveledForward);
+      //Serial.print(", Orientation=");
+      //Serial.print(_orientation); 
+      Serial.println();
+    #endif
+
+    _wheelCounter = 0;                                  //reset counter to 0 (why did i put 1? ..was it just 3 in the morning?)
     _wheelSensorReadPrevMillis = millis();              //store the current time
     attachInterrupt(digitalPinToInterrupt(_wheelSensorPin[0]), wheelInterrupt0, CHANGE);  //re-attach the interrupt !!!
   } //END timed-loop

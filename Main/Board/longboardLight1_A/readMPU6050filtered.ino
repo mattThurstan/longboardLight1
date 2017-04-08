@@ -18,8 +18,9 @@ inline float get_last_gyro_x_angle() {return _mpu6050GyroPrev[0];}
 inline float get_last_gyro_y_angle() {return _mpu6050GyroPrev[1];}
 inline float get_last_gyro_z_angle() {return _mpu6050GyroPrev[2];}
 
-void set_last_read_angle_data(unsigned long time, float x, float y, float z, float x_gyro, float y_gyro, float z_gyro) {
+void set_last_read_angle_data(unsigned long time, float accel_y, float x, float y, float z, float x_gyro, float y_gyro, float z_gyro) {
   last_read_time = time;
+  _mpu6050Accel_yPrev = accel_y;
   _mpu6050FilteredPrev[0] = x;
   _mpu6050FilteredPrev[1] = y;
   _mpu6050FilteredPrev[2] = z;
@@ -43,7 +44,7 @@ void readMPU6050filtered() {
     float gyro_x = ((float)_mpu6050GyroRead[0] - _mpu6050GyroZero[0])/FS_SEL;
     float gyro_y = ((float)_mpu6050GyroRead[1] - _mpu6050GyroZero[1])/FS_SEL;
     float gyro_z = ((float)_mpu6050GyroRead[2] - _mpu6050GyroZero[2])/FS_SEL;
-  
+
     // Get raw acceleration values
     //float G_CONVERT = 16384;
     float accel_x = (float)_mpu6050AccelRead[0];
@@ -55,16 +56,19 @@ void readMPU6050filtered() {
   //  float accel_vector_length = sqrt(pow(accel_x,2) + pow(accel_y,2) + pow(accel_z,2));
     float accel_angle_y = atan(-1*accel_x/sqrt(pow(accel_y,2) + pow(accel_z,2)))*RADIANS_TO_DEGREES;
     float accel_angle_x = atan(accel_y/sqrt(pow(accel_x,2) + pow(accel_z,2)))*RADIANS_TO_DEGREES;
-  
+
     float accel_angle_z = 0;
-  
+    
     // Compute the (filtered) gyro angles
     //float dt =(t_now - get_last_time())/1000.0; 
     float dt =(mpu6050ReadCurMillis - get_last_time())/1000.0;
     float gyro_angle_x = gyro_x*dt + get_last_x_angle();
     float gyro_angle_y = gyro_y*dt + get_last_y_angle();
     float gyro_angle_z = gyro_z*dt + get_last_z_angle();
-    
+//    Serial.print("accel_angle_y = ");
+//    Serial.print(accel_angle_y);
+//    Serial.println();
+//    
     // Compute the drifting gyro angles
     float unfiltered_gyro_angle_x = gyro_x*dt + get_last_gyro_x_angle();
     float unfiltered_gyro_angle_y = gyro_y*dt + get_last_gyro_y_angle();
@@ -92,8 +96,58 @@ void readMPU6050filtered() {
     else if (angle_z < -180) { _mpu6050FilteredCur[2] = abs(angle_z); }
     else  {_mpu6050FilteredCur[2] = angle_z; }
 
-    // Update the saved data with the latest values - saving un-adjusted values to previous, not minus/plus values..
-    set_last_read_angle_data(mpu6050ReadCurMillis, angle_x, angle_y, angle_z, unfiltered_gyro_angle_x, unfiltered_gyro_angle_y, unfiltered_gyro_angle_z);
+
+    //direction ???
+    //..might have to go further back in the stack for these numbers cos only want the accel
+    //_mpu6050FilteredPrev[1] //Y
+    //_mpu6050FilteredCur[1]  //Y
+    //accel_y //raw acceleration value
+    //accel_angle_y //adjusted vector angle
+    //accel_y
+    //_mpu6050Accel_yPrev
+
+//    if (_mpu6050FilteredCur[1] > _mpu6050FilteredPrev[1]) {
+//      _directionCur = 0;  //going forwards
+//    } else {
+//      _directionCur = 1;  //going backwards
+//    }
+
+//    if (accel_y > _mpu6050Accel_yPrev) {
+//      _directionCur = 0;  //going forwards
+//    } else {
+//      _directionCur = 1;  //going backwards
+//    }
+
+    //this really needs to be averaged.. 
+//    if (accel_y > _mpu6050AccelZero[1]) {
+//      _diDirectionSave -= 1;  //going forwards
+//    } else if (accel_y < _mpu6050AccelZero[1]) {
+//      _diDirectionSave += 1;  //going backwards
+//    } else {
+//      //_directionCur = -1;  //stationary
+//    }
+
+    _diAccelSave += accel_y;
+    _diDirectionCounter++;
+//    Serial.print("actual = ");
+//    Serial.print(_mpu6050AccelRead[1]);
+//    Serial.print(", save = ");
+//    Serial.print(_diAccelSave);
+//    Serial.print(", counter = ");
+//    Serial.print(_diDirectionCounter);
+//    Serial.println();
+
+//    Serial.print("Current direction = ");
+//    Serial.print(_directionCur);
+//    Serial.print(", Current accel Y = ");
+//    Serial.print(accel_y);
+//    Serial.print(", _mpu6050AccelZero[1] (Y) = ");
+//    Serial.print(_mpu6050AccelZero[1]);
+//    Serial.print(", _mpu6050AccelRead[1] (Y) = ");
+//    Serial.print(_mpu6050AccelRead[1]);
+//    Serial.print(", _mpu6050AccelReadAverage[1] (Y) = ");
+//    Serial.print(_mpu6050AccelReadAverage[1]);
+//    Serial.println();
     
 /*    #ifdef DEBUG_MPU6050
       Serial.print(accel_angle_x);
@@ -130,9 +184,36 @@ void readMPU6050filtered() {
     #endif
 */
     
+    // Update the previous saved data with the latest values - saving un-adjusted values to previous, not minus/plus values..
+    set_last_read_angle_data(mpu6050ReadCurMillis, accel_y, angle_x, angle_y, angle_z, unfiltered_gyro_angle_x, unfiltered_gyro_angle_y, unfiltered_gyro_angle_z);
+
     _mpu6050ReadPrevMillis = millis();               //store the current time
   } //END timed-loop
-  
+
+  if (_diDirectionCounter >= _directionSampleTotal) {
+    //int average = _diDirectionSave / _directionSampleTotal;
+    unsigned int average = (_diAccelSave / _directionSampleTotal);
+    if (average > _mpu6050AccelZero[1] + 150) {
+      _directionCur = 0;  //going forwards
+    } else if (average < _mpu6050AccelZero[1] - 150) {
+      _directionCur = 1;  //going backwards
+    } else {
+      //_directionCur = -1;  //stationary
+    }
+    _diAccelSave = 0;
+    _diDirectionCounter = 0;
+    //_directionCur = average;
+    #ifdef DEBUG
+//    Serial.print("actual = ");
+//    Serial.print(_mpu6050AccelRead[1]);
+//    Serial.print(", average = ");
+//    Serial.print(average);
+      Serial.print(", Current direction = ");
+      Serial.print(_directionCur);
+      Serial.println();
+    #endif
+  }
+
 } //END readMPU6050filtered
 
 

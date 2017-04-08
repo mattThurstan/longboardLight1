@@ -42,21 +42,37 @@
  ..for now only use serial when in debug. this will be changed when wireless communication is implemented.
 */
 #define DEBUG 1                           //comment/un-comment
-#define DEBUG_MPU6050 1                   //..
+//#define DEBUG_MPU6050 1                   //..
 //#define DEBUG_ORIENTATION 1               //
+#define DEBUG_WHEEL 1                    //DEUBUG wheel sensor(s)
+//#define DEBUG_INTERRUPT 1
+
+//3-axis accelerometer  calibration (these will be moved and integrated later when have communications)
+boolean _doFullCalibration = false;                       //set to true to run full calibration. it will reset itself to false when finished.
+boolean _doQuickCalibration = true;                      //set to true to run quick calibration. it will reset itself to false when finished.
+/*
+ * black marked side of magents are North)
+ * my wheels 1 - shark wheels 70mm diameter / 78A (about 69mm dues to wear etc.)
+ * - 2 * 3.14 (PI) * half diameter (radius) = 219.8
+ * - 2 * 3.14 * 34.5 = 216.66
+ * LED spacing on strips - 33.3mm (3 LEDs in 100mm)
+ * circumference = 2 * PI * radius
+*/
 //#ifdef DEBUG     
 ////
 //#endif
+boolean _batteryPowered = false;          //are we running on battery or plugged into the computer?
 const int _buttonTotal = 1;               //how many butons are there? - cannot set Bounce using this unfortunately!
 const int _wheelSensorTotal = 1;          //how many wheels have we mounted sensors on?
-const int _wheelMagnetTotal = 4;          //how many magnets are mounted on each wheel?
+const int _wheelMagnetTotal = 8; //4;          //how many magnets are mounted on each wheel?
+
 
 /*----------------------------arduino pins----------------------------*/
 
 /* 
  * Arduino Prom Mini pins:
  * 
- * serial 0,1
+ * serial 0,1+
  * interrupts 2,3
  * PWM 3,5,6,9,10,11
  * SPI 10(SS),11(MOSI),13(SCK)
@@ -68,9 +84,9 @@ const int _wheelMagnetTotal = 4;          //how many magnets are mounted on each
 //GY-521 (MPU6050) INT (interrupt) pin optional - needs interrupt pin to check its fancy onboard calculations such as no-motion status
  
 const int _wheelSensorPin[_wheelSensorTotal] = { 2 };     //array of wheel sensor inputs (!!all interrupt pins!!!) - uses _wheelSensorTotal
-//const int _mpu6050InterruptPin = 2;                       //??? - don't think will need interrupt stuff, even with wireless. use it for wheels
+//const int _mpu6050InterruptPin = 2;   //??? - don't think will need MPU6050 interrupt stuff, even with wireless. ..just use interrupts for wheels
 //DOut -> LED strip DIn (0 = rear break lights, 1 = left strip + front head lights, 2 = right strip)
-//FastLED doesn't like an array being used for the pins eg. _ledDOutPin[0]
+//FastLED doesn't like an array being used for the pins eg. _ledDOutPin[0]  ..am i addressing it correctly?
 const int _ledDOutPin0 = 5; //6
 const int _ledDOutPin1 = 6; //7
 const int _ledDOutPin2 = 9; //8
@@ -88,7 +104,7 @@ const int _ledPin = 13;                         //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.26";             //breathing and hall effect sensor interrupt
+const String _progVers = "0.27";             //wheel tracking and direction
 //const int _mainLoopDelay = 0;               //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;        //starts false
 #ifdef DEBUG
@@ -153,16 +169,17 @@ unsigned long _distTraveledForward = 0;                   //total distance trave
 //_distanceTraveledUp
 //_distanceTraveledDown
 //_distanceTraveledOtherWays
-//int _wheelRadius = 0.07;                                  //radius (dist from center to the edge) of wheels in use (meters ..cos) eg. 70mm
-const float _wheelRadius = 0.07;
+//int _wheelRadius = 0.035;                                  //radius (dist from center to the edge) of wheels in use (meters ..cos) eg. 70mm diameter
+//const float _wheelDiameter = 0.07;
+//const float _wheelDiameter = 0.069;                        //my wheels are worn to about 69mm
+const float _wheelRadius = 0.0345;                          //half of diameter
 //const int _wheelMagnetRadius = 0.01;                      //radius of the magnet positioning (millimeters). prob about 10mm
 //const int _wheelCircumference = 2 * PI * _wheelRadius;    //circumference = 2 * PI * radius (meters)
 const float _wheelCircumference = 2 * PI * _wheelRadius;
-//3-axis accelerometer
-boolean _doFullCalibration = false;                       //set to true to run full calibration. it will reset itself to false when finished.
-boolean _doQuickCalibration = false;                      //set to true to run quick calibration. it will reset itself to false when finished.
+
 
 /*----------------------------sensors - MPU6050 6-axis----------------------------*/
+//X=Right/Left, Y=Forward/Backward, Z=Up/Down
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation is used in I2Cdev.h - ???
   #include "Wire.h"
@@ -171,9 +188,9 @@ MPU6050 _mpu6050;  //accel gyro;
 //int16_t _mpu6050AccelCurX, _mpu6050AccelCurY, _mpu6050AccelCurZ;
 //int16_t _mpu6050GyroCurX, _mpu6050GyroCurY, _mpu6050GyroCurZ;
 //int _mpu6050AccelAverageX, _mpu6050AccelAverageY, _mpu6050AccelAverageZ, _mpu6050GyroAverageX, _mpu6050GyroAverageY, _mpu6050GyroAverageZ;
-int16_t _mpu6050AccelOffset[3] = {436, 1956, 1318};       //XYZ accel offsets to write to the MPU6050 - get from full calibration and save memory
+int16_t _mpu6050AccelOffset[3] = {436, 1956, 1318};       //XYZ accel offsets to write to the MPU6050 - get from full calibration and save to memory
 int16_t _mpu6050GyroOffset[3] = {9, -32, 69};             //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
-const int _mpu6050CalibrateSampleTotal = 100;             //how many samples to take at once when calibrating
+const int _mpu6050CalibrateSampleTotal = 100; //100;             //how many samples to take at once when calibrating
 const int _mpu6050CalibrateAccelThreshold = 10;           //threshold tolerance for 'dead zone' at center of readings
 const int _mpu6050CalibrateGyroThreshold = 3;             //..for gyro
 long _mpu6050CalibratePrevMillis = 0;                     //previous time for reference
@@ -187,13 +204,22 @@ float _mpu6050AccelZero[3] = {0, 0, 0};           //XYZ quick calibration zero a
 float _mpu6050GyroZero[3] = {0, 0, 0};            //XYZ quick calibration zero average save for gyro
 int16_t _mpu6050AccelRead[3];                     //XYZ Current accel reading
 int16_t _mpu6050GyroRead[3];                      //XYZ Current gyro reading
-int16_t _mpu6050AccelReadAverage[3];              //XYZ averaged current accel reading
-int16_t _mpu6050GyroReadAverage[3];               //XYZ averaged current gyro reading
+int16_t _mpu6050AccelReadAverage[3];              //XYZ averaged current accel reading. see calibration
+int16_t _mpu6050GyroReadAverage[3];               //XYZ averaged current gyro reading. see calibration
 float _mpu6050GyroPrev[3];                        //XYZ last_gyro_x_angle;
+float _mpu6050Accel_yPrev = 0;                    //Y previous raw accleration y value
 
 //FINAL calculated numbers
 float _mpu6050FilteredCur[3];                     //XYZ FINAL filtered combined gyro/accel readings for use in calculating orientation
 float _mpu6050FilteredPrev[3];                    //XYZ Previous FINAL readings..
+
+//prob won't use 'stationary' cos the calculations will need something to get started, otherwise they will be a frame behind. better to have wrong direction for a split second, than have more complicated code
+const int _directionSampleTotal = 10;             //how many times to sample direction before making a decision on whether it is true or not
+int _diDirectionSave = 0;                         //used to hold the direction during comparison
+unsigned int _diAccelSave = 0;
+int _diDirectionCounter = 0;                      //
+int _directionCur = 0;                          // -1 = stationary, 0 = forward, 1=back, 2=up, 3=down, 4=left, 5=right
+
 
 /*----------------------------orientation----------------------------*/
 int _orientation = 0;                             //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
@@ -228,6 +254,7 @@ LED_SEGMENT ledSegment[_segmentTotal] = {
 };
 CRGB _leds[_ledNum];                         //global RGB array
 int _ledState = LOW;                        //use to toggle LOW/HIGH (ledState = !ledState)
+volatile byte _ledMovePos = 0;              //center point for tracking LEDs to wheels
 
 
 /*----------------------------MAIN----------------------------*/
@@ -279,12 +306,12 @@ void setup() {
   fill_gradient_RGB(_leds, ledSegment[2].first+6, CRGB::MediumTurquoise, ledSegment[2].first+7, CRGB::MediumTurquoise);
   FastLED.show();
 
-  //TEMP for testing
-  _sleepActive = true;
+  //TEMP for testing. these will get saved as settings later
+  _sleepActive = false;
   _headLightsActive = true;
   _rearLightsActive = true;
   _indicatorsEnabled = true;
-  _mainLightsSubMode = 1;
+  _mainLightsSubMode = 3; //1;
 }
 
 void loop() {

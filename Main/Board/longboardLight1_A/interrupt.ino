@@ -34,14 +34,25 @@ void wheelInterrupt0() {
   //check if HIGH
   //(this should be fast)
   //might have to use a faster processor to do stuff like check North/South to tell if we have skipped one etc.
-//  if ( PIND & ( 1<<PD2 ) ) {
-//    Serial.print("HIGH");
-//    Serial.println();
-//  } else {
-//    Serial.print("LOW");
-//    Serial.println();
-//  }
+  #if DEBUG_INTERRUPT
+    if ( PIND & ( 1<<PD2 ) ) {
+      Serial.print("HIGH");
+      Serial.println();
+    } else {
+      Serial.print("LOW");
+      Serial.println();
+    }
+  #endif
   _wheelCounter++;
+  //_ledMovePos++;  // ???
+  //not sure if arduino pro mini 328 5V 16MHz is fast enough to do this ???
+  if (_directionCur == 0) {
+    //forward
+    _ledMovePos++;
+  } else if (_directionCur == 1) {
+    //backward
+    _ledMovePos--;
+  }
 }
 
 

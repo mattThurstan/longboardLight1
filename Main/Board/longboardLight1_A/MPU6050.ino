@@ -77,12 +77,15 @@ void setupMPU6050() {
 void doMPU6050ReadAverage() {
   //this does not get used for the main filtered loop, only for calibration porpoises
   
-  int16_t accelSampleX = 0;
-  int16_t accelSampleY = 0;
-  int16_t accelSampleZ = 0;
-  int16_t gyroSampleX = 0;
-  int16_t gyroSampleY = 0;
-  int16_t gyroSampleZ = 0;
+  _mpu6050.getMotion6(&_mpu6050AccelRead[0], &_mpu6050AccelRead[1], &_mpu6050AccelRead[2], &_mpu6050GyroRead[0], &_mpu6050GyroRead[1], &_mpu6050GyroRead[2]);
+  delay(100);  //trying to iron out instability at the beginning
+  
+  unsigned long accelSampleX = 0;
+  unsigned long accelSampleY = 0;
+  unsigned long accelSampleZ = 0;
+  unsigned long gyroSampleX = 0;
+  unsigned long gyroSampleY = 0;
+  unsigned long gyroSampleZ = 0;
 
   //get motion data averages
   for (int i=0; i < _mpu6050CalibrateSampleTotal; i++) {
@@ -94,6 +97,9 @@ void doMPU6050ReadAverage() {
     gyroSampleX += _mpu6050GyroRead[0];
     gyroSampleY += _mpu6050GyroRead[1];
     gyroSampleZ += _mpu6050GyroRead[2];
+
+    //Serial.print(accelSampleY);
+    //Serial.println();
     
     delay(2); //..so we don't get repeated measures ???
   }
@@ -104,6 +110,9 @@ void doMPU6050ReadAverage() {
   _mpu6050GyroReadAverage[0] = (gyroSampleX / _mpu6050CalibrateSampleTotal);
   _mpu6050GyroReadAverage[1] = (gyroSampleY / _mpu6050CalibrateSampleTotal);
   _mpu6050GyroReadAverage[2] = (gyroSampleZ / _mpu6050CalibrateSampleTotal);
+  
+  Serial.print(_mpu6050AccelReadAverage[1]);
+  Serial.println();
 }
 
 void calibrateMPU6050() {
