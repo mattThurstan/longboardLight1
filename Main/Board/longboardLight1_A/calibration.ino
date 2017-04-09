@@ -4,6 +4,10 @@ void quickCalibration() {
   if (_doQuickCalibration == true) {
     quickCalibrateMPU6050Gyro();
     _doQuickCalibration = false;
+    #ifdef DEBUG
+      Serial.print(F("Quick calibration done"));
+      Serial.println();
+    #endif
   }
 }
 
@@ -11,6 +15,10 @@ void fullCalibration() {
   if (_doFullCalibration == true) {
     calibrateMPU6050();
     _doFullCalibration = false;
+    #ifdef DEBUG
+      Serial.print(F("Full calibration done"));
+      Serial.println();
+    #endif
   }
 }
 

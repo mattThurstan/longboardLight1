@@ -17,6 +17,7 @@ void orientation() {
             _orOrientationTemp = 0;
             if (orFlag == false) { _orOrientationSave = 0; orCounter = millis(); orFlag = true; }
           }  //1, 1, 1 - flat
+//upside-down - have to work on this one..
 //    else if (orMatrix[0] == 1
 //          && (orMatrix[1] == 0 || orMatrix[1] == 2)
 //          && orMatrix[2] == 0) {

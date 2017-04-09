@@ -44,15 +44,9 @@ void wheelInterrupt0() {
     }
   #endif
   _wheelCounter++;
-  //_ledMovePos++;  // ???
   //not sure if arduino pro mini 328 5V 16MHz is fast enough to do this ???
-  if (_directionCur == 0) {
-    //forward
-    _ledMovePos++;
-  } else if (_directionCur == 1) {
-    //backward
-    _ledMovePos--;
-  }
+  if (_directionCur == 0) { _ledMovePos++; /*forward*/ }
+  else if (_directionCur == 1) { _ledMovePos--; /*backward*/ }
 }
 
 

@@ -98,9 +98,6 @@ void doMPU6050ReadAverage() {
     gyroSampleY += _mpu6050GyroRead[1];
     gyroSampleZ += _mpu6050GyroRead[2];
 
-    //Serial.print(accelSampleY);
-    //Serial.println();
-    
     delay(2); //..so we don't get repeated measures ???
   }
 
@@ -244,6 +241,4 @@ void calibrateMPU6050() {
   #endif
   
 } //END calibrateMPU6050
-
-
 

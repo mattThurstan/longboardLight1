@@ -1,0 +1,2117 @@
+<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50beta35.dtd" >
+   <PATCH nodename="C:\TEMP\software_dev\Arduino\projects\lightControl\longboardLight1\Test\PC\arduinoToVVVV\_longboardLight1_A_SerialTestDataViewer.v4p" scrollx="0" scrolly="1080" systemname="_longboardLight1_A_SerialTestDataViewer" filename="C:\TEMP\software_dev\Arduino\projects\lightControl\longboardLight1\Test\PC\arduinoToVVVV\_longboardLight1_A_SerialTestDataViewer.v4p">
+   <BOUNDS type="Window" left="2625" top="0" width="18045" height="9990">
+   </BOUNDS>
+   <NODE id="31" nodename="SpellValue (String)" systemname="SpellValue (String)">
+   <BOUNDS height="270" left="7980" top="3345" type="Node" width="1020">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Mode" slicecount="1" values="Ascii">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE id="30" nodename="EQ (String)" systemname="EQ (String)">
+   <BOUNDS height="0" left="7905" top="5385" type="Node" width="0">
+   </BOUNDS>
+   <PIN pinname="Input 1" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Inverse Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE id="29" nodename="S+H (String)" systemname="S+H (String)">
+   <BOUNDS height="270" left="7650" top="5775" type="Node" width="705">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Set" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK dstnodeid="29" dstpinname="Set" srcnodeid="30" srcpinname="Inverse Output">
+   </LINK>
+   <NODE componentmode="InABox" id="28" nodename="IOBOX (VALUE ADVANCED)" systemname="IOBox (Value Advanced)">
+   <BOUNDS height="0" left="7980" top="2775" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="12450" top="2895" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="420" left="7980" top="2775" type="Box" width="450">
+   </BOUNDS>
+   <PIN pinname="Rows" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="2" values="10,13">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <LINK dstnodeid="31" dstpinname="Input" srcnodeid="28" srcpinname="Y Output Value">
+   </LINK>
+   <NODE componentmode="InABox" id="27" nodename="IOBOX (VALUE ADVANCED)" systemname="IOBox (Value Advanced)">
+   <BOUNDS height="0" left="5610" top="8475" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="12255" top="2415" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="1155" left="5610" top="8475" type="Box" width="1185">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="enable">
+   </PIN>
+   <PIN pinname="Show Value" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Show Slider" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Slider Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <NODE componentmode="InABox" id="26" nodename="IOBox (String)" systemname="IOBox (String)">
+   <BOUNDS height="0" left="8070" top="6285" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="12225" top="7485" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="345" left="8070" top="6285" type="Box" width="7935">
+   </BOUNDS>
+   <PIN pinname="Input String" visible="1">
+   </PIN>
+   <PIN pinname="Size" slicecount="1" values="9">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   </NODE>
+   <NODE componentmode="InABox" id="25" nodename="IOBox (Enumerations)" systemname="IOBox (Enumerations)">
+   <BOUNDS height="0" left="8610" top="4515" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="11805" top="4725" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="240" left="8610" top="4515" type="Box" width="795">
+   </BOUNDS>
+   <PIN pinname="Output Enum" visible="1">
+   </PIN>
+   <PIN pinname="Input Enum" slicecount="1" values="Discard">
+   </PIN>
+   </NODE>
+   <NODE componentmode="InABox" id="24" nodename="IOBox (String)" systemname="IOBox (String)">
+   <BOUNDS height="270" left="9900" top="3015" type="Node" width="1860">
+   </BOUNDS>
+   <BOUNDS height="1200" left="9900" top="3015" type="Box" width="1305">
+   </BOUNDS>
+   <BOUNDS height="160" left="0" top="0" type="Window" width="215">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="0" values="|seperate after:&cr;&lf;&apos;Carriage Return&apos; &apos;Line Feed&apos;&cr;&lf;(13 and 10 in ascii)|">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   </NODE>
+   <NODE id="23" nodename="RegExpr (String)" systemname="RegExpr (String)">
+   <BOUNDS height="0" left="7650" top="6825" type="Node" width="0">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Regular Expression" slicecount="1" values="|a( \d+ ) \s b( \d+ )\s c( \d+ )\s d( \d+ )\s e( \d+ )\s f( \d+ )|">
+   </PIN>
+   <PIN pinname="Match 1" visible="1">
+   </PIN>
+   <PIN pinname="Match 2" visible="1">
+   </PIN>
+   <PIN pinname="Match 3" visible="1">
+   </PIN>
+   <PIN pinname="Match 4" visible="1">
+   </PIN>
+   <PIN pinname="Match 5" visible="1">
+   </PIN>
+   <PIN pinname="Match 6" visible="1">
+   </PIN>
+   <PIN pinname="Case Sensitive Match" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <NODE id="22" nodename="AsValue (String)" systemname="AsValue (String)">
+   <BOUNDS height="0" left="7665" top="7545" type="Node" width="0">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE id="21" nodename="AsValue (String)" systemname="AsValue (String)">
+   <BOUNDS height="0" left="8715" top="7545" type="Node" width="0">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK dstnodeid="22" dstpinname="Input" srcnodeid="23" srcpinname="Match 1">
+   </LINK>
+   <LINK dstnodeid="21" dstpinname="Input" srcnodeid="23" srcpinname="Match 2">
+   </LINK>
+   <NODE componentmode="InABox" id="20" nodename="IOBOX (VALUE ADVANCED)" systemname="IOBox (Value Advanced)">
+   <BOUNDS height="0" left="7680" top="8010" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="6435" top="8805" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="1215" left="7680" top="8010" type="Box" width="810">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   <PIN pinname="Show Slider" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Minimum" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Maximum" slicecount="1" values="1024">
+   </PIN>
+   <PIN pinname="Slider Behavior" slicecount="1" values="Slider">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="arduino0">
+   </PIN>
+   </NODE>
+   <LINK dstnodeid="20" dstpinname="Y Input Value" srcnodeid="22" srcpinname="Output">
+   </LINK>
+   <NODE id="19" nodename="AsValue (String)" systemname="AsValue (String)">
+   <BOUNDS height="0" left="9675" top="7545" type="Node" width="0">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE id="18" nodename="AsValue (String)" systemname="AsValue (String)">
+   <BOUNDS height="0" left="10635" top="7545" type="Node" width="0">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE id="17" nodename="AsValue (String)" systemname="AsValue (String)">
+   <BOUNDS height="0" left="11565" top="7545" type="Node" width="0">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK dstnodeid="19" dstpinname="Input" srcnodeid="23" srcpinname="Match 3">
+   </LINK>
+   <LINK dstnodeid="18" dstpinname="Input" srcnodeid="23" srcpinname="Match 4">
+   </LINK>
+   <LINK dstnodeid="17" dstpinname="Input" srcnodeid="23" srcpinname="Match 5">
+   </LINK>
+   <NODE componentmode="InABox" id="16" nodename="IOBOX (VALUE ADVANCED)" systemname="IOBox (Value Advanced)">
+   <BOUNDS height="0" left="8730" top="8010" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="6735" top="9105" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="1215" left="8730" top="8010" type="Box" width="810">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   <PIN pinname="Show Slider" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Minimum" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Maximum" slicecount="1" values="1024">
+   </PIN>
+   <PIN pinname="Slider Behavior" slicecount="1" values="Slider">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="arduino1">
+   </PIN>
+   </NODE>
+   <NODE componentmode="InABox" id="15" nodename="IOBOX (VALUE ADVANCED)" systemname="IOBox (Value Advanced)">
+   <BOUNDS height="0" left="9675" top="8010" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="7035" top="9405" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="1215" left="9675" top="8010" type="Box" width="810">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   <PIN pinname="Show Slider" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Minimum" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Maximum" slicecount="1" values="1024">
+   </PIN>
+   <PIN pinname="Slider Behavior" slicecount="1" values="Slider">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="arduino2">
+   </PIN>
+   </NODE>
+   <NODE componentmode="InABox" id="14" nodename="IOBOX (VALUE ADVANCED)" systemname="IOBox (Value Advanced)">
+   <BOUNDS height="0" left="10620" top="8010" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="7335" top="9705" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="1215" left="10620" top="8010" type="Box" width="810">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   <PIN pinname="Show Slider" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Minimum" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Maximum" slicecount="1" values="1024">
+   </PIN>
+   <PIN pinname="Slider Behavior" slicecount="1" values="Slider">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="arduino3">
+   </PIN>
+   </NODE>
+   <NODE componentmode="InABox" id="13" nodename="IOBOX (VALUE ADVANCED)" systemname="IOBox (Value Advanced)">
+   <BOUNDS height="0" left="11580" top="8010" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="7635" top="10005" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="1215" left="11580" top="8010" type="Box" width="810">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   <PIN pinname="Show Slider" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Minimum" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Maximum" slicecount="1" values="1024">
+   </PIN>
+   <PIN pinname="Slider Behavior" slicecount="1" values="Slider">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="arduino4">
+   </PIN>
+   </NODE>
+   <LINK dstnodeid="16" dstpinname="Y Input Value" srcnodeid="21" srcpinname="Output">
+   </LINK>
+   <LINK dstnodeid="15" dstpinname="Y Input Value" srcnodeid="19" srcpinname="Output">
+   </LINK>
+   <LINK dstnodeid="14" dstpinname="Y Input Value" srcnodeid="18" srcpinname="Output">
+   </LINK>
+   <LINK dstnodeid="13" dstpinname="Y Input Value" srcnodeid="17" srcpinname="Output">
+   </LINK>
+   <NODE componentmode="InABox" id="12" nodename="IOBox (Enumerations)" systemname="IOBox (Enumerations)">
+   <BOUNDS height="0" left="9075" top="720" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="7200" top="1755" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="240" left="9075" top="720" type="Box" width="795">
+   </BOUNDS>
+   <PIN pinname="Output Enum" visible="1">
+   </PIN>
+   <PIN pinname="Input Enum" slicecount="1" values="COM7">
+   </PIN>
+   </NODE>
+   <NODE componentmode="InABox" id="11" nodename="IOBOX (VALUE ADVANCED)" systemname="IOBox (Value Advanced)">
+   <BOUNDS height="0" left="12540" top="8010" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="7935" top="10305" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="1215" left="12540" top="8010" type="Box" width="810">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   <PIN pinname="Show Slider" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Minimum" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Maximum" slicecount="1" values="1024">
+   </PIN>
+   <PIN pinname="Slider Behavior" slicecount="1" values="Slider">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="arduino5">
+   </PIN>
+   </NODE>
+   <NODE id="10" nodename="AsValue (String)" systemname="AsValue (String)">
+   <BOUNDS height="0" left="12540" top="7545" type="Node" width="0">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK dstnodeid="11" dstpinname="Y Input Value" srcnodeid="10" srcpinname="Output">
+   </LINK>
+   <LINK dstnodeid="10" dstpinname="Input" srcnodeid="23" srcpinname="Match 6">
+   </LINK>
+   <LINK srcnodeid="29" srcpinname="Output" dstnodeid="26" dstpinname="Input String">
+   </LINK>
+   <NODE id="9" nodename="Tokenizer (String)" systemname="Tokenizer (String)">
+   <BOUNDS height="270" left="7635" top="4890" type="Node" width="1695">
+   </BOUNDS>
+   <PIN pinname="Separator" visible="1">
+   </PIN>
+   <PIN pinname="Input" visible="1" slicecount="1" values="| d182 e1|">
+   </PIN>
+   <PIN pinname="Queue Length" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Queue Mode" visible="1" slicecount="1" values="Discard">
+   </PIN>
+   <PIN pinname="Update" visible="1" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Token Length" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Mode" slicecount="1" visible="1" values="Postfix">
+   </PIN>
+   <PIN pinname="Queue" visible="1">
+   </PIN>
+   </NODE>
+   <LINK dstnodeid="30" dstpinname="Input 1" srcnodeid="9" srcpinname="Output">
+   </LINK>
+   <LINK dstnodeid="29" dstpinname="Input" srcnodeid="9" srcpinname="Output">
+   </LINK>
+   <NODE id="8" nodename="RS232 (Devices)" systemname="RS232 (Devices)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll">
+   <BOUNDS height="270" left="7665" top="1350" type="Node" width="1755">
+   </BOUNDS>
+   <PIN pinname="ComPort" visible="1">
+   </PIN>
+   <PIN pinname="Baud Rate">
+   </PIN>
+   <PIN pinname="Hardware Handshaking">
+   </PIN>
+   <PIN pinname="On Data" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Enabled" visible="1">
+   </PIN>
+   <PIN pinname="Parity" slicecount="1" values="None">
+   </PIN>
+   <PIN pinname="Do Send" slicecount="1" visible="1" values="0">
+   </PIN>
+   <PIN pinname="Input" slicecount="1" visible="1" values="||">
+   </PIN>
+   <PIN pinname="Port Name" visible="1" slicecount="1" values="COM20">
+   </PIN>
+   </NODE>
+   <LINK dstnodeid="8" dstpinname="Enabled" srcnodeid="27" srcpinname="Y Output Value">
+   </LINK>
+   <LINK srcnodeid="8" srcpinname="On Data" dstnodeid="9" dstpinname="Update">
+   </LINK>
+   <NODE systemname="AsString (Raw)" nodename="AsString (Raw)" componentmode="Hidden" id="7">
+   <BOUNDS type="Node" left="7650" top="2175" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Encoding" slicecount="1" values="us-ascii">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="8" srcpinname="Output" dstnodeid="7" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="7" srcpinname="Output" dstnodeid="9" dstpinname="Input">
+   </LINK>
+   <NODE nodename="IOBox (Enumerations)" componentmode="InABox" id="6" systemname="IOBox (Enumerations)">
+   <BOUNDS type="Box" left="8295" top="1830" width="885" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="8295" top="1830" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input Enum" slicecount="1" values="us-ascii">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="6" srcpinname="Output Enum" dstnodeid="7" dstpinname="Encoding">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="5" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="7980" top="885" width="525" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="7980" top="885" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" values="9600">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="5" srcpinname="Y Output Value" dstnodeid="8" dstpinname="Baudrate">
+   </LINK>
+   <NODE nodename="IOBox (Enumerations)" componentmode="InABox" id="4" systemname="IOBox (Enumerations)">
+   <BOUNDS type="Box" left="8295" top="4200" width="810" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="8295" top="4200" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input Enum" slicecount="1" values="Postfix">
+   </PIN>
+   <PIN pinname="Output Enum" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="29" srcpinname="Output" dstnodeid="23" dstpinname="Input">
+   </LINK>
+   <NODE nodename="IOBox (Enumerations)" componentmode="InABox" id="3" systemname="IOBox (Enumerations)">
+   <BOUNDS type="Box" left="8925" top="2970" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="8925" top="2970" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input Enum" slicecount="1" values="Ascii">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="3" srcpinname="Output Enum" dstnodeid="31" dstpinname="Mode">
+   </LINK>
+   <NODE systemname="Add (String Spectral)" nodename="Add (String Spectral)" componentmode="Hidden" id="2">
+   <BOUNDS type="Node" left="7980" top="3810" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="31" srcpinname="Output" dstnodeid="2" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="2" srcpinname="Output" dstnodeid="9" dstpinname="Separator">
+   </LINK>
+   <NODE systemname="AsValue (String)" nodename="AsValue (String)" componentmode="Hidden" id="32">
+   <BOUNDS type="Node" left="2610" top="6300" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="|126, 258, -89&lf;&cr;125, 265, -85&lf;&cr;128, 256, -94&lf;&cr;122, 264, -88&lf;&cr;115, 259, -81&lf;&cr;129, 259, -90&lf;&cr;133, 261, -81&lf;&cr;130, 248, -87&lf;&cr;124, 255, -85&lf;&cr;130, 266, -84&lf;&cr;129, 249, -81&lf;&cr;126, 251, -81&lf;&cr;126, 250, -85&lf;&cr;128, 244, -109&lf;&cr;124, 259, -83&lf;&cr;127, 261, -92&lf;&cr;111, 264, -96&lf;&cr;128, 256, -82&lf;&cr;115, 259, -91&lf;&cr;128, 254, -80&lf;&cr;128, 256, -100&lf;&cr;122, 256, -88&lf;&cr;125, 256, -80&lf;&cr;126, 255, -92&lf;&cr;121, 257, -92&lf;&cr;122, 259, -86&lf;&cr;123, 252, -86&lf;&cr;119, 244, -94&lf;&cr;128, 245, -90&lf;&cr;123, 255, -77&lf;&cr;124, 256, -106&lf;&cr;138, 256, -98&lf;&cr;114, 247, -77&lf;&cr;120, 257, -91&lf;&cr;130, 256, -111&lf;&cr;127, 256, -108&lf;&cr;134, 257, -86&lf;&cr;111, 262, -91&lf;&cr;131, 258, -87&lf;&cr;130, 273, -99&lf;&cr;126, 251, -88&lf;&cr;124, 267, -94&lf;&cr;129, 259, -83&lf;&cr;128, 261, -105&lf;&cr;117, 250, -103&lf;&cr;128, 268, -93&lf;&cr;119, 264, -93&lf;&cr;125, 267, -101&lf;&cr;130, 255, -82&lf;&cr;117, 263, -87&lf;&cr;125, 255, -102&lf;&cr;133, 259, -87&lf;&cr;127, 264, -82&lf;&cr;112, 256, -80&lf;&cr;126, 262, -93&lf;&cr;131, 272, -87&lf;&cr;126, 254, -114&lf;&cr;119, 252, -88&lf;&cr;125, 253, -108&lf;&cr;133, 256, -91&lf;&cr;127, 261, -96&lf;&cr;121, 257, -100&lf;&cr;123, 254, -91&lf;&cr;131, 257, -97&lf;&cr;123, 253, -98&lf;&cr;122, 256, -99&lf;&cr;129, 253, -85&lf;&cr;123, 253, -91&lf;&cr;129, 258, -82&lf;&cr;126, 243, -91&lf;&cr;116, 257, -90&lf;&cr;127, 254, -90&lf;&cr;125, 256, -103&lf;&cr;124, 258, -87&lf;&cr;130, 254, -96&lf;&cr;122, 257, -94&lf;&cr;123, 257, -99&lf;&cr;121, 257, -88&lf;&cr;127, 263, -100&lf;&cr;120, 253, -89&lf;&cr;129, 254, -97&lf;&cr;130, 255, -100&lf;&cr;132, 251, -93&lf;&cr;127, 244, -83&lf;&cr;134, 253, -95&lf;&cr;120, 260, -106&lf;&cr;125, 255, -106&lf;&cr;122, 253, -77&lf;&cr;126, 247, -89&lf;&cr;127, 251, -84&lf;&cr;116, 249, -92&lf;&cr;123, 253, -104&lf;&cr;127, 262, -86&lf;&cr;131, 263, -107&lf;&cr;122, 258, -112&lf;&cr;124, 263, -98&lf;&cr;122, 252, -85&lf;&cr;130, 258, -94&lf;&cr;135, 257, -94&lf;&cr;119, 255, -76&lf;&cr;113, 255, -92&lf;&cr;117, 254, -98&lf;&cr;120, 248, -99&lf;&cr;127, 259, -83&lf;&cr;138, 254, -80&lf;&cr;137, 266, -89&lf;&cr;130, 255, -103&lf;&cr;133, 256, -94&lf;&cr;129, 251, -87&lf;&cr;134, 256, -104&lf;&cr;130, 257, -85&lf;&cr;132, 258, -90&lf;&cr;135, 251, -103&lf;&cr;125, 256, -96&lf;&cr;130, 259, -91&lf;&cr;127, 261, -81&lf;&cr;137, 247, -93&lf;&cr;130, 257, -100&lf;&cr;114, 261, -89&lf;&cr;129, 276, -100&lf;&cr;133, 256, -92&lf;&cr;129, 261, -95&lf;&cr;125, 255, -100&lf;&cr;133, 250, -91&lf;&cr;135, 257, -101&lf;&cr;145, 260, -97&lf;&cr;129, 261, -73&lf;&cr;118, 245, -102&lf;&cr;128, 265, -103&lf;&cr;126, 262, -111&lf;&cr;128, 254, -101&lf;&cr;133, 249, -76&lf;&cr;127, 255, -91&lf;&cr;138, 265, -98&lf;&cr;124, 265, -93&lf;&cr;137, 270, -84&lf;&cr;133, 257, -93&lf;&cr;138, 251, -97&lf;&cr;121, 252, -98&lf;&cr;128, 254, -99&lf;&cr;129, 257, -73&lf;&cr;125, 271, -114&lf;&cr;126, 259, -100&lf;&cr;125, 252, -100&lf;&cr;118, 257, -104&lf;&cr;120, 254, -104&lf;&cr;121, 252, -99&lf;&cr;138, 264, -94&lf;&cr;125, 261, -107&lf;&cr;127, 267, -110&lf;&cr;132, 258, -97&lf;&cr;127, 251, -106&lf;&cr;122, 257, -87&lf;&cr;123, 261, -101&lf;&cr;129, 256, -98&lf;&cr;131, 254, -102&lf;&cr;127, 253, -102&lf;&cr;125, 251, -104&lf;&cr;128, 256, -91&lf;&cr;122, 250, -75&lf;&cr;124, 241, -89&lf;&cr;124, 251, -91&lf;&cr;126, 259, -95&lf;&cr;125, 266, -95&lf;&cr;132, 252, -107&lf;&cr;137, 246, -110&lf;&cr;135, 256, -102&lf;&cr;136, 262, -101&lf;&cr;120, 247, -101&lf;&cr;126, 253, -90&lf;&cr;128, 264, -86&lf;&cr;137, 269, -98&lf;&cr;129, 256, -101&lf;&cr;128, 244, -108&lf;&cr;122, 248, -111&lf;&cr;126, 266, -109&lf;&cr;130, 250, -108&lf;&cr;129, 257, -95&lf;&cr;129, 252, -110&lf;&cr;130, 252, -89&lf;&cr;140, 250, -88&lf;&cr;146, 262, -87&lf;&cr;131, 250, -100&lf;&cr;133, 262, -96&lf;&cr;131, 257, -105&lf;&cr;133, 262, -91&lf;&cr;132, 247, -110&lf;&cr;129, 249, -97&lf;&cr;132, 253, -94&lf;&cr;122, 256, -106&lf;&cr;125, 259, -90&lf;&cr;127, 250, -98&lf;&cr;143, 264, -101&lf;&cr;121, 248, -99&lf;&cr;133, 255, -84&lf;&cr;129, 259, -98&lf;&cr;135, 258, -107&lf;&cr;127, 254, -90&lf;&cr;128, 249, -96&lf;&cr;129, 258, -101&lf;&cr;128, 256, -105&lf;&cr;124, 256, -99&lf;&cr;121, 257, -87&lf;&cr;128, 255, -83&lf;&cr;129, 250, -91&lf;&cr;135, 261, -96&lf;&cr;122, 256, -111&lf;&cr;138, 264, -97&lf;&cr;126, 261, -78&lf;&cr;133, 264, -100&lf;&cr;130, 266, -95&lf;&cr;130, 253, -112&lf;&cr;130, 257, -83&lf;&cr;123, 249, -85&lf;&cr;132, 258, -91&lf;&cr;125, 253, -115&lf;&cr;132, 253, -98&lf;&cr;121, 258, -112&lf;&cr;139, 248, -90&lf;&cr;121, 261, -102&lf;&cr;128, 254, -110&lf;&cr;133, 256, -96&lf;&cr;129, 261, -108&lf;&cr;129, 249, -92&lf;&cr;115, 255, -92&lf;&cr;140, 260, -81&lf;&cr;129, 269, -94&lf;&cr;130, 255, -108&lf;&cr;136, 257, -119&lf;&cr;128, 255, -104&lf;&cr;131, 263, -94&lf;&cr;131, 264, -99&lf;&cr;137, 261, -86&lf;&cr;133, 254, -80&lf;&cr;138, 254, -96&lf;&cr;136, 246, -103&lf;&cr;134, 259, -83&lf;&cr;129, 256, -87&lf;&cr;130, 258, -111&lf;&cr;135, 248, -113&lf;&cr;120, 252, -118&lf;&cr;126, 247, -107&lf;&cr;130, 254, -98&lf;&cr;134, 260, -114&lf;&cr;133, 258, -86&lf;&cr;133, 248, -115&lf;&cr;134, 252, -98&lf;&cr;132, 259, -99&lf;&cr;141, 254, -98&lf;&cr;136, 245, -97&lf;&cr;126, 248, -92&lf;&cr;134, 262, -90&lf;&cr;133, 259, -121&lf;&cr;126, 249, -105&lf;&cr;138, 265, -96&lf;&cr;133, 262, -104&lf;&cr;140, 262, -103&lf;&cr;130, 262, -100&lf;&cr;140, 268, -113&lf;&cr;128, 248, -110&lf;&cr;133, 266, -91&lf;&cr;133, 248, -91&lf;&cr;130, 255, -104&lf;&cr;131, 258, -113&lf;&cr;138, 252, -114&lf;&cr;117, 251, -99&lf;&cr;134, 255, -107&lf;&cr;138, 251, -121&lf;&cr;132, 250, -93&lf;&cr;131, 257, -112&lf;&cr;136, 257, -94&lf;&cr;124, 251, -105&lf;&cr;140, 254, -106&lf;&cr;128, 255, -104&lf;&cr;136, 253, -109&lf;&cr;138, 256, -102&lf;&cr;128, 269, -103&lf;&cr;122, 256, -85&lf;&cr;136, 263, -89&lf;&cr;136, 257, -108&lf;&cr;138, 261, -112&lf;&cr;141, 248, -96&lf;&cr;124, 260, -97&lf;&cr;133, 247, -108&lf;&cr;132, 263, -105&lf;&cr;134, 263, -109&lf;&cr;138, 250, -105&lf;&cr;143, 256, -90&lf;&cr;136, 253, -89&lf;&cr;137, 252, -96&lf;&cr;137, 252, -102&lf;&cr;141, 251, -95&lf;&cr;133, 262, -104&lf;&cr;129, 263, -103&lf;&cr;131, 252, -100&lf;&cr;138, 266, -91&lf;&cr;134, 253, -95&lf;&cr;149, 256, -96&lf;&cr;128, 265, -108&lf;&cr;130, 254, -94&lf;&cr;133, 251, -104&lf;&cr;138, 267, -87&lf;&cr;139, 262, -95&lf;&cr;136, 260, -106&lf;&cr;137, 264, -86&lf;&cr;133, 254, -109&lf;&cr;128, 252, -107&lf;&cr;138, 263, -93&lf;&cr;130, 256, -104&lf;&cr;125, 268, -94&lf;&cr;132, 244, -99&lf;&cr;128, 256, -99&lf;&cr;140, 256, -100&lf;&cr;130, 253, -110&lf;&cr;133, 253, -93&lf;&cr;136, 258, -99&lf;&cr;140, 253, -96&lf;&cr;119, 250, -88&lf;&cr;127, 261, -108&lf;&cr;134, 264, -107&lf;&cr;137, 253, -97&lf;&cr;138, 262, -106&lf;&cr;125, 267, -106&lf;&cr;130, 253, -105&lf;&cr;141, 246, -89&lf;&cr;138, 254, -98&lf;&cr;122, 262, -101&lf;&cr;141, 264, -105&lf;&cr;145, 254, -119&lf;&cr;123, 261, -90&lf;&cr;125, 256, -101&lf;&cr;139, 257, -102&lf;&cr;139, 264, -98&lf;&cr;134, 248, -118&lf;&cr;136, 257, -88&lf;&cr;131, 257, -89&lf;&cr;136, 252, -102&lf;&cr;135, 256, -112&lf;&cr;146, 253, -97&lf;&cr;124, 253, -98&lf;&cr;137, 255, -98&lf;&cr;141, 256, -88&lf;&cr;138, 255, -96&lf;&cr;140, 253, -102&lf;&cr;139, 258, -102&lf;&cr;137, 248, -101&lf;&cr;124, 245, -113&lf;&cr;137, 249, -102&lf;&cr;136, 261, -93&lf;&cr;124, 259, -110&lf;&cr;142, 262, -112&lf;&cr;133, 259, -94&lf;&cr;140, 262, -104&lf;&cr;146, 264, -90&lf;&cr;142, 256, -90&lf;&cr;130, 264, -83&lf;&cr;137, 263, -81&lf;&cr;129, 258, -98&lf;&cr;133, 263, -86&lf;&cr;134, 253, -91&lf;&cr;141, 253, -101&lf;&cr;139, 252, -104&lf;&cr;136, 259, -103&lf;&cr;125, 253, -86&lf;&cr;132, 253, -95&lf;&cr;132, 254, -103&lf;&cr;142, 258, -121&lf;&cr;141, 254, -99&lf;&cr;141, 264, -112&lf;&cr;127, 260, -110&lf;&cr;133, 269, -104&lf;&cr;132, 258, -99&lf;&cr;143, 257, -85&lf;&cr;141, 261, -103&lf;&cr;139, 260, -94&lf;&cr;137, 255, -118&lf;&cr;135, 251, -105&lf;&cr;141, 249, -116&lf;&cr;139, 252, -93&lf;&cr;143, 258, -103&lf;&cr;133, 261, -98&lf;&cr;131, 256, -98&lf;&cr;134, 253, -98&lf;&cr;148, 257, -98&lf;&cr;147, 268, -102&lf;&cr;136, 256, -84&lf;&cr;136, 261, -109&lf;&cr;143, 257, -88&lf;&cr;134, 256, -104&lf;&cr;140, 255, -100&lf;&cr;139, 253, -83&lf;&cr;136, 249, -88&lf;&cr;140, 253, -97&lf;&cr;143, 251, -108&lf;&cr;137, 255, -94&lf;&cr;138, 257, -97&lf;&cr;136, 261, -95&lf;&cr;133, 259, -84&lf;&cr;139, 259, -91&lf;&cr;128, 261, -96&lf;&cr;134, 253, -87&lf;&cr;149, 258, -113&lf;&cr;142, 257, -82&lf;&cr;142, 260, -94&lf;&cr;140, 259, -99&lf;&cr;149, 249, -94&lf;&cr;140, 264, -105&lf;&cr;138, 263, -88&lf;&cr;146, 255, -102&lf;&cr;137, 258, -97&lf;&cr;130, 253, -100&lf;&cr;137, 259, -99&lf;&cr;134, 262, -98&lf;&cr;136, 255, -106&lf;&cr;131, 248, -89&lf;&cr;129, 266, -101&lf;&cr;133, 263, -111&lf;&cr;134, 261, -73&lf;&cr;150, 259, -110&lf;&cr;132, 259, -110&lf;&cr;138, 267, -101&lf;&cr;131, 259, -101&lf;&cr;138, 264, -94&lf;&cr;125, 257, -94&lf;&cr;141, 252, -109&lf;&cr;134, 244, -106&lf;&cr;139, 257, -97&lf;&cr;135, 256, -83&lf;&cr;136, 247, -101&lf;&cr;128, 253, -102&lf;&cr;133, 257, -96&lf;&cr;131, 257, -111&lf;&cr;134, 246, -97&lf;&cr;146, 246, -107&lf;&cr;146, 252, -91&lf;&cr;126, 252, -95&lf;&cr;141, 259, -99&lf;&cr;139, 257, -103&lf;&cr;131, 250, -100&lf;&cr;135, 246, -100&lf;&cr;141, 264, -101&lf;&cr;134, 262, -122&lf;&cr;128, 262, -94&lf;&cr;142, 258, -86&lf;&cr;136, 256, -113&lf;&cr;125, 261, -93&lf;&cr;132, 254, -87&lf;&cr;140, 242, -105&lf;&cr;143, 256, -105&lf;&cr;141, 251, -99&lf;&cr;139, 269, -109&lf;&cr;131, 247, -99&lf;&cr;146, 250, -112&lf;&cr;129, 250, -93&lf;&cr;130, 256, -82&lf;&cr;147, 255, -113&lf;&cr;143, 261, -90&lf;&cr;151, 252, -96&lf;&cr;129, 263, -112&lf;&cr;147, 257, -102&lf;&cr;137, 260, -99&lf;&cr;140, 258, -111&lf;&cr;146, 258, -94&lf;&cr;131, 257, -102&lf;&cr;146, 259, -102&lf;&cr;147, 252, -98&lf;&cr;140, 264, -97&lf;&cr;143, 254, -92&lf;&cr;137, 259, -94&lf;&cr;140, 253, -98&lf;&cr;135, 255, -97&lf;&cr;159, 257, -119&lf;&cr;140, 256, -107&lf;&cr;146, 260, -118&lf;&cr;142, 260, -96&lf;&cr;138, 247, -92&lf;&cr;134, 247, -94&lf;&cr;144, 260, -108&lf;&cr;144, 247, -99&lf;&cr;140, 256, -92&lf;&cr;141, 254, -89&lf;&cr;139, 255, -70&lf;&cr;144, 262, -104&lf;&cr;152, 261, -88&lf;&cr;140, 256, -117&lf;&cr;142, 242, -101&lf;&cr;156, 249, -96&lf;&cr;150, 258, -124&lf;&cr;135, 258, -100&lf;&cr;145, 253, -113&lf;&cr;139, 256, -85&lf;&cr;144, 251, -101&lf;&cr;139, 262, -103&lf;&cr;145, 247, -101&lf;&cr;142, 262, -108&lf;&cr;140, 251, -90&lf;&cr;141, 260, -110&lf;&cr;157, 253, -102&lf;&cr;138, 255, -98&lf;&cr;139, 258, -107&lf;&cr;157, 256, -103&lf;&cr;142, 260, -92&lf;&cr;150, 261, -110&lf;&cr;142, 262, -111&lf;&cr;141, 252, -91&lf;&cr;142, 248, -104&lf;&cr;149, 262, -94&lf;&cr;135, 261, -115&lf;&cr;153, 253, -94&lf;&cr;141, 255, -110&lf;&cr;144, 260, -110&lf;&cr;151, 254, -112&lf;&cr;136, 261, -102&lf;&cr;142, 265, -109&lf;&cr;140, 252, -103&lf;&cr;147, 251, -108&lf;&cr;149, 262, -100&lf;&cr;143, 262, -100&lf;&cr;145, 267, -104&lf;&cr;147, 250, -87&lf;&cr;137, 257, -97&lf;&cr;135, 257, -91&lf;&cr;150, 252, -91&lf;&cr;133, 263, -99&lf;&cr;142, 251, -84&lf;&cr;141, 251, -111&lf;&cr;142, 252, -110&lf;&cr;132, 265, -97&lf;&cr;134, 247, -111&lf;&cr;130, 260, -92&lf;&cr;134, 247, -98&lf;&cr;139, 256, -104&lf;&cr;134, 255, -98&lf;&cr;144, 245, -96&lf;&cr;137, 258, -86&lf;&cr;139, 263, -102&lf;&cr;139, 259, -117&lf;&cr;138, 258, -95&lf;&cr;148, 250, -107&lf;&cr;153, 255, -102&lf;&cr;132, 263, -112&lf;&cr;141, 244, -102&lf;&cr;144, 256, -103&lf;&cr;135, 265, -110&lf;&cr;146, 243, -97&lf;&cr;141, 269, -112&lf;&cr;140, 261, -112&lf;&cr;142, 260, -101&lf;&cr;145, 252, -114&lf;&cr;151, 255, -110&lf;&cr;149, 252, -91&lf;&cr;144, 257, -110&lf;&cr;131, 260, -99&lf;&cr;135, 264, -111&lf;&cr;141, 253, -109&lf;&cr;147, 253, -112&lf;&cr;151, 260, -93&lf;&cr;144, 259, -98&lf;&cr;143, 259, -104&lf;&cr;144, 262, -99&lf;&cr;141, 258, -104&lf;&cr;153, 255, -97&lf;&cr;155, 259, -108&lf;&cr;149, 255, -98&lf;&cr;139, 249, -96&lf;&cr;153, 264, -103&lf;&cr;146, 254, -92&lf;&cr;159, 253, -101&lf;&cr;142, 261, -100&lf;&cr;144, 258, -85&lf;&cr;145, 252, -98&lf;&cr;132, 252, -86&lf;&cr;146, 245, -114&lf;&cr;143, 263, -113&lf;&cr;145, 263, -108&lf;&cr;136, 259, -102&lf;&cr;147, 265, -105&lf;&cr;156, 267, -108&lf;&cr;147, 253, -107&lf;&cr;146, 261, -100&lf;&cr;146, 251, -104&lf;&cr;136, 256, -110&lf;&cr;142, 261, -111&lf;&cr;148, 240, -114&lf;&cr;151, 258, -105&lf;&cr;142, 250, -89&lf;&cr;149, 268, -106&lf;&cr;138, 257, -99&lf;&cr;141, 258, -114&lf;&cr;143, 249, -109&lf;&cr;147, 258, -96&lf;&cr;153, 253, -91&lf;&cr;144, 255, -95&lf;&cr;142, 257, -99&lf;&cr;155, 253, -99&lf;&cr;145, 259, -102&lf;&cr;141, 255, -68&lf;&cr;146, 252, -99&lf;&cr;148, 261, -115&lf;&cr;146, 240, -108&lf;&cr;142, 253, -115&lf;&cr;141, 252, -102&lf;&cr;135, 251, -89&lf;&cr;143, 257, -98&lf;&cr;133, 253, -124&lf;&cr;153, 264, -93&lf;&cr;144, 265, -103&lf;&cr;151, 257, -106&lf;&cr;133, 257, -119&lf;&cr;144, 250, -90&lf;&cr;144, 255, -102&lf;&cr;150, 260, -104&lf;&cr;148, 252, -126&lf;&cr;143, 256, -117&lf;&cr;146, 252, -103&lf;&cr;141, 257, -117&lf;&cr;146, 257, -87&lf;&cr;142, 248, -120&lf;&cr;143, 263, -108&lf;&cr;142, 256, -106&lf;&cr;139, 267, -96&lf;&cr;153, 258, -121&lf;&cr;140, 260, -98&lf;&cr;136, 255, -101&lf;&cr;158, 253, -94&lf;&cr;145, 256, -113&lf;&cr;144, 251, -97&lf;&cr;149, 256, -120&lf;&cr;142, 252, -101&lf;&cr;142, 257, -94&lf;&cr;148, 264, -97&lf;&cr;153, 255, -98&lf;&cr;154, 253, -95&lf;&cr;144, 263, -90&lf;&cr;144, 259, -95&lf;&cr;139, 243, -95&lf;&cr;142, 262, -105&lf;&cr;142, 257, -96&lf;&cr;144, 255, -84&lf;&cr;144, 255, -104&lf;&cr;144, 259, -97&lf;&cr;143, 254, -114&lf;&cr;150, 256, -105&lf;&cr;148, 258, -92&lf;&cr;139, 254, -114&lf;&cr;149, 249, -100&lf;&cr;149, 241, -108&lf;&cr;144, 263, -111&lf;&cr;142, 247, -104&lf;&cr;151, 258, -101&lf;&cr;149, 256, -82&lf;&cr;145, 262, -103&lf;&cr;139, 268, -101&lf;&cr;136, 254, -102&lf;&cr;154, 256, -98&lf;&cr;144, 260, -103&lf;&cr;139, 263, -91&lf;&cr;144, 240, -88&lf;&cr;141, 260, -107&lf;&cr;150, 257, -105&lf;&cr;149, 263, -109&lf;&cr;140, 255, -120&lf;&cr;141, 254, -105&lf;&cr;131, 257, -101&lf;&cr;145, 254, -115&lf;&cr;146, 258, -109&lf;&cr;148, 252, -97&lf;&cr;144, 246, -84&lf;&cr;142, 249, -105&lf;&cr;142, 248, -86&lf;&cr;150, 254, -107&lf;&cr;150, 253, -97&lf;&cr;148, 251, -99&lf;&cr;145, 253, -106&lf;&cr;149, 254, -92&lf;&cr;154, 253, -112&lf;&cr;140, 258, -112&lf;&cr;151, 262, -99&lf;&cr;156, 251, -83&lf;&cr;152, 259, -99&lf;&cr;151, 252, -124&lf;&cr;147, 255, -123&lf;&cr;141, 256, -98&lf;&cr;159, 255, -101&lf;&cr;141, 267, -96&lf;&cr;144, 247, -94&lf;&cr;155, 267, -97&lf;&cr;158, 250, -102&lf;&cr;146, 257, -105&lf;&cr;146, 267, -106&lf;&cr;140, 249, -107&lf;&cr;151, 255, -83&lf;&cr;144, 254, -126&lf;&cr;146, 256, -102&lf;&cr;152, 254, -101&lf;&cr;147, 255, -124&lf;&cr;149, 247, -100&lf;&cr;158, 255, -100&lf;&cr;153, 255, -109&lf;&cr;133, 257, -97&lf;&cr;153, 248, -106&lf;&cr;144, 256, -84&lf;&cr;146, 258, -111&lf;&cr;144, 249, -102&lf;&cr;149, 261, -117&lf;&cr;155, 263, -115&lf;&cr;146, 258, -107&lf;&cr;151, 267, -96&lf;&cr;135, 254, -116&lf;&cr;156, 252, -104&lf;&cr;148, 259, -98&lf;&cr;152, 257, -101&lf;&cr;152, 263, -107&lf;&cr;145, 252, -125&lf;&cr;149, 261, -121&lf;&cr;132, 262, -121&lf;&cr;151, 254, -101&lf;&cr;148, 258, -104&lf;&cr;138, 274, -103&lf;&cr;145, 253, -109&lf;&cr;153, 252, -110&lf;&cr;145, 268, -107&lf;&cr;153, 253, -98&lf;&cr;145, 255, -115&lf;&cr;153, 261, -110&lf;&cr;150, 257, -120&lf;&cr;138, 262, -99&lf;&cr;149, 264, -112&lf;&cr;150, 253, -105&lf;&cr;140, 253, -114&lf;&cr;151, 265, -94&lf;&cr;145, 262, -113&lf;&cr;158, 257, -117&lf;&cr;138, 258, -120&lf;&cr;154, 259, -98&lf;&cr;145, 253, -113&lf;&cr;145, 264, -104&lf;&cr;154, 259, -112&lf;&cr;140, 262, -121&lf;&cr;152, 250, -101&lf;&cr;138, 259, -109&lf;&cr;153, 252, -93&lf;&cr;151, 265, -87&lf;&cr;142, 266, -104&lf;&cr;159, 253, -98&lf;&cr;143, 266, -94&lf;&cr;144, 267, -107&lf;&cr;144, 254, -97&lf;&cr;152, 256, -108&lf;&cr;144, 259, -101&lf;&cr;146, 257, -108&lf;&cr;142, 252, -107&lf;&cr;142, 261, -91&lf;&cr;153, 262, -95&lf;&cr;151, 242, -90&lf;&cr;145, 254, -99&lf;&cr;140, 256, -110&lf;&cr;155, 260, -87&lf;&cr;147, 254, -94&lf;&cr;152, 250, -102&lf;&cr;147, 260, -112&lf;&cr;160, 247, -96&lf;&cr;150, 262, -100&lf;&cr;155, 259, -86&lf;&cr;131, 264, -110&lf;&cr;150, 258, -115&lf;&cr;150, 260, -89&lf;&cr;143, 263, -112&lf;&cr;154, 248, -89&lf;&cr;135, 249, -98&lf;&cr;143, 258, -92&lf;&cr;160, 258, -101&lf;&cr;158, 254, -118&lf;&cr;149, 254, -120&lf;&cr;148, 251, -104&lf;&cr;144, 261, -125&lf;&cr;151, 255, -99&lf;&cr;149, 258, -93&lf;&cr;151, 252, -104&lf;&cr;164, 259, -108&lf;&cr;140, 259, -88&lf;&cr;150, 257, -102&lf;&cr;152, 257, -104&lf;&cr;140, 261, -102&lf;&cr;138, 252, -109&lf;&cr;153, 273, -121&lf;&cr;152, 259, -104&lf;&cr;146, 249, -86&lf;&cr;143, 256, -104&lf;&cr;151, 249, -111&lf;&cr;148, 250, -104&lf;&cr;150, 265, -101&lf;&cr;140, 259, -106&lf;&cr;139, 255, -96&lf;&cr;152, 258, -111&lf;&cr;148, 264, -108&lf;&cr;155, 245, -112&lf;&cr;153, 249, -99&lf;&cr;151, 250, -101&lf;&cr;150, 257, -96&lf;&cr;153, 259, -110&lf;&cr;159, 256, -93&lf;&cr;148, 245, -107&lf;&cr;154, 256, -94&lf;&cr;143, 261, -104&lf;&cr;145, 245, -101&lf;&cr;146, 255, -111&lf;&cr;152, 274, -98&lf;&cr;155, 262, -103&lf;&cr;145, 257, -101&lf;&cr;148, 264, -90&lf;&cr;149, 250, -85&lf;&cr;134, 248, -113&lf;&cr;144, 258, -112&lf;&cr;150, 260, -103&lf;&cr;153, 259, -117&lf;&cr;142, 251, -105&lf;&cr;152, 253, -119&lf;&cr;142, 255, -104&lf;&cr;158, 273, -111&lf;&cr;147, 259, -92&lf;&cr;154, 252, -106&lf;&cr;143, 249, -111&lf;&cr;155, 268, -117&lf;&cr;150, 265, -91&lf;&cr;162, 260, -97&lf;&cr;156, 268, -110&lf;&cr;146, 254, -134&lf;&cr;150, 255, -95&lf;&cr;155, 259, -117&lf;&cr;143, 255, -88&lf;&cr;148, 260, -100&lf;&cr;146, 259, -99&lf;&cr;145, 263, -108&lf;&cr;155, 257, -105&lf;&cr;145, 266, -105&lf;&cr;153, 258, -99&lf;&cr;155, 256, -107&lf;&cr;143, 256, -102&lf;&cr;152, 254, -87&lf;&cr;151, 251, -114&lf;&cr;147, 260, -104&lf;&cr;171, 257, -122&lf;&cr;151, 257, -100&lf;&cr;139, 259, -111&lf;&cr;156, 252, -101&lf;&cr;151, 256, -90&lf;&cr;149, 245, -114&lf;&cr;150, 255, -104&lf;&cr;161, 250, -94&lf;&cr;147, 254, -108&lf;&cr;145, 256, -94&lf;&cr;153, 255, -100&lf;&cr;152, 266, -101&lf;&cr;155, 254, -106&lf;&cr;149, 257, -102&lf;&cr;150, 249, -100&lf;&cr;161, 257, -91&lf;&cr;157, 265, -98&lf;&cr;153, 257, -92&lf;&cr;154, 259, -99&lf;&cr;152, 260, -113&lf;&cr;148, 257, -82&lf;&cr;157, 266, -110&lf;&cr;149, 252, -108&lf;&cr;156, 263, -99&lf;&cr;152, 262, -93&lf;&cr;139, 249, -107&lf;&cr;155, 261, -106&lf;&cr;155, 264, -96&lf;&cr;162, 259, -97&lf;&cr;149, 260, -104&lf;&cr;161, 268, -102&lf;&cr;159, 255, -110&lf;&cr;154, 253, -100&lf;&cr;157, 255, -106&lf;&cr;160, 247, -102&lf;&cr;155, 265, -118&lf;&cr;141, 268, -99&lf;&cr;157, 258, -86&lf;&cr;146, 248, -98&lf;&cr;159, 261, -107&lf;&cr;138, 258, -109&lf;&cr;145, 259, -105&lf;&cr;145, 254, -107&lf;&cr;155, 251, -115&lf;&cr;159, 255, -99&lf;&cr;156, 251, -118&lf;&cr;168, 258, -109&lf;&cr;153, 253, -104&lf;&cr;156, 263, -100&lf;&cr;143, 252, -100&lf;&cr;153, 249, -106&lf;&cr;151, 260, -103&lf;&cr;149, 257, -105&lf;&cr;155, 258, -109&lf;&cr;154, 260, -105&lf;&cr;155, 258, -94&lf;&cr;146, 258, -98&lf;&cr;164, 241, -132&lf;&cr;155, 247, -96&lf;&cr;146, 261, -104&lf;&cr;158, 255, -91&lf;&cr;151, 256, -105&lf;&cr;150, 256, -117&lf;&cr;157, 262, -99&lf;&cr;153, 265, -97&lf;&cr;152, 267, -101&lf;&cr;145, 260, -107&lf;&cr;153, 256, -105&lf;&cr;161, 250, -102&lf;&cr;160, 254, -81&lf;&cr;157, 268, -117&lf;&cr;138, 254, -108&lf;&cr;151, 255, -122&lf;&cr;160, 255, -111&lf;&cr;143, 262, -103&lf;&cr;152, 256, -102&lf;&cr;154, 252, -94&lf;&cr;146, 260, -121&lf;&cr;160, 263, -102&lf;&cr;157, 270, -116&lf;&cr;152, 252, -106&lf;&cr;154, 262, -99&lf;&cr;147, 261, -91&lf;&cr;144, 264, -124&lf;&cr;163, 255, -104&lf;&cr;150, 270, -96&lf;&cr;158, 257, -102&lf;&cr;162, 253, -117&lf;&cr;146, 256, -108&lf;&cr;159, 261, -93&lf;&cr;160, 258, -101&lf;&cr;164, 252, -105&lf;&cr;149, 254, -107&lf;&cr;149, 251, -115&lf;&cr;161, 254, -118&lf;&cr;154, 264, -102&lf;&cr;155, 251, -97&lf;&cr;172, 261, -104&lf;&cr;155, 247, -103&lf;&cr;149, 253, -110&lf;&cr;149, 254, -100&lf;&cr;159, 264, -121&lf;&cr;158, 262, -100&lf;&cr;167, 260, -101&lf;&cr;153, 256, -109&lf;&cr;154, 260, -107&lf;&cr;153, 258, -109&lf;&cr;161, 258, -114&lf;&cr;161, 254, -110&lf;&cr;155, 259, -106&lf;&cr;154, 259, -119&lf;&cr;150, 264, -108&lf;&cr;157, 262, -109&lf;&cr;159, 256, -106&lf;&cr;157, 267, -111&lf;&cr;151, 259, -105&lf;&cr;153, 253, -105&lf;&cr;153, 260, -98&lf;&cr;153, 264, -107&lf;&cr;151, 258, -91&lf;&cr;149, 254, -101&lf;&cr;147, 258, -112&lf;&cr;160, 262, -105&lf;&cr;150, 253, -111&lf;&cr;160, 262, -109&lf;&cr;161, 274, -105&lf;&cr;156, 256, -104&lf;&cr;153, 252, -114&lf;&cr;150, 250, -102&lf;&cr;155, 252, -113&lf;&cr;156, 257, -115&lf;&cr;143, 255, -116&lf;&cr;156, 264, -104&lf;&cr;156, 253, -109&lf;&cr;157, 256, -97&lf;&cr;153, 257, -110&lf;&cr;164, 254, -95&lf;&cr;155, 263, -102&lf;&cr;146, 263, -103&lf;&cr;160, 255, -88&lf;&cr;161, 256, -104&lf;&cr;155, 256, -100&lf;&cr;165, 264, -77&lf;&cr;153, 252, -116&lf;&cr;151, 266, -97&lf;&cr;158, 259, -108&lf;&cr;158, 244, -112&lf;&cr;160, 249, -101&lf;&cr;150, 249, -110&lf;&cr;167, 259, -110&lf;&cr;164, 255, -104&lf;&cr;163, 259, -97&lf;&cr;160, 253, -101&lf;&cr;156, 260, -110&lf;&cr;162, 272, -110&lf;&cr;162, 251, -110&lf;&cr;165, 252, -86&lf;&cr;157, 253, -102&lf;&cr;156, 257, -99&lf;&cr;150, 254, -100&lf;&cr;162, 256, -106&lf;&cr;156, 257, -86&lf;&cr;151, 256, -98&lf;&cr;152, 259, -106&lf;&cr;154, 261, -102&lf;&cr;156, 261, -93&lf;&cr;160, 256, -108&lf;&cr;163, 258, -102&lf;&cr;162, 253, -83&lf;&cr;160, 251, -104&lf;&cr;162, 257, -97&lf;&cr;162, 257, -112&lf;&cr;153, 255, -95&lf;&cr;161, 273, -102&lf;&cr;163, 262, -117&lf;&cr;150, 261, -99&lf;&cr;150, 258, -104&lf;&cr;161, 261, -106&lf;&cr;154, 259, -91&lf;&cr;160, 256, -108&lf;&cr;159, 255, -104&lf;&cr;147, 264, -103&lf;&cr;152, 258, -101&lf;&cr;161, 257, -101&lf;&cr;153, 257, -95&lf;&cr;149, 264, -117&lf;&cr;150, 250, -109&lf;&cr;150, 256, -106&lf;&cr;156, 254, -115&lf;&cr;158, 254, -107&lf;&cr;163, 261, -111&lf;&cr;149, 254, -114&lf;&cr;163, 259, -93&lf;&cr;163, 265, -110&lf;&cr;165, 251, -97&lf;&cr;151, 267, -87&lf;&cr;152, 262, -107&lf;&cr;165, 258, -93&lf;&cr;152, 257, -99&lf;&cr;158, 256, -115&lf;&cr;149, 253, -90&lf;&cr;153, 270, -105&lf;&cr;158, 261, -113&lf;&cr;160, 256, -116&lf;&cr;156, 258, -106&lf;&cr;155, 244, -121&lf;&cr;145, 259, -119&lf;&cr;155, 256, -106&lf;&cr;150, 254, -97&lf;&cr;160, 260, -105&lf;&cr;153, 259, -104&lf;&cr;157, 255, -91&lf;&cr;152, 249, -109&lf;&cr;149, 251, -85&lf;&cr;156, 264, -122&lf;&cr;153, 256, -114&lf;&cr;158, 253, -109&lf;&cr;152, 254, -99&lf;&cr;164, 253, -108&lf;&cr;164, 248, -90&lf;&cr;161, 252, -96&lf;&cr;153, 251, -116&lf;&cr;146, 256, -99&lf;&cr;154, 257, -105&lf;&cr;155, 258, -107&lf;&cr;161, 256, -108&lf;&cr;160, 252, -108&lf;&cr;161, 258, -99&lf;&cr;156, 252, -85&lf;&cr;157, 243, -105&lf;&cr;159, 258, -108&lf;&cr;144, 251, -112&lf;&cr;163, 263, -97&lf;&cr;159, 267, -110&lf;&cr;148, 257, -100&lf;&cr;163, 248, -110&lf;&cr;164, 257, -104&lf;&cr;154, 255, -107&lf;&cr;155, 247, -95&lf;&cr;157, 259, -100&lf;&cr;159, 252, -107&lf;&cr;162, 252, -119&lf;&cr;162, 252, -103&lf;&cr;162, 260, -112&lf;&cr;156, 262, -104&lf;&cr;159, 251, -91&lf;&cr;154, 262, -113&lf;&cr;154, 256, -89&lf;&cr;159, 248, -105&lf;&cr;150, 253, -90&lf;&cr;160, 258, -106&lf;&cr;156, 258, -112&lf;&cr;156, 260, -106&lf;&cr;156, 262, -108&lf;&cr;167, 254, -82&lf;&cr;153, 258, -111&lf;&cr;160, 256, -91&lf;&cr;160, 261, -126&lf;&cr;149, 260, -102&lf;&cr;157, 258, -104&lf;&cr;160, 265, -110&lf;&cr;153, 252, -89&lf;&cr;155, 252, -88&lf;&cr;154, 247, -86&lf;&cr;169, 255, -108&lf;&cr;159, 269, -92&lf;&cr;152, 253, -91&lf;&cr;156, 257, -101&lf;&cr;161, 257, -126&lf;&cr;159, 262, -113&lf;&cr;155, 256, -95&lf;&cr;162, 265, -103&lf;&cr;155, 263, -97&lf;&cr;152, 261, -104&lf;&cr;164, 269, -91&lf;&cr;162, 258, -99&lf;&cr;157, 259, -92&lf;&cr;159, 263, -97&lf;&cr;166, 253, -98&lf;&cr;166, 252, -100&lf;&cr;163, 259, -106&lf;&cr;159, 266, -102&lf;&cr;157, 263, -99&lf;&cr;161, 260, -112&lf;&cr;156, 249, -87&lf;&cr;158, 250, -99&lf;&cr;161, 253, -108&lf;&cr;166, 265, -100&lf;&cr;156, 251, -106&lf;&cr;170, 263, -118&lf;&cr;157, 261, -105&lf;&cr;163, 263, -103&lf;&cr;166, 257, -97&lf;&cr;170, 253, -104&lf;&cr;158, 253, -97&lf;&cr;162, 257, -104&lf;&cr;161, 259, -110&lf;&cr;164, 260, -107&lf;&cr;156, 254, -113&lf;&cr;159, 257, -99&lf;&cr;159, 256, -103&lf;&cr;162, 264, -109&lf;&cr;163, 254, -81&lf;&cr;155, 258, -107&lf;&cr;147, 255, -96&lf;&cr;157, 247, -110&lf;&cr;162, 261, -102&lf;&cr;160, 255, -97&lf;&cr;151, 259, -96&lf;&cr;153, 264, -115&lf;&cr;150, 246, -103&lf;&cr;167, 248, -107&lf;&cr;161, 260, -99&lf;&cr;156, 264, -81&lf;&cr;156, 258, -105&lf;&cr;156, 260, -101&lf;&cr;159, 259, -116&lf;&cr;157, 257, -98&lf;&cr;147, 255, -99&lf;&cr;160, 261, -112&lf;&cr;156, 265, -94&lf;&cr;165, 252, -94&lf;&cr;157, 266, -115&lf;&cr;159, 260, -102&lf;&cr;160, 250, -105&lf;&cr;161, 257, -107&lf;&cr;156, 257, -93&lf;&cr;152, 249, -95&lf;&cr;161, 247, -93&lf;&cr;155, 262, -124&lf;&cr;162, 253, -96&lf;&cr;154, 259, -110&lf;&cr;161, 255, -95&lf;&cr;154, 270, -118&lf;&cr;166, 260, -104&lf;&cr;153, 258, -109&lf;&cr;159, 251, -103&lf;&cr;157, 262, -105&lf;&cr;155, 253, -94&lf;&cr;152, 255, -99&lf;&cr;152, 258, -101&lf;&cr;161, 260, -91&lf;&cr;154, 253, -116&lf;&cr;163, 255, -111&lf;&cr;155, 248, -96&lf;&cr;159, 257, -100&lf;&cr;155, 258, -92&lf;&cr;151, 252, -109&lf;&cr;159, 255, -109&lf;&cr;168, 252, -108&lf;&cr;152, 253, -113&lf;&cr;171, 261, -91&lf;&cr;161, 255, -97&lf;&cr;158, 250, -101&lf;&cr;155, 248, -97&lf;&cr;154, 255, -104&lf;&cr;162, 250, -109&lf;&cr;149, 263, -105&lf;&cr;157, 248, -109&lf;&cr;173, 263, -113&lf;&cr;167, 253, -100&lf;&cr;152, 254, -106&lf;&cr;167, 269, -99&lf;&cr;153, 250, -119&lf;&cr;163, 265, -104&lf;&cr;163, 254, -99&lf;&cr;156, 256, -111&lf;&cr;158, 247, -96&lf;&cr;160, 264, -101&lf;&cr;155, 253, -104&lf;&cr;159, 260, -99&lf;&cr;155, 253, -87&lf;&cr;154, 265, -112&lf;&cr;164, 257, -100&lf;&cr;162, 265, -105&lf;&cr;158, 257, -92&lf;&cr;159, 259, -101&lf;&cr;158, 255, -101&lf;&cr;159, 261, -102&lf;&cr;153, 267, -95&lf;&cr;158, 248, -108&lf;&cr;162, 259, -107&lf;&cr;159, 257, -107&lf;&cr;161, 261, -110&lf;&cr;162, 266, -107&lf;&cr;166, 253, -115&lf;&cr;151, 258, -98&lf;&cr;158, 261, -93&lf;&cr;159, 254, -88&lf;&cr;152, 254, -100&lf;&cr;166, 260, -104&lf;&cr;154, 265, -90&lf;&cr;150, 259, -111&lf;&cr;153, 255, -101&lf;&cr;166, 262, -98&lf;&cr;162, 263, -100&lf;&cr;158, 268, -97&lf;&cr;159, 265, -117&lf;&cr;163, 249, -96&lf;&cr;155, 263, -123&lf;&cr;167, 264, -98&lf;&cr;159, 271, -95&lf;&cr;163, 260, -85&lf;&cr;150, 254, -104&lf;&cr;158, 257, -108&lf;&cr;156, 252, -98&lf;&cr;157, 256, -106&lf;&cr;163, 253, -99&lf;&cr;167, 257, -99&lf;&cr;153, 256, -100&lf;&cr;178, 263, -88&lf;&cr;161, 251, -97&lf;&cr;171, 265, -94&lf;&cr;168, 255, -123&lf;&cr;168, 252, -123&lf;&cr;163, 264, -92&lf;&cr;162, 260, -112&lf;&cr;177, 258, -113&lf;&cr;156, 252, -103&lf;&cr;160, 254, -107&lf;&cr;161, 265, -106&lf;&cr;163, 253, -99&lf;&cr;153, 268, -99&lf;&cr;159, 267, -93&lf;&cr;161, 254, -89&lf;&cr;154, 263, -102&lf;&cr;168, 260, -117&lf;&cr;154, 269, -106&lf;&cr;152, 261, -100&lf;&cr;152, 257, -110&lf;&cr;165, 256, -118&lf;&cr;173, 261, -103&lf;&cr;162, 264, -115&lf;&cr;156, 252, -111&lf;&cr;161, 264, -110&lf;&cr;166, 261, -87&lf;&cr;166, 262, -99&lf;&cr;152, 255, -98&lf;&cr;156, 253, -125&lf;&cr;163, 253, -101&lf;&cr;157, 256, -107&lf;&cr;164, 259, -105&lf;&cr;167, 244, -111&lf;&cr;162, 258, -107&lf;&cr;156, 256, -110&lf;&cr;165, 263, -95&lf;&cr;163, 259, -89&lf;&cr;167, 253, -89&lf;&cr;161, 258, -93&lf;&cr;168, 262, -103&lf;&cr;167, 265, -98&lf;&cr;158, 254, -91&lf;&cr;168, 257, -104&lf;&cr;161, 264, -110&lf;&cr;161, 256, -96&lf;&cr;159, 255, -106&lf;&cr;171, 262, -97&lf;&cr;169, 263, -116&lf;&cr;171, 259, -100&lf;&cr;162, 257, -125&lf;&cr;152, 253, -101&lf;&cr;171, 261, -111&lf;&cr;161, 263, -93&lf;&cr;150, 265, -108&lf;&cr;160, 257, -108&lf;&cr;163, 267, -112&lf;&cr;168, 264, -111&lf;&cr;160, 260, -104&lf;&cr;156, 253, -109&lf;&cr;166, 265, -103&lf;&cr;166, 257, -120&lf;&cr;158, 256, -113&lf;&cr;149, 252, -125&lf;&cr;163, 256, -102&lf;&cr;171, 253, -108&lf;&cr;158, 262, -97&lf;&cr;158, 254, -106&lf;&cr;156, 254, -111&lf;&cr;165, 256, -101&lf;&cr;160, 246, -99&lf;&cr;154, 249, -108&lf;&cr;158, 255, -104&lf;&cr;168, 255, -100&lf;&cr;161, 253, -108&lf;&cr;154, 259, -108&lf;&cr;158, 254, -103&lf;&cr;166, 250, -90&lf;&cr;163, 249, -94&lf;&cr;161, 255, -94&lf;&cr;170, 259, -117&lf;&cr;169, 262, -114&lf;&cr;165, 253, -96&lf;&cr;160, 256, -105&lf;&cr;157, 262, -122&lf;&cr;161, 253, -91&lf;&cr;162, 256, -105&lf;&cr;176, 251, -99&lf;&cr;151, 254, -109&lf;&cr;165, 248, -101&lf;&cr;165, 258, -108&lf;&cr;146, 247, -105&lf;&cr;155, 254, -103&lf;&cr;169, 254, -104&lf;&cr;155, 250, -104&lf;&cr;170, 253, -108&lf;&cr;162, 251, -93&lf;&cr;163, 269, -102&lf;&cr;163, 255, -117&lf;&cr;157, 255, -104&lf;&cr;164, 258, -82&lf;&cr;161, 263, -112&lf;&cr;165, 255, -105&lf;&cr;155, 260, -119&lf;&cr;177, 252, -91&lf;&cr;148, 258, -101&lf;&cr;161, 255, -104&lf;&cr;162, 259, -101&lf;&cr;163, 263, -106&lf;&cr;176, 252, -116&lf;&cr;165, 252, -97&lf;&cr;156, 255, -111&lf;&cr;158, 258, -114&lf;&cr;167, 260, -102&lf;&cr;160, 259, -111&lf;&cr;178, 264, -95&lf;&cr;170, 263, -102&lf;&cr;170, 251, -103&lf;&cr;167, 257, -105&lf;&cr;171, 254, -101&lf;&cr;154, 260, -105&lf;&cr;165, 248, -100&lf;&cr;160, 252, -108&lf;&cr;167, 262, -102&lf;&cr;167, 265, -105&lf;&cr;153, 264, -101&lf;&cr;154, 266, -114&lf;&cr;165, 261, -108&lf;&cr;168, 261, -97&lf;&cr;167, 260, -111&lf;&cr;170, 266, -112&lf;&cr;167, 261, -106&lf;&cr;157, 258, -102&lf;&cr;174, 252, -104&lf;&cr;169, 255, -95&lf;&cr;164, 258, -118&lf;&cr;168, 263, -102&lf;&cr;163, 259, -97&lf;&cr;163, 252, -100&lf;&cr;157, 260, -110&lf;&cr;158, 255, -115&lf;&cr;159, 250, -101&lf;&cr;160, 257, -98&lf;&cr;168, 257, -106&lf;&cr;164, 253, -94&lf;&cr;148, 245, -102&lf;&cr;165, 262, -109&lf;&cr;174, 257, -101&lf;&cr;152, 270, -103&lf;&cr;165, 256, -112&lf;&cr;157, 252, -114&lf;&cr;165, 255, -90&lf;&cr;154, 261, -104&lf;&cr;158, 265, -112&lf;&cr;178, 263, -101&lf;&cr;172, 253, -103&lf;&cr;155, 253, -97&lf;&cr;158, 262, -93&lf;&cr;170, 273, -99&lf;&cr;164, 265, -95&lf;&cr;159, 260, -103&lf;&cr;169, 252, -102&lf;&cr;166, 264, -101&lf;&cr;152, 273, -97&lf;&cr;182, 255, -107&lf;&cr;183, 265, -109&lf;&cr;160, 251, -112&lf;&cr;165, 262, -100&lf;&cr;178, 263, -98&lf;&cr;164, 262, -97&lf;&cr;151, 262, -109&lf;&cr;147, 259, -102&lf;&cr;169, 269, -117&lf;&cr;157, 264, -90&lf;&cr;153, 248, -97&lf;&cr;169, 248, -92&lf;&cr;161, 264, -103&lf;&cr;164, 247, -100&lf;&cr;169, 250, -101&lf;&cr;160, 255, -103&lf;&cr;173, 258, -101&lf;&cr;165, 258, -111&lf;&cr;169, 270, -95&lf;&cr;159, 250, -101&lf;&cr;158, 248, -103&lf;&cr;169, 261, -110&lf;&cr;176, 267, -100&lf;&cr;172, 266, -96&lf;&cr;161, 265, -101&lf;&cr;168, 259, -97&lf;&cr;171, 251, -101&lf;&cr;165, 252, -114&lf;&cr;172, 251, -105&lf;&cr;170, 260, -113&lf;&cr;159, 251, -89&lf;&cr;161, 259, -102&lf;&cr;160, 260, -97&lf;&cr;167, 255, -95&lf;&cr;172, 259, -113&lf;&cr;170, 247, -114&lf;&cr;168, 263, -107&lf;&cr;172, 265, -100&lf;&cr;170, 255, -99&lf;&cr;163, 252, -105&lf;&cr;172, 252, -90&lf;&cr;164, 249, -103&lf;&cr;180, 261, -89&lf;&cr;163, 251, -111&lf;&cr;167, 254, -123&lf;&cr;172, 249, -93&lf;&cr;168, 256, -95&lf;&cr;169, 238, -113&lf;&cr;162, 250, -124&lf;&cr;162, 255, -101&lf;&cr;161, 258, -112&lf;&cr;167, 265, -105&lf;&cr;169, 256, -124&lf;&cr;168, 253, -103&lf;&cr;171, 253, -98&lf;&cr;175, 249, -110&lf;&cr;171, 258, -90&lf;&cr;173, 247, -99&lf;&cr;179, 255, -110&lf;&cr;169, 256, -95&lf;&cr;178, 255, -94&lf;&cr;159, 265, -115&lf;&cr;165, 257, -118&lf;&cr;163, 251, -95&lf;&cr;156, 257, -102&lf;&cr;168, 268, -114&lf;&cr;170, 253, -110&lf;&cr;166, 262, -120&lf;&cr;156, 259, -94&lf;&cr;166, 265, -97&lf;&cr;174, 257, -96&lf;&cr;176, 261, -110&lf;&cr;159, 252, -82&lf;&cr;166, 256, -110&lf;&cr;166, 249, -92&lf;&cr;162, 251, -109&lf;&cr;168, 258, -108&lf;&cr;166, 253, -107&lf;&cr;154, 261, -102&lf;&cr;173, 252, -100&lf;&cr;178, 251, -96&lf;&cr;171, 250, -125&lf;&cr;180, 261, -111&lf;&cr;165, 266, -114&lf;&cr;169, 260, -117&lf;&cr;169, 257, -112&lf;&cr;166, 255, -98&lf;&cr;175, 251, -117&lf;&cr;168, 260, -112&lf;&cr;166, 256, -113&lf;&cr;171, 258, -94&lf;&cr;172, 261, -107&lf;&cr;175, 241, -104&lf;&cr;158, 261, -115&lf;&cr;164, 268, -106&lf;&cr;169, 255, -100&lf;&cr;177, 257, -108&lf;&cr;169, 267, -102&lf;&cr;164, 257, -115&lf;&cr;165, 256, -100&lf;&cr;170, 263, -106&lf;&cr;178, 262, -85&lf;&cr;169, 252, -96&lf;&cr;178, 254, -98&lf;&cr;173, 252, -105&lf;&cr;171, 251, -98&lf;&cr;171, 257, -97&lf;&cr;172, 262, -117&lf;&cr;177, 260, -103&lf;&cr;171, 252, -110&lf;&cr;171, 260, -105&lf;&cr;176, 250, -107&lf;&cr;182, 255, -102&lf;&cr;173, 261, -110&lf;&cr;169, 250, -109&lf;&cr;179, 249, -107&lf;&cr;177, 255, -112&lf;&cr;173, 246, -99&lf;&cr;167, 258, -105&lf;&cr;164, 260, -106&lf;&cr;170, 266, -114&lf;&cr;168, 261, -99&lf;&cr;168, 243, -91&lf;&cr;161, 254, -105&lf;&cr;170, 258, -117&lf;&cr;166, 248, -91&lf;&cr;162, 251, -106&lf;&cr;171, 257, -99&lf;&cr;168, 249, -114&lf;&cr;162, 264, -106&lf;&cr;159, 260, -116&lf;&cr;173, 253, -99&lf;&cr;163, 257, -105&lf;&cr;174, 256, -112&lf;&cr;163, 254, -119&lf;&cr;163, 258, -98&lf;&cr;168, 261, -118&lf;&cr;168, 258, -109&lf;&cr;166, 258, -104&lf;&cr;185, 251, -105&lf;&cr;169, 256, -115&lf;&cr;164, 248, -110&lf;&cr;164, 258, -125&lf;&cr;172, 243, -114&lf;&cr;177, 257, -110&lf;&cr;178, 256, -103&lf;&cr;173, 250, -91&lf;&cr;173, 253, -113&lf;&cr;176, 261, -102&lf;&cr;167, 255, -111&lf;&cr;179, 255, -97&lf;&cr;171, 253, -100&lf;&cr;172, 254, -107&lf;&cr;170, 261, -103&lf;&cr;172, 263, -94&lf;&cr;176, 262, -95&lf;&cr;173, 258, -111&lf;&cr;172, 261, -111&lf;&cr;179, 262, -95&lf;&cr;171, 254, -101&lf;&cr;174, 252, -92&lf;&cr;170, 258, -97&lf;&cr;165, 249, -105&lf;&cr;158, 250, -110&lf;&cr;166, 258, -111&lf;&cr;170, 259, -108&lf;&cr;165, 256, -96&lf;&cr;173, 249, -122&lf;&cr;171, 248, -117&lf;&cr;179, 254, -111&lf;&cr;176, 261, -124&lf;&cr;169, 252, -105&lf;&cr;166, 257, -102&lf;&cr;159, 257, -122&lf;&cr;176, 237, -91&lf;&cr;171, 259, -109&lf;&cr;165, 257, -103&lf;&cr;165, 261, -109&lf;&cr;171, 254, -112&lf;&cr;170, 244, -121&lf;&cr;170, 262, -106&lf;&cr;175, 259, -99&lf;&cr;176, 255, -119&lf;&cr;168, 258, -96&lf;&cr;174, 255, -97&lf;&cr;173, 258, -107&lf;&cr;176, 247, -106&lf;&cr;174, 255, -99&lf;&cr;178, 251, -115&lf;&cr;177, 253, -95&lf;&cr;164, 259, -104&lf;&cr;175, 256, -120&lf;&cr;162, 258, -120&lf;&cr;173, 260, -107&lf;&cr;173, 252, -104&lf;&cr;170, 264, -104&lf;&cr;170, 254, -100&lf;&cr;172, 252, -106&lf;&cr;170, 258, -109&lf;&cr;168, 260, -117&lf;&cr;172, 254, -103&lf;&cr;175, 251, -124&lf;&cr;174, 266, -95&lf;&cr;170, 257, -106&lf;&cr;171, 258, -108&lf;&cr;171, 257, -110&lf;&cr;165, 268, -99&lf;&cr;173, 262, -95&lf;&cr;179, 251, -88&lf;&cr;177, 259, -97&lf;&cr;171, 259, -108&lf;&cr;171, 247, -111&lf;&cr;170, 264, -113&lf;&cr;163, 256, -90&lf;&cr;165, 270, -100&lf;&cr;167, 250, -105&lf;&cr;164, 252, -92&lf;&cr;166, 258, -95&lf;&cr;174, 260, -105&lf;&cr;168, 262, -106&lf;&cr;164, 251, -99&lf;&cr;159, 252, -102&lf;&cr;174, 260, -100&lf;&cr;168, 259, -114&lf;&cr;172, 263, -106&lf;&cr;173, 258, -89&lf;&cr;164, 270, -117&lf;&cr;169, 256, -94&lf;&cr;162, 253, -100&lf;&cr;167, 261, -117&lf;&cr;171, 265, -109&lf;&cr;174, 259, -113&lf;&cr;171, 257, -117&lf;&cr;170, 265, -103&lf;&cr;175, 259, -99&lf;&cr;168, 252, -107&lf;&cr;165, 252, -106&lf;&cr;172, 265, -92&lf;&cr;171, 258, -110&lf;&cr;169, 263, -113&lf;&cr;164, 262, -96&lf;&cr;167, 262, -106&lf;&cr;168, 254, -95&lf;&cr;172, 252, -97&lf;&cr;166, 269, -107&lf;&cr;168, 261, -109&lf;&cr;171, 264, -93&lf;&cr;180, 266, -116&lf;&cr;169, 258, -108&lf;&cr;172, 254, -115&lf;&cr;170, 265, -100&lf;&cr;178, 255, -87&lf;&cr;173, 256, -103&lf;&cr;172, 256, -98&lf;&cr;178, 246, -102&lf;&cr;164, 251, -97&lf;&cr;164, 265, -106&lf;&cr;175, 248, -106&lf;&cr;167, 256, -101&lf;&cr;168, 259, -97&lf;&cr;163, 258, -105&lf;&cr;165, 255, -117&lf;&cr;174, 260, -117&lf;&cr;176, 260, -101&lf;&cr;176, 254, -101&lf;&cr;165, 257, -112&lf;&cr;169, 251, -113&lf;&cr;174, 255, -87&lf;&cr;178, 267, -104&lf;&cr;165, 251, -118&lf;&cr;162, 267, -104&lf;&cr;172, 265, -105&lf;&cr;173, 253, -93&lf;&cr;178, 255, -102&lf;&cr;164, 248, -94&lf;&cr;184, 259, -107&lf;&cr;164, 264, -99&lf;&cr;173, 259, -113&lf;&cr;169, 264, -95&lf;&cr;168, 254, -95&lf;&cr;160, 254, -97&lf;&cr;176, 262, -97&lf;&cr;179, 252, -99&lf;&cr;173, 257, -95&lf;&cr;172, 252, -104&lf;&cr;172, 257, -102&lf;&cr;168, 264, -100&lf;&cr;177, 256, -104&lf;&cr;166, 265, -125&lf;&cr;162, 260, -94&lf;&cr;173, 271, -100&lf;&cr;184, 250, -107&lf;&cr;173, 263, -90&lf;&cr;157, 256, -108&lf;&cr;176, 259, -101&lf;&cr;163, 256, -101&lf;&cr;178, 258, -118&lf;&cr;167, 256, -113&lf;&cr;165, 256, -96&lf;&cr;178, 251, -118&lf;&cr;172, 264, -98&lf;&cr;165, 254, -99&lf;&cr;179, 252, -115&lf;&cr;170, 262, -94&lf;&cr;173, 245, -103&lf;&cr;180, 255, -96&lf;&cr;172, 255, -112&lf;&cr;170, 258, -103&lf;&cr;180, 255, -105&lf;&cr;168, 252, -95&lf;&cr;179, 251, -86&lf;&cr;168, 258, -112&lf;&cr;177, 252, -127&lf;&cr;164, 254, -101&lf;&cr;174, 251, -103&lf;&cr;169, 251, -102&lf;&cr;166, 257, -105&lf;&cr;161, 254, -104&lf;&cr;175, 265, -102&lf;&cr;174, 258, -108&lf;&cr;171, 262, -113&lf;&cr;180, 262, -104&lf;&cr;164, 252, -102&lf;&cr;177, 256, -99&lf;&cr;175, 258, -92&lf;&cr;178, 260, -91&lf;&cr;175, 252, -113&lf;&cr;179, 259, -106&lf;&cr;169, 265, -112&lf;&cr;177, 267, -113&lf;&cr;170, 256, -103&lf;&cr;169, 264, -106&lf;&cr;163, 266, -104&lf;&cr;175, 259, -114&lf;&cr;169, 266, -103&lf;&cr;178, 261, -115&lf;&cr;171, 243, -110&lf;&cr;167, 256, -104&lf;&cr;166, 277, -115&lf;&cr;170, 253, -113&lf;&cr;174, 252, -109&lf;&cr;170, 248, -116&lf;&cr;163, 245, -104&lf;&cr;175, 259, -112&lf;&cr;168, 255, -100&lf;&cr;171, 251, -88&lf;&cr;165, 266, -111&lf;&cr;174, 261, -105&lf;&cr;165, 251, -112&lf;&cr;165, 257, -111&lf;&cr;169, 262, -107&lf;&cr;168, 256, -118&lf;&cr;172, 254, -101&lf;&cr;181, 276, -110&lf;&cr;183, 248, -88&lf;&cr;166, 257, -90&lf;&cr;168, 251, -98&lf;&cr;180, 253, -111&lf;&cr;176, 255, -115&lf;&cr;170, 260, -113&lf;&cr;166, 256, -96&lf;&cr;177, 251, -109&lf;&cr;177, 253, -112&lf;&cr;171, 269, -103&lf;&cr;178, 248, -96&lf;&cr;176, 265, -111&lf;&cr;172, 258, -97&lf;&cr;168, 257, -107&lf;&cr;173, 268, -99&lf;&cr;165, 265, -103&lf;&cr;176, 255, -107&lf;&cr;177, 251, -99&lf;&cr;174, 248, -109&lf;&cr;168, 266, -122&lf;&cr;184, 265, -101&lf;&cr;177, 271, -113&lf;&cr;176, 254, -110&lf;&cr;174, 250, -104&lf;&cr;179, 255, -107&lf;&cr;165, 263, -108&lf;&cr;172, 260, -108&lf;&cr;174, 256, -83&lf;&cr;181, 256, -107&lf;&cr;168, 260, -107&lf;&cr;174, 251, -93&lf;&cr;171, 247, -108&lf;&cr;189, 244, -111&lf;&cr;181, 260, -101&lf;&cr;163, 264, -116&lf;&cr;165, 265, -104&lf;&cr;179, 256, -106&lf;&cr;166, 255, -97&lf;&cr;174, 254, -97&lf;&cr;166, 261, -106&lf;&cr;183, 250, -110&lf;&cr;172, 259, -97&lf;&cr;176, 258, -107&lf;&cr;169, 249, -95&lf;&cr;169, 260, -111&lf;&cr;174, 262, -90&lf;&cr;170, 263, -115&lf;&cr;173, 264, -117&lf;&cr;181, 252, -100&lf;&cr;159, 252, -101&lf;&cr;175, 259, -107&lf;&cr;174, 254, -101&lf;&cr;181, 259, -117&lf;&cr;170, 248, -98&lf;&cr;170, 260, -103&lf;&cr;176, 263, -96&lf;&cr;170, 254, -103&lf;&cr;170, 252, -107&lf;&cr;170, 256, -119&lf;&cr;173, 259, -112&lf;&cr;164, 256, -128&lf;&cr;183, 258, -95&lf;&cr;169, 258, -119&lf;&cr;173, 252, -119&lf;&cr;173, 259, -109&lf;&cr;163, 263, -115&lf;&cr;168, 266, -110&lf;&cr;183, 259, -91&lf;&cr;182, 254, -94&lf;&cr;175, 263, -114&lf;&cr;175, 259, -119&lf;&cr;177, 258, -85&lf;&cr;176, 256, -109&lf;&cr;168, 255, -107&lf;&cr;160, 248, -117&lf;&cr;177, 260, -103&lf;&cr;181, 250, -106&lf;&cr;177, 247, -115&lf;&cr;172, 262, -94&lf;&cr;176, 255, -104&lf;&cr;173, 254, -106&lf;&cr;173, 261, -101&lf;&cr;188, 265, -106&lf;&cr;169, 265, -100&lf;&cr;164, 264, -109&lf;&cr;188, 249, -98&lf;&cr;181, 259, -111&lf;&cr;175, 253, -116&lf;&cr;179, 267, -104&lf;&cr;177, 255, -98&lf;&cr;177, 250, -98&lf;&cr;173, 262, -99&lf;&cr;179, 255, -111&lf;&cr;178, 252, -99&lf;&cr;172, 260, -113&lf;&cr;172, 254, -100&lf;&cr;175, 255, -117&lf;&cr;174, 259, -88&lf;&cr;170, 260, -103&lf;&cr;177, 265, -113&lf;&cr;169, 259, -95&lf;&cr;178, 256, -110&lf;&cr;177, 254, -105&lf;&cr;173, 249, -113&lf;&cr;166, 256, -113&lf;&cr;176, 255, -112&lf;&cr;185, 262, -122&lf;&cr;174, 255, -106&lf;&cr;180, 268, -116&lf;&cr;170, 260, -101&lf;&cr;183, 248, -97&lf;&cr;163, 258, -106&lf;&cr;178, 260, -103&lf;&cr;178, 252, -97&lf;&cr;182, 254, -94&lf;&cr;179, 256, -100&lf;&cr;173, 261, -92&lf;&cr;182, 259, -116&lf;&cr;180, 265, -107&lf;&cr;163, 246, -107&lf;&cr;165, 255, -99&lf;&cr;174, 261, -106&lf;&cr;179, 264, -98&lf;&cr;178, 262, -118&lf;&cr;168, 249, -112&lf;&cr;175, 254, -111&lf;&cr;192, 266, -106&lf;&cr;178, 255, -109&lf;&cr;172, 252, -106&lf;&cr;183, 254, -106&lf;&cr;170, 254, -114&lf;&cr;176, 247, -115&lf;&cr;183, 260, -103&lf;&cr;161, 265, -120&lf;&cr;179, 257, -99&lf;&cr;170, 263, -107&lf;&cr;180, 259, -100&lf;&cr;160, 261, -113&lf;&cr;182, 265, -108&lf;&cr;171, 259, -93&lf;&cr;179, 248, -111&lf;&cr;177, 252, -95&lf;&cr;172, 256, -104&lf;&cr;185, 259, -91&lf;&cr;175, 272, -100&lf;&cr;179, 252, -97&lf;&cr;180, 264, -88&lf;&cr;176, 254, -117&lf;&cr;170, 265, -84&lf;&cr;176, 259, -109&lf;&cr;171, 257, -96&lf;&cr;170, 248, -103&lf;&cr;180, 258, -99&lf;&cr;165, 263, -90&lf;&cr;171, 263, -126&lf;&cr;173, 254, -110&lf;&cr;173, 254, -104&lf;&cr;181, 251, -108&lf;&cr;175, 256, -100&lf;&cr;172, 258, -111&lf;&cr;167, 260, -109&lf;&cr;169, 262, -94&lf;&cr;168, 258, -107&lf;&cr;186, 269, -97&lf;&cr;177, 263, -85&lf;&cr;171, 266, -92&lf;&cr;188, 247, -112&lf;&cr;171, 263, -100&lf;&cr;162, 262, -108&lf;&cr;189, 256, -107&lf;&cr;189, 256, -114&lf;&cr;185, 253, -78&lf;&cr;167, 270, -93&lf;&cr;186, 256, -103&lf;&cr;180, 260, -99&lf;&cr;170, 254, -107&lf;&cr;179, 264, -101&lf;&cr;169, 256, -125&lf;&cr;178, 261, -101&lf;&cr;180, 262, -108&lf;&cr;177, 260, -97&lf;&cr;166, 260, -101&lf;&cr;170, 261, -86&lf;&cr;189, 266, -111&lf;&cr;167, 266, -104&lf;&cr;172, 253, -110&lf;&cr;179, 255, -100&lf;&cr;176, 267, -114&lf;&cr;176, 270, -92&lf;&cr;184, 260, -107&lf;&cr;175, 258, -112&lf;&cr;182, 253, -101&lf;&cr;167, 258, -122&lf;&cr;169, 256, -106&lf;&cr;169, 264, -106&lf;&cr;173, 258, -117&lf;&cr;181, 260, -103&lf;&cr;168, 254, -106&lf;&cr;186, 259, -108&lf;&cr;180, 267, -98&lf;&cr;169, 259, -103&lf;&cr;175, 252, -91&lf;&cr;174, 259, -105&lf;&cr;176, 251, -106&lf;&cr;183, 255, -99&lf;&cr;175, 254, -96&lf;&cr;175, 257, -107&lf;&cr;179, 270, -118&lf;&cr;187, 254, -110&lf;&cr;179, 258, -93&lf;&cr;182, 259, -110&lf;&cr;184, 251, -104&lf;&cr;178, 261, -110&lf;&cr;177, 263, -105&lf;&cr;183, 249, -98&lf;&cr;175, 250, -100&lf;&cr;171, 259, -111&lf;&cr;190, 266, -97&lf;&cr;186, 258, -120&lf;&cr;183, 254, -119&lf;&cr;171, 254, -112&lf;&cr;185, 249, -100&lf;&cr;171, 258, -90&lf;&cr;176, 259, -104&lf;&cr;181, 259, -103&lf;&cr;180, 260, -100&lf;&cr;189, 260, -94&lf;&cr;175, 254, -91&lf;&cr;178, 251, -100&lf;&cr;181, 250, -105&lf;&cr;184, 258, -106&lf;&cr;171, 262, -107&lf;&cr;169, 251, -130&lf;&cr;170, 250, -117&lf;&cr;178, 253, -104&lf;&cr;175, 265, -100&lf;&cr;181, 253, -106&lf;&cr;169, 257, -121&lf;&cr;168, 252, -104&lf;&cr;164, 254, -109&lf;&cr;175, 263, -111&lf;&cr;176, 260, -102&lf;&cr;189, 255, -112&lf;&cr;175, 262, -126&lf;&cr;171, 250, -94&lf;&cr;181, 262, -106&lf;&cr;179, 263, -101&lf;&cr;186, 264, -109&lf;&cr;177, 259, -114&lf;&cr;175, 256, -108&lf;&cr;180, 248, -100&lf;&cr;174, 250, -86&lf;&cr;160, 260, -104&lf;&cr;173, 257, -102&lf;&cr;171, 262, -118&lf;&cr;183, 269, -103&lf;&cr;181, 251, -103&lf;&cr;183, 256, -99&lf;&cr;170, 260, -98&lf;&cr;177, 257, -107&lf;&cr;172, 260, -104&lf;&cr;178, 269, -102&lf;&cr;177, 249, -109&lf;&cr;167, 257, -94&lf;&cr;177, 259, -93&lf;&cr;186, 257, -101&lf;&cr;179, 257, -120&lf;&cr;177, 265, -122&lf;&cr;179, 268, -113&lf;&cr;182, 248, -99&lf;&cr;186, 257, -115&lf;&cr;175, 264, -94&lf;&cr;176, 265, -99&lf;&cr;176, 257, -88&lf;&cr;183, 258, -123&lf;&cr;181, 259, -90&lf;&cr;183, 253, -102&lf;&cr;175, 253, -105&lf;&cr;173, 261, -106&lf;&cr;182, 258, -110&lf;&cr;173, 259, -118&lf;&cr;172, 265, -87&lf;&cr;165, 265, -88&lf;&cr;177, 250, -110&lf;&cr;186, 262, -98&lf;&cr;181, 252, -109&lf;&cr;162, 250, -106&lf;&cr;182, 247, -113&lf;&cr;179, 242, -116&lf;&cr;188, 256, -101&lf;&cr;191, 254, -99&lf;&cr;181, 253, -114&lf;&cr;174, 255, -98&lf;&cr;177, 251, -97&lf;&cr;189, 255, -95&lf;&cr;179, 244, -101&lf;&cr;179, 250, -102&lf;&cr;187, 255, -96&lf;&cr;178, 264, -114&lf;&cr;176, 247, -115&lf;&cr;185, 254, -113&lf;&cr;178, 261, -97&lf;&cr;170, 251, -84&lf;&cr;179, 256, -88&lf;&cr;188, 254, -90&lf;&cr;175, 255, -116&lf;&cr;180, 255, -90&lf;&cr;190, 258, -102&lf;&cr;175, 272, -101&lf;&cr;177, 243, -102&lf;&cr;181, 266, -93&lf;&cr;186, 254, -137&lf;&cr;177, 256, -98&lf;&cr;174, 256, -86&lf;&cr;184, 250, -96&lf;&cr;178, 250, -99&lf;&cr;174, 256, -107&lf;&cr;181, 256, -111&lf;&cr;186, 255, -102&lf;&cr;182, 254, -98&lf;&cr;176, 258, -106&lf;&cr;180, 261, -99&lf;&cr;176, 261, -100&lf;&cr;185, 249, -81&lf;&cr;184, 260, -98&lf;&cr;173, 261, -97&lf;&cr;194, 269, -123&lf;&cr;190, 252, -101&lf;&cr;192, 254, -125&lf;&cr;175, 262, -113&lf;&cr;166, 254, -100&lf;&cr;184, 256, -85&lf;&cr;187, 266, -106&lf;&cr;178, 264, -106&lf;&cr;177, 259, -99&lf;&cr;179, 257, -102&lf;&cr;184, 258, -113&lf;&cr;177, 257, -90&lf;&cr;174, 255, -94&lf;&cr;187, 253, -109&lf;&cr;180, 252, -109&lf;&cr;180, 258, -99&lf;&cr;178, 264, -92&lf;&cr;182, 248, -118&lf;&cr;187, 255, -87&lf;&cr;180, 261, -103&lf;&cr;175, 260, -111&lf;&cr;170, 256, -101&lf;&cr;181, 266, -102&lf;&cr;171, 263, -117&lf;&cr;186, 257, -108&lf;&cr;183, 260, -111&lf;&cr;178, 260, -91&lf;&cr;174, 254, -109&lf;&cr;175, 268, -95&lf;&cr;176, 251, -95&lf;&cr;183, 255, -118&lf;&cr;178, 266, -107&lf;&cr;183, 250, -115&lf;&cr;175, 253, -108&lf;&cr;178, 251, -100&lf;&cr;179, 258, -106&lf;&cr;173, 253, -97&lf;&cr;180, 255, -100&lf;&cr;179, 251, -105&lf;&cr;173, 246, -107&lf;&cr;176, 261, -100&lf;&cr;178, 269, -114&lf;&cr;168, 256, -109&lf;&cr;184, 264, -94&lf;&cr;190, 265, -105&lf;&cr;186, 258, -109&lf;&cr;173, 252, -116&lf;&cr;175, 255, -104&lf;&cr;175, 254, -104&lf;&cr;180, 262, -97&lf;&cr;181, 258, -117&lf;&cr;177, 256, -111&lf;&cr;175, 258, -98&lf;&cr;177, 267, -97&lf;&cr;174, 255, -111&lf;&cr;176, 255, -106&lf;&cr;188, 256, -112&lf;&cr;183, 255, -100&lf;&cr;179, 260, -95&lf;&cr;190, 249, -111&lf;&cr;184, 268, -109&lf;&cr;181, 262, -96&lf;&cr;175, 260, -99&lf;&cr;174, 263, -101&lf;&cr;178, 258, -99&lf;&cr;183, 259, -105&lf;&cr;173, 252, -99&lf;&cr;190, 255, -114&lf;&cr;179, 268, -111&lf;&cr;181, 273, -92&lf;&cr;173, 257, -90&lf;&cr;166, 263, -115&lf;&cr;179, 257, -108&lf;&cr;175, 257, -106&lf;&cr;172, 255, -90&lf;&cr;169, 249, -105&lf;&cr;179, 264, -109&lf;&cr;174, 259, -105&lf;&cr;185, 256, -98&lf;&cr;180, 252, -117&lf;&cr;175, 263, -111&lf;&cr;175, 260, -106&lf;&cr;182, 259, -105&lf;&cr;178, 257, -113&lf;&cr;174, 265, -111&lf;&cr;179, 259, -106&lf;&cr;185, 264, -112&lf;&cr;178, 261, -105&lf;&cr;182, 253, -104&lf;&cr;184, 259, -114&lf;&cr;186, 256, -109&lf;&cr;179, 249, -123&lf;&cr;182, 261, -106&lf;&cr;177, 256, -91&lf;&cr;181, 249, -117&lf;&cr;179, 266, -109&lf;&cr;181, 257, -109&lf;&cr;182, 265, -95&lf;&cr;191, 253, -98&lf;&cr;181, 257, -92&lf;&cr;184, 254, -96&lf;&cr;173, 260, -111&lf;&cr;179, 252, -99&lf;&cr;182, 259, -106&lf;&cr;179, 267, -109&lf;&cr;173, 270, -81&lf;&cr;171, 253, -107&lf;&cr;183, 249, -110&lf;&cr;167, 249, -115&lf;&cr;166, 255, -101&lf;&cr;174, 257, -95&lf;&cr;194, 254, -107&lf;&cr;186, 253, -110&lf;&cr;163, 261, -92&lf;&cr;179, 261, -82&lf;&cr;173, 247, -80&lf;&cr;193, 260, -119&lf;&cr;177, 246, -112&lf;&cr;165, 246, -101&lf;&cr;176, 256, -105&lf;&cr;180, 258, -97&lf;&cr;174, 257, -106&lf;&cr;178, 262, -123&lf;&cr;185, 261, -126&lf;&cr;183, 250, -94&lf;&cr;183, 252, -107&lf;&cr;176, 256, -105&lf;&cr;189, 260, -110&lf;&cr;178, 252, -99&lf;&cr;172, 247, -88&lf;&cr;183, 254, -98&lf;&cr;184, 253, -96&lf;&cr;170, 252, -100&lf;&cr;178, 249, -108&lf;&cr;181, 252, -98&lf;&cr;173, 254, -117&lf;&cr;172, 253, -100&lf;&cr;172, 252, -95&lf;&cr;180, 258, -111&lf;&cr;185, 260, -111&lf;&cr;183, 251, -117&lf;&cr;185, 258, -108&lf;&cr;183, 260, -105&lf;&cr;191, 251, -94&lf;&cr;170, 256, -105&lf;&cr;168, 254, -93&lf;&cr;178, 260, -111&lf;&cr;186, 248, -90&lf;&cr;187, 263, -96&lf;&cr;186, 252, -97&lf;&cr;175, 254, -85&lf;&cr;178, 260, -90&lf;&cr;183, 266, -85&lf;&cr;162, 261, -96&lf;&cr;181, 255, -109&lf;&cr;191, 263, -84&lf;&cr;181, 255, -108&lf;&cr;184, 268, -106&lf;&cr;178, 252, -122&lf;&cr;182, 258, -106&lf;&cr;180, 254, -96&lf;&cr;189, 251, -105&lf;&cr;188, 265, -107&lf;&cr;186, 257, -104&lf;&cr;177, 254, -116&lf;&cr;182, 258, -102&lf;&cr;182, 266, -104&lf;&cr;177, 256, -107&lf;&cr;182, 262, -106&lf;&cr;183, 257, -110&lf;&cr;178, 269, -111&lf;&cr;182, 253, -115&lf;&cr;181, 271, -119&lf;&cr;173, 246, -93&lf;&cr;178, 254, -102&lf;&cr;179, 254, -109&lf;&cr;180, 248, -117&lf;&cr;172, 256, -107&lf;&cr;185, 253, -112&lf;&cr;172, 258, -93&lf;&cr;177, 253, -115&lf;&cr;183, 261, -104&lf;&cr;188, 258, -105&lf;&cr;177, 249, -103&lf;&cr;182, 253, -95&lf;&cr;173, 264, -100&lf;&cr;191, 255, -110&lf;&cr;181, 248, -93&lf;&cr;179, 243, -108&lf;&cr;186, 260, -97&lf;&cr;183, |">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Queue (Spreads)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Queue (Spreads)" componentmode="Hidden" id="34">
+   <BOUNDS type="Node" left="2610" top="7290" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Insert" visible="1">
+   </PIN>
+   <PIN pinname="Frame Count" visible="1" slicecount="1" values="100">
+   </PIN>
+   <BOUNDS type="Box" left="2610" top="7290">
+   </BOUNDS>
+   <PIN pinname="Reset" visible="1" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="40">
+   <BOUNDS type="Node" left="510" top="6375" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="510" top="6375" width="1545" height="1125">
+   </BOUNDS>
+   <PIN pinname="Columns" slicecount="1" values="100">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Show Value" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Show Slider" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="100" visible="1" values="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.11,0,0,0.39,0,0,0,0,0,0,0,0,0.07,0,0,0,0.14,0.06,0,0.91,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.32,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
+   </PIN>
+   <PIN pinname="Show SliceIndex" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Minimum" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Maximum" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="34" srcpinname="Output" dstnodeid="40" dstpinname="Y Input Value">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="53">
+   <BOUNDS type="Node" left="2670" top="5310" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="2670" top="5310" width="645" height="345">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="53" srcpinname="Y Output Value" dstnodeid="34" dstpinname="Insert">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="54">
+   <BOUNDS type="Node" left="510" top="10140" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="510" top="10140" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="5000">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="count">
+   </PIN>
+   </NODE>
+   <NODE systemname="LFO (Animation)" nodename="LFO (Animation)" componentmode="Hidden" id="55">
+   <BOUNDS type="Node" left="1560" top="5325" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Reset" visible="1" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <NODE systemname="WaveShaper (Value)" nodename="WaveShaper (Value)" componentmode="Hidden" id="56">
+   <BOUNDS type="Node" left="1755" top="5775" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Shape" slicecount="1" values="Sine">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="55" srcpinname="Output" dstnodeid="56" dstpinname="Input">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="57">
+   <BOUNDS type="Node" left="2610" top="6840" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="2610" top="6840" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="57" srcpinname="Y Output Value" dstnodeid="34" dstpinname="Input">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="59">
+   <BOUNDS type="Node" left="11325" top="10140" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="11325" top="10140" width="915" height="900">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Bang">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="reset">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <NODE systemname="Separate (String)" nodename="Separate (String)" componentmode="Hidden" id="62">
+   <BOUNDS type="Node" left="4815" top="6870" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="|126, 258, -89&lf;&cr;125, 265, -85&lf;&cr;128, 256, -94&lf;&cr;122, 264, -88&lf;&cr;115, 259, -81&lf;&cr;129, 259, -90&lf;&cr;133, 261, -81&lf;&cr;130, 248, -87&lf;&cr;124, 255, -85&lf;&cr;130, 266, -84&lf;&cr;129, 249, -81&lf;&cr;126, 251, -81&lf;&cr;126, 250, -85&lf;&cr;128, 244, -109&lf;&cr;124, 259, -83&lf;&cr;127, 261, -92&lf;&cr;111, 264, -96&lf;&cr;128, 256, -82&lf;&cr;115, 259, -91&lf;&cr;128, 254, -80&lf;&cr;128, 256, -100&lf;&cr;122, 256, -88&lf;&cr;125, 256, -80&lf;&cr;126, 255, -92&lf;&cr;121, 257, -92&lf;&cr;122, 259, -86&lf;&cr;123, 252, -86&lf;&cr;119, 244, -94&lf;&cr;128, 245, -90&lf;&cr;123, 255, -77&lf;&cr;124, 256, -106&lf;&cr;138, 256, -98&lf;&cr;114, 247, -77&lf;&cr;120, 257, -91&lf;&cr;130, 256, -111&lf;&cr;127, 256, -108&lf;&cr;134, 257, -86&lf;&cr;111, 262, -91&lf;&cr;131, 258, -87&lf;&cr;130, 273, -99&lf;&cr;126, 251, -88&lf;&cr;124, 267, -94&lf;&cr;129, 259, -83&lf;&cr;128, 261, -105&lf;&cr;117, 250, -103&lf;&cr;128, 268, -93&lf;&cr;119, 264, -93&lf;&cr;125, 267, -101&lf;&cr;130, 255, -82&lf;&cr;117, 263, -87&lf;&cr;125, 255, -102&lf;&cr;133, 259, -87&lf;&cr;127, 264, -82&lf;&cr;112, 256, -80&lf;&cr;126, 262, -93&lf;&cr;131, 272, -87&lf;&cr;126, 254, -114&lf;&cr;119, 252, -88&lf;&cr;125, 253, -108&lf;&cr;133, 256, -91&lf;&cr;127, 261, -96&lf;&cr;121, 257, -100&lf;&cr;123, 254, -91&lf;&cr;131, 257, -97&lf;&cr;123, 253, -98&lf;&cr;122, 256, -99&lf;&cr;129, 253, -85&lf;&cr;123, 253, -91&lf;&cr;129, 258, -82&lf;&cr;126, 243, -91&lf;&cr;116, 257, -90&lf;&cr;127, 254, -90&lf;&cr;125, 256, -103&lf;&cr;124, 258, -87&lf;&cr;130, 254, -96&lf;&cr;122, 257, -94&lf;&cr;123, 257, -99&lf;&cr;121, 257, -88&lf;&cr;127, 263, -100&lf;&cr;120, 253, -89&lf;&cr;129, 254, -97&lf;&cr;130, 255, -100&lf;&cr;132, 251, -93&lf;&cr;127, 244, -83&lf;&cr;134, 253, -95&lf;&cr;120, 260, -106&lf;&cr;125, 255, -106&lf;&cr;122, 253, -77&lf;&cr;126, 247, -89&lf;&cr;127, 251, -84&lf;&cr;116, 249, -92&lf;&cr;123, 253, -104&lf;&cr;127, 262, -86&lf;&cr;131, 263, -107&lf;&cr;122, 258, -112&lf;&cr;124, 263, -98&lf;&cr;122, 252, -85&lf;&cr;130, 258, -94&lf;&cr;135, 257, -94&lf;&cr;119, 255, -76&lf;&cr;113, 255, -92&lf;&cr;117, 254, -98&lf;&cr;120, 248, -99&lf;&cr;127, 259, -83&lf;&cr;138, 254, -80&lf;&cr;137, 266, -89&lf;&cr;130, 255, -103&lf;&cr;133, 256, -94&lf;&cr;129, 251, -87&lf;&cr;134, 256, -104&lf;&cr;130, 257, -85&lf;&cr;132, 258, -90&lf;&cr;135, 251, -103&lf;&cr;125, 256, -96&lf;&cr;130, 259, -91&lf;&cr;127, 261, -81&lf;&cr;137, 247, -93&lf;&cr;130, 257, -100&lf;&cr;114, 261, -89&lf;&cr;129, 276, -100&lf;&cr;133, 256, -92&lf;&cr;129, 261, -95&lf;&cr;125, 255, -100&lf;&cr;133, 250, -91&lf;&cr;135, 257, -101&lf;&cr;145, 260, -97&lf;&cr;129, 261, -73&lf;&cr;118, 245, -102&lf;&cr;128, 265, -103&lf;&cr;126, 262, -111&lf;&cr;128, 254, -101&lf;&cr;133, 249, -76&lf;&cr;127, 255, -91&lf;&cr;138, 265, -98&lf;&cr;124, 265, -93&lf;&cr;137, 270, -84&lf;&cr;133, 257, -93&lf;&cr;138, 251, -97&lf;&cr;121, 252, -98&lf;&cr;128, 254, -99&lf;&cr;129, 257, -73&lf;&cr;125, 271, -114&lf;&cr;126, 259, -100&lf;&cr;125, 252, -100&lf;&cr;118, 257, -104&lf;&cr;120, 254, -104&lf;&cr;121, 252, -99&lf;&cr;138, 264, -94&lf;&cr;125, 261, -107&lf;&cr;127, 267, -110&lf;&cr;132, 258, -97&lf;&cr;127, 251, -106&lf;&cr;122, 257, -87&lf;&cr;123, 261, -101&lf;&cr;129, 256, -98&lf;&cr;131, 254, -102&lf;&cr;127, 253, -102&lf;&cr;125, 251, -104&lf;&cr;128, 256, -91&lf;&cr;122, 250, -75&lf;&cr;124, 241, -89&lf;&cr;124, 251, -91&lf;&cr;126, 259, -95&lf;&cr;125, 266, -95&lf;&cr;132, 252, -107&lf;&cr;137, 246, -110&lf;&cr;135, 256, -102&lf;&cr;136, 262, -101&lf;&cr;120, 247, -101&lf;&cr;126, 253, -90&lf;&cr;128, 264, -86&lf;&cr;137, 269, -98&lf;&cr;129, 256, -101&lf;&cr;128, 244, -108&lf;&cr;122, 248, -111&lf;&cr;126, 266, -109&lf;&cr;130, 250, -108&lf;&cr;129, 257, -95&lf;&cr;129, 252, -110&lf;&cr;130, 252, -89&lf;&cr;140, 250, -88&lf;&cr;146, 262, -87&lf;&cr;131, 250, -100&lf;&cr;133, 262, -96&lf;&cr;131, 257, -105&lf;&cr;133, 262, -91&lf;&cr;132, 247, -110&lf;&cr;129, 249, -97&lf;&cr;132, 253, -94&lf;&cr;122, 256, -106&lf;&cr;125, 259, -90&lf;&cr;127, 250, -98&lf;&cr;143, 264, -101&lf;&cr;121, 248, -99&lf;&cr;133, 255, -84&lf;&cr;129, 259, -98&lf;&cr;135, 258, -107&lf;&cr;127, 254, -90&lf;&cr;128, 249, -96&lf;&cr;129, 258, -101&lf;&cr;128, 256, -105&lf;&cr;124, 256, -99&lf;&cr;121, 257, -87&lf;&cr;128, 255, -83&lf;&cr;129, 250, -91&lf;&cr;135, 261, -96&lf;&cr;122, 256, -111&lf;&cr;138, 264, -97&lf;&cr;126, 261, -78&lf;&cr;133, 264, -100&lf;&cr;130, 266, -95&lf;&cr;130, 253, -112&lf;&cr;130, 257, -83&lf;&cr;123, 249, -85&lf;&cr;132, 258, -91&lf;&cr;125, 253, -115&lf;&cr;132, 253, -98&lf;&cr;121, 258, -112&lf;&cr;139, 248, -90&lf;&cr;121, 261, -102&lf;&cr;128, 254, -110&lf;&cr;133, 256, -96&lf;&cr;129, 261, -108&lf;&cr;129, 249, -92&lf;&cr;115, 255, -92&lf;&cr;140, 260, -81&lf;&cr;129, 269, -94&lf;&cr;130, 255, -108&lf;&cr;136, 257, -119&lf;&cr;128, 255, -104&lf;&cr;131, 263, -94&lf;&cr;131, 264, -99&lf;&cr;137, 261, -86&lf;&cr;133, 254, -80&lf;&cr;138, 254, -96&lf;&cr;136, 246, -103&lf;&cr;134, 259, -83&lf;&cr;129, 256, -87&lf;&cr;130, 258, -111&lf;&cr;135, 248, -113&lf;&cr;120, 252, -118&lf;&cr;126, 247, -107&lf;&cr;130, 254, -98&lf;&cr;134, 260, -114&lf;&cr;133, 258, -86&lf;&cr;133, 248, -115&lf;&cr;134, 252, -98&lf;&cr;132, 259, -99&lf;&cr;141, 254, -98&lf;&cr;136, 245, -97&lf;&cr;126, 248, -92&lf;&cr;134, 262, -90&lf;&cr;133, 259, -121&lf;&cr;126, 249, -105&lf;&cr;138, 265, -96&lf;&cr;133, 262, -104&lf;&cr;140, 262, -103&lf;&cr;130, 262, -100&lf;&cr;140, 268, -113&lf;&cr;128, 248, -110&lf;&cr;133, 266, -91&lf;&cr;133, 248, -91&lf;&cr;130, 255, -104&lf;&cr;131, 258, -113&lf;&cr;138, 252, -114&lf;&cr;117, 251, -99&lf;&cr;134, 255, -107&lf;&cr;138, 251, -121&lf;&cr;132, 250, -93&lf;&cr;131, 257, -112&lf;&cr;136, 257, -94&lf;&cr;124, 251, -105&lf;&cr;140, 254, -106&lf;&cr;128, 255, -104&lf;&cr;136, 253, -109&lf;&cr;138, 256, -102&lf;&cr;128, 269, -103&lf;&cr;122, 256, -85&lf;&cr;136, 263, -89&lf;&cr;136, 257, -108&lf;&cr;138, 261, -112&lf;&cr;141, 248, -96&lf;&cr;124, 260, -97&lf;&cr;133, 247, -108&lf;&cr;132, 263, -105&lf;&cr;134, 263, -109&lf;&cr;138, 250, -105&lf;&cr;143, 256, -90&lf;&cr;136, 253, -89&lf;&cr;137, 252, -96&lf;&cr;137, 252, -102&lf;&cr;141, 251, -95&lf;&cr;133, 262, -104&lf;&cr;129, 263, -103&lf;&cr;131, 252, -100&lf;&cr;138, 266, -91&lf;&cr;134, 253, -95&lf;&cr;149, 256, -96&lf;&cr;128, 265, -108&lf;&cr;130, 254, -94&lf;&cr;133, 251, -104&lf;&cr;138, 267, -87&lf;&cr;139, 262, -95&lf;&cr;136, 260, -106&lf;&cr;137, 264, -86&lf;&cr;133, 254, -109&lf;&cr;128, 252, -107&lf;&cr;138, 263, -93&lf;&cr;130, 256, -104&lf;&cr;125, 268, -94&lf;&cr;132, 244, -99&lf;&cr;128, 256, -99&lf;&cr;140, 256, -100&lf;&cr;130, 253, -110&lf;&cr;133, 253, -93&lf;&cr;136, 258, -99&lf;&cr;140, 253, -96&lf;&cr;119, 250, -88&lf;&cr;127, 261, -108&lf;&cr;134, 264, -107&lf;&cr;137, 253, -97&lf;&cr;138, 262, -106&lf;&cr;125, 267, -106&lf;&cr;130, 253, -105&lf;&cr;141, 246, -89&lf;&cr;138, 254, -98&lf;&cr;122, 262, -101&lf;&cr;141, 264, -105&lf;&cr;145, 254, -119&lf;&cr;123, 261, -90&lf;&cr;125, 256, -101&lf;&cr;139, 257, -102&lf;&cr;139, 264, -98&lf;&cr;134, 248, -118&lf;&cr;136, 257, -88&lf;&cr;131, 257, -89&lf;&cr;136, 252, -102&lf;&cr;135, 256, -112&lf;&cr;146, 253, -97&lf;&cr;124, 253, -98&lf;&cr;137, 255, -98&lf;&cr;141, 256, -88&lf;&cr;138, 255, -96&lf;&cr;140, 253, -102&lf;&cr;139, 258, -102&lf;&cr;137, 248, -101&lf;&cr;124, 245, -113&lf;&cr;137, 249, -102&lf;&cr;136, 261, -93&lf;&cr;124, 259, -110&lf;&cr;142, 262, -112&lf;&cr;133, 259, -94&lf;&cr;140, 262, -104&lf;&cr;146, 264, -90&lf;&cr;142, 256, -90&lf;&cr;130, 264, -83&lf;&cr;137, 263, -81&lf;&cr;129, 258, -98&lf;&cr;133, 263, -86&lf;&cr;134, 253, -91&lf;&cr;141, 253, -101&lf;&cr;139, 252, -104&lf;&cr;136, 259, -103&lf;&cr;125, 253, -86&lf;&cr;132, 253, -95&lf;&cr;132, 254, -103&lf;&cr;142, 258, -121&lf;&cr;141, 254, -99&lf;&cr;141, 264, -112&lf;&cr;127, 260, -110&lf;&cr;133, 269, -104&lf;&cr;132, 258, -99&lf;&cr;143, 257, -85&lf;&cr;141, 261, -103&lf;&cr;139, 260, -94&lf;&cr;137, 255, -118&lf;&cr;135, 251, -105&lf;&cr;141, 249, -116&lf;&cr;139, 252, -93&lf;&cr;143, 258, -103&lf;&cr;133, 261, -98&lf;&cr;131, 256, -98&lf;&cr;134, 253, -98&lf;&cr;148, 257, -98&lf;&cr;147, 268, -102&lf;&cr;136, 256, -84&lf;&cr;136, 261, -109&lf;&cr;143, 257, -88&lf;&cr;134, 256, -104&lf;&cr;140, 255, -100&lf;&cr;139, 253, -83&lf;&cr;136, 249, -88&lf;&cr;140, 253, -97&lf;&cr;143, 251, -108&lf;&cr;137, 255, -94&lf;&cr;138, 257, -97&lf;&cr;136, 261, -95&lf;&cr;133, 259, -84&lf;&cr;139, 259, -91&lf;&cr;128, 261, -96&lf;&cr;134, 253, -87&lf;&cr;149, 258, -113&lf;&cr;142, 257, -82&lf;&cr;142, 260, -94&lf;&cr;140, 259, -99&lf;&cr;149, 249, -94&lf;&cr;140, 264, -105&lf;&cr;138, 263, -88&lf;&cr;146, 255, -102&lf;&cr;137, 258, -97&lf;&cr;130, 253, -100&lf;&cr;137, 259, -99&lf;&cr;134, 262, -98&lf;&cr;136, 255, -106&lf;&cr;131, 248, -89&lf;&cr;129, 266, -101&lf;&cr;133, 263, -111&lf;&cr;134, 261, -73&lf;&cr;150, 259, -110&lf;&cr;132, 259, -110&lf;&cr;138, 267, -101&lf;&cr;131, 259, -101&lf;&cr;138, 264, -94&lf;&cr;125, 257, -94&lf;&cr;141, 252, -109&lf;&cr;134, 244, -106&lf;&cr;139, 257, -97&lf;&cr;135, 256, -83&lf;&cr;136, 247, -101&lf;&cr;128, 253, -102&lf;&cr;133, 257, -96&lf;&cr;131, 257, -111&lf;&cr;134, 246, -97&lf;&cr;146, 246, -107&lf;&cr;146, 252, -91&lf;&cr;126, 252, -95&lf;&cr;141, 259, -99&lf;&cr;139, 257, -103&lf;&cr;131, 250, -100&lf;&cr;135, 246, -100&lf;&cr;141, 264, -101&lf;&cr;134, 262, -122&lf;&cr;128, 262, -94&lf;&cr;142, 258, -86&lf;&cr;136, 256, -113&lf;&cr;125, 261, -93&lf;&cr;132, 254, -87&lf;&cr;140, 242, -105&lf;&cr;143, 256, -105&lf;&cr;141, 251, -99&lf;&cr;139, 269, -109&lf;&cr;131, 247, -99&lf;&cr;146, 250, -112&lf;&cr;129, 250, -93&lf;&cr;130, 256, -82&lf;&cr;147, 255, -113&lf;&cr;143, 261, -90&lf;&cr;151, 252, -96&lf;&cr;129, 263, -112&lf;&cr;147, 257, -102&lf;&cr;137, 260, -99&lf;&cr;140, 258, -111&lf;&cr;146, 258, -94&lf;&cr;131, 257, -102&lf;&cr;146, 259, -102&lf;&cr;147, 252, -98&lf;&cr;140, 264, -97&lf;&cr;143, 254, -92&lf;&cr;137, 259, -94&lf;&cr;140, 253, -98&lf;&cr;135, 255, -97&lf;&cr;159, 257, -119&lf;&cr;140, 256, -107&lf;&cr;146, 260, -118&lf;&cr;142, 260, -96&lf;&cr;138, 247, -92&lf;&cr;134, 247, -94&lf;&cr;144, 260, -108&lf;&cr;144, 247, -99&lf;&cr;140, 256, -92&lf;&cr;141, 254, -89&lf;&cr;139, 255, -70&lf;&cr;144, 262, -104&lf;&cr;152, 261, -88&lf;&cr;140, 256, -117&lf;&cr;142, 242, -101&lf;&cr;156, 249, -96&lf;&cr;150, 258, -124&lf;&cr;135, 258, -100&lf;&cr;145, 253, -113&lf;&cr;139, 256, -85&lf;&cr;144, 251, -101&lf;&cr;139, 262, -103&lf;&cr;145, 247, -101&lf;&cr;142, 262, -108&lf;&cr;140, 251, -90&lf;&cr;141, 260, -110&lf;&cr;157, 253, -102&lf;&cr;138, 255, -98&lf;&cr;139, 258, -107&lf;&cr;157, 256, -103&lf;&cr;142, 260, -92&lf;&cr;150, 261, -110&lf;&cr;142, 262, -111&lf;&cr;141, 252, -91&lf;&cr;142, 248, -104&lf;&cr;149, 262, -94&lf;&cr;135, 261, -115&lf;&cr;153, 253, -94&lf;&cr;141, 255, -110&lf;&cr;144, 260, -110&lf;&cr;151, 254, -112&lf;&cr;136, 261, -102&lf;&cr;142, 265, -109&lf;&cr;140, 252, -103&lf;&cr;147, 251, -108&lf;&cr;149, 262, -100&lf;&cr;143, 262, -100&lf;&cr;145, 267, -104&lf;&cr;147, 250, -87&lf;&cr;137, 257, -97&lf;&cr;135, 257, -91&lf;&cr;150, 252, -91&lf;&cr;133, 263, -99&lf;&cr;142, 251, -84&lf;&cr;141, 251, -111&lf;&cr;142, 252, -110&lf;&cr;132, 265, -97&lf;&cr;134, 247, -111&lf;&cr;130, 260, -92&lf;&cr;134, 247, -98&lf;&cr;139, 256, -104&lf;&cr;134, 255, -98&lf;&cr;144, 245, -96&lf;&cr;137, 258, -86&lf;&cr;139, 263, -102&lf;&cr;139, 259, -117&lf;&cr;138, 258, -95&lf;&cr;148, 250, -107&lf;&cr;153, 255, -102&lf;&cr;132, 263, -112&lf;&cr;141, 244, -102&lf;&cr;144, 256, -103&lf;&cr;135, 265, -110&lf;&cr;146, 243, -97&lf;&cr;141, 269, -112&lf;&cr;140, 261, -112&lf;&cr;142, 260, -101&lf;&cr;145, 252, -114&lf;&cr;151, 255, -110&lf;&cr;149, 252, -91&lf;&cr;144, 257, -110&lf;&cr;131, 260, -99&lf;&cr;135, 264, -111&lf;&cr;141, 253, -109&lf;&cr;147, 253, -112&lf;&cr;151, 260, -93&lf;&cr;144, 259, -98&lf;&cr;143, 259, -104&lf;&cr;144, 262, -99&lf;&cr;141, 258, -104&lf;&cr;153, 255, -97&lf;&cr;155, 259, -108&lf;&cr;149, 255, -98&lf;&cr;139, 249, -96&lf;&cr;153, 264, -103&lf;&cr;146, 254, -92&lf;&cr;159, 253, -101&lf;&cr;142, 261, -100&lf;&cr;144, 258, -85&lf;&cr;145, 252, -98&lf;&cr;132, 252, -86&lf;&cr;146, 245, -114&lf;&cr;143, 263, -113&lf;&cr;145, 263, -108&lf;&cr;136, 259, -102&lf;&cr;147, 265, -105&lf;&cr;156, 267, -108&lf;&cr;147, 253, -107&lf;&cr;146, 261, -100&lf;&cr;146, 251, -104&lf;&cr;136, 256, -110&lf;&cr;142, 261, -111&lf;&cr;148, 240, -114&lf;&cr;151, 258, -105&lf;&cr;142, 250, -89&lf;&cr;149, 268, -106&lf;&cr;138, 257, -99&lf;&cr;141, 258, -114&lf;&cr;143, 249, -109&lf;&cr;147, 258, -96&lf;&cr;153, 253, -91&lf;&cr;144, 255, -95&lf;&cr;142, 257, -99&lf;&cr;155, 253, -99&lf;&cr;145, 259, -102&lf;&cr;141, 255, -68&lf;&cr;146, 252, -99&lf;&cr;148, 261, -115&lf;&cr;146, 240, -108&lf;&cr;142, 253, -115&lf;&cr;141, 252, -102&lf;&cr;135, 251, -89&lf;&cr;143, 257, -98&lf;&cr;133, 253, -124&lf;&cr;153, 264, -93&lf;&cr;144, 265, -103&lf;&cr;151, 257, -106&lf;&cr;133, 257, -119&lf;&cr;144, 250, -90&lf;&cr;144, 255, -102&lf;&cr;150, 260, -104&lf;&cr;148, 252, -126&lf;&cr;143, 256, -117&lf;&cr;146, 252, -103&lf;&cr;141, 257, -117&lf;&cr;146, 257, -87&lf;&cr;142, 248, -120&lf;&cr;143, 263, -108&lf;&cr;142, 256, -106&lf;&cr;139, 267, -96&lf;&cr;153, 258, -121&lf;&cr;140, 260, -98&lf;&cr;136, 255, -101&lf;&cr;158, 253, -94&lf;&cr;145, 256, -113&lf;&cr;144, 251, -97&lf;&cr;149, 256, -120&lf;&cr;142, 252, -101&lf;&cr;142, 257, -94&lf;&cr;148, 264, -97&lf;&cr;153, 255, -98&lf;&cr;154, 253, -95&lf;&cr;144, 263, -90&lf;&cr;144, 259, -95&lf;&cr;139, 243, -95&lf;&cr;142, 262, -105&lf;&cr;142, 257, -96&lf;&cr;144, 255, -84&lf;&cr;144, 255, -104&lf;&cr;144, 259, -97&lf;&cr;143, 254, -114&lf;&cr;150, 256, -105&lf;&cr;148, 258, -92&lf;&cr;139, 254, -114&lf;&cr;149, 249, -100&lf;&cr;149, 241, -108&lf;&cr;144, 263, -111&lf;&cr;142, 247, -104&lf;&cr;151, 258, -101&lf;&cr;149, 256, -82&lf;&cr;145, 262, -103&lf;&cr;139, 268, -101&lf;&cr;136, 254, -102&lf;&cr;154, 256, -98&lf;&cr;144, 260, -103&lf;&cr;139, 263, -91&lf;&cr;144, 240, -88&lf;&cr;141, 260, -107&lf;&cr;150, 257, -105&lf;&cr;149, 263, -109&lf;&cr;140, 255, -120&lf;&cr;141, 254, -105&lf;&cr;131, 257, -101&lf;&cr;145, 254, -115&lf;&cr;146, 258, -109&lf;&cr;148, 252, -97&lf;&cr;144, 246, -84&lf;&cr;142, 249, -105&lf;&cr;142, 248, -86&lf;&cr;150, 254, -107&lf;&cr;150, 253, -97&lf;&cr;148, 251, -99&lf;&cr;145, 253, -106&lf;&cr;149, 254, -92&lf;&cr;154, 253, -112&lf;&cr;140, 258, -112&lf;&cr;151, 262, -99&lf;&cr;156, 251, -83&lf;&cr;152, 259, -99&lf;&cr;151, 252, -124&lf;&cr;147, 255, -123&lf;&cr;141, 256, -98&lf;&cr;159, 255, -101&lf;&cr;141, 267, -96&lf;&cr;144, 247, -94&lf;&cr;155, 267, -97&lf;&cr;158, 250, -102&lf;&cr;146, 257, -105&lf;&cr;146, 267, -106&lf;&cr;140, 249, -107&lf;&cr;151, 255, -83&lf;&cr;144, 254, -126&lf;&cr;146, 256, -102&lf;&cr;152, 254, -101&lf;&cr;147, 255, -124&lf;&cr;149, 247, -100&lf;&cr;158, 255, -100&lf;&cr;153, 255, -109&lf;&cr;133, 257, -97&lf;&cr;153, 248, -106&lf;&cr;144, 256, -84&lf;&cr;146, 258, -111&lf;&cr;144, 249, -102&lf;&cr;149, 261, -117&lf;&cr;155, 263, -115&lf;&cr;146, 258, -107&lf;&cr;151, 267, -96&lf;&cr;135, 254, -116&lf;&cr;156, 252, -104&lf;&cr;148, 259, -98&lf;&cr;152, 257, -101&lf;&cr;152, 263, -107&lf;&cr;145, 252, -125&lf;&cr;149, 261, -121&lf;&cr;132, 262, -121&lf;&cr;151, 254, -101&lf;&cr;148, 258, -104&lf;&cr;138, 274, -103&lf;&cr;145, 253, -109&lf;&cr;153, 252, -110&lf;&cr;145, 268, -107&lf;&cr;153, 253, -98&lf;&cr;145, 255, -115&lf;&cr;153, 261, -110&lf;&cr;150, 257, -120&lf;&cr;138, 262, -99&lf;&cr;149, 264, -112&lf;&cr;150, 253, -105&lf;&cr;140, 253, -114&lf;&cr;151, 265, -94&lf;&cr;145, 262, -113&lf;&cr;158, 257, -117&lf;&cr;138, 258, -120&lf;&cr;154, 259, -98&lf;&cr;145, 253, -113&lf;&cr;145, 264, -104&lf;&cr;154, 259, -112&lf;&cr;140, 262, -121&lf;&cr;152, 250, -101&lf;&cr;138, 259, -109&lf;&cr;153, 252, -93&lf;&cr;151, 265, -87&lf;&cr;142, 266, -104&lf;&cr;159, 253, -98&lf;&cr;143, 266, -94&lf;&cr;144, 267, -107&lf;&cr;144, 254, -97&lf;&cr;152, 256, -108&lf;&cr;144, 259, -101&lf;&cr;146, 257, -108&lf;&cr;142, 252, -107&lf;&cr;142, 261, -91&lf;&cr;153, 262, -95&lf;&cr;151, 242, -90&lf;&cr;145, 254, -99&lf;&cr;140, 256, -110&lf;&cr;155, 260, -87&lf;&cr;147, 254, -94&lf;&cr;152, 250, -102&lf;&cr;147, 260, -112&lf;&cr;160, 247, -96&lf;&cr;150, 262, -100&lf;&cr;155, 259, -86&lf;&cr;131, 264, -110&lf;&cr;150, 258, -115&lf;&cr;150, 260, -89&lf;&cr;143, 263, -112&lf;&cr;154, 248, -89&lf;&cr;135, 249, -98&lf;&cr;143, 258, -92&lf;&cr;160, 258, -101&lf;&cr;158, 254, -118&lf;&cr;149, 254, -120&lf;&cr;148, 251, -104&lf;&cr;144, 261, -125&lf;&cr;|">
+   </PIN>
+   <PIN pinname="Intersperse" slicecount="1" visible="1" values="Comma">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Ignore between" slicecount="1" values="Double">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Enumerations)" nodename="IOBox (Enumerations)" componentmode="InABox" id="63">
+   <BOUNDS type="Node" left="4995" top="6420" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="4995" top="6420" width="1200" height="240">
+   </BOUNDS>
+   <PIN pinname="Output Enum" visible="1">
+   </PIN>
+   <PIN pinname="Input Enum" slicecount="1" values="Comma">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="63" srcpinname="Output Enum" dstnodeid="62" dstpinname="Intersperse">
+   </LINK>
+   <NODE id="67" nodename="AsValue (String)" systemname="AsValue (String)">
+   <BOUNDS height="0" left="4815" top="7410" type="Node" width="0">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="62" srcpinname="Output" dstnodeid="67" dstpinname="Input">
+   </LINK>
+   <PACK Name="addonpack" Version="35.0.0">
+   </PACK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="70">
+   <BOUNDS type="Node" left="9270" top="5310" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="9270" top="5310" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="9" srcpinname="Queue Length" dstnodeid="70" dstpinname="Y Input Value">
+   </LINK>
+   <LINK srcnodeid="12" srcpinname="Output Enum" dstnodeid="8" dstpinname="Port Name">
+   </LINK>
+   <LINK srcnodeid="32" srcpinname="Output" dstnodeid="57" dstpinname="Y Input Value">
+   </LINK>
+   <NODE systemname="IOBox (String)" nodename="IOBox (String)" componentmode="InABox" id="72">
+   <BOUNDS type="Node" left="5340" top="7935" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="5340" top="7935" width="1860" height="240">
+   </BOUNDS>
+   <PIN pinname="Input String" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="7" srcpinname="Output" dstnodeid="72" dstpinname="Input String">
+   </LINK>
+   <NODE componentmode="InABox" id="73" nodename="IOBOX (VALUE ADVANCED)" systemname="IOBox (Value Advanced)">
+   <BOUNDS height="0" left="8520" top="2415" type="Node" width="0">
+   </BOUNDS>
+   <BOUNDS height="160" left="12450" top="2895" type="Window" width="215">
+   </BOUNDS>
+   <BOUNDS height="420" left="8520" top="2415" type="Box" width="450">
+   </BOUNDS>
+   <PIN pinname="Rows" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="2" values="13,10">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="4" srcpinname="Output Enum" dstnodeid="9" dstpinname="Mode">
+   </LINK>
+   <LINK srcnodeid="25" srcpinname="Output Enum" dstnodeid="9" dstpinname="Queue Mode">
+   </LINK>
+   <LINK srcnodeid="29" srcpinname="Output" dstnodeid="62" dstpinname="Input">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="123">
+   <BOUNDS type="Node" left="1425" top="10140" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="1425" top="10140" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" values="360">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="From">
+   </PIN>
+   </NODE>
+   <NODE systemname="HSV (Color Join)" nodename="HSV (Color Join)" componentmode="Hidden" id="125">
+   <BOUNDS type="Node" left="14730" top="11625" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Hue" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Saturation" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="LinearSpread (Spreads)" nodename="LinearSpread (Spreads)" componentmode="Hidden" id="126">
+   <BOUNDS type="Node" left="14730" top="11235" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Alignment" slicecount="1" values="LeftJustified">
+   </PIN>
+   <PIN pinname="Input" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Spread Count" slicecount="1" visible="1" values="45">
+   </PIN>
+   <PIN pinname="Width" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Phase" slicecount="1" values="0.91">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="126" srcpinname="Output" dstnodeid="125" dstpinname="Hue">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="149">
+   <BOUNDS type="Node" left="7410" top="10140" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="7410" top="10140" width="480" height="480">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="showAccel">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="150">
+   <BOUNDS type="Node" left="8340" top="10140" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="8340" top="10140" width="480" height="480">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="showGyro">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="151">
+   <BOUNDS type="Node" left="9255" top="10140" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="9255" top="10140" width="480" height="480">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="showFinalFiltered">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="GetSpread (Color)" nodename="GetSpread (Color)" componentmode="Hidden" id="152">
+   <BOUNDS type="Node" left="14730" top="12210" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Count" slicecount="1" values="3">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="125" srcpinname="Output" dstnodeid="152" dstpinname="Input">
+   </LINK>
+   <NODE systemname="IOBox (Color)" nodename="IOBox (Color)" componentmode="InABox" id="153">
+   <BOUNDS type="Node" left="14730" top="12795" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="14730" top="12795" width="360" height="600">
+   </BOUNDS>
+   <PIN pinname="Color Input" visible="1" slicecount="9" values="|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Show Value" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="152" srcpinname="Output" dstnodeid="153" dstpinname="Color Input">
+   </LINK>
+   <NODE systemname="GetSpread (Color)" nodename="GetSpread (Color)" componentmode="Hidden" id="155">
+   <BOUNDS type="Node" left="15660" top="12225" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="|0.00000,0.00000,0.00000,1.00000|">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Count" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Offset" slicecount="1" visible="1" values="6">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Color)" nodename="IOBox (Color)" componentmode="InABox" id="154">
+   <BOUNDS type="Node" left="15660" top="12810" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="15660" top="12810" width="360" height="600">
+   </BOUNDS>
+   <PIN pinname="Color Input" visible="1" slicecount="9" values="|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Show Value" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="155" srcpinname="Output" dstnodeid="154" dstpinname="Color Input">
+   </LINK>
+   <LINK srcnodeid="125" srcpinname="Output" dstnodeid="155" dstpinname="Input">
+   </LINK>
+   <NODE systemname="GetSpread (Color)" nodename="GetSpread (Color)" componentmode="Hidden" id="157">
+   <BOUNDS type="Node" left="16590" top="12225" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="|0.00000,0.00000,0.00000,1.00000|">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Count" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Offset" slicecount="1" visible="1" values="12">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Color)" nodename="IOBox (Color)" componentmode="InABox" id="156">
+   <BOUNDS type="Node" left="16590" top="12810" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="16590" top="12810" width="360" height="600">
+   </BOUNDS>
+   <PIN pinname="Color Input" visible="1" slicecount="9" values="|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|,|0.00000,1.00000,0.00000,1.00000|">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Show Value" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="157" srcpinname="Output" dstnodeid="156" dstpinname="Color Input">
+   </LINK>
+   <LINK srcnodeid="125" srcpinname="Output" dstnodeid="157" dstpinname="Input">
+   </LINK>
+   <NODE systemname="Add (Value)" nodename="Add (Value)" componentmode="Hidden" id="166">
+   <BOUNDS type="Node" left="16035" top="11700" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input 2" slicecount="1" values="6">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="166" srcpinname="Output" dstnodeid="155" dstpinname="Offset">
+   </LINK>
+   <NODE systemname="Add (Value)" nodename="Add (Value)" componentmode="Hidden" id="168">
+   <BOUNDS type="Node" left="16950" top="11685" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input 2" slicecount="1" values="6">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="166" srcpinname="Output" dstnodeid="168" dstpinname="Input 1">
+   </LINK>
+   <LINK srcnodeid="168" srcpinname="Output" dstnodeid="157" dstpinname="Offset">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="183">
+   <BOUNDS type="Node" left="14790" top="9225" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="14790" top="9225" width="405" height="240">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Multiply (Value)" nodename="Multiply (Value)" componentmode="Hidden" id="184">
+   <BOUNDS type="Node" left="14805" top="9900" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Input 2" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="183" srcpinname="Y Output Value" dstnodeid="184" dstpinname="Input 1">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="185">
+   <BOUNDS type="Node" left="15075" top="9540" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="15075" top="9540" width="405" height="240">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="185" srcpinname="Y Output Value" dstnodeid="184" dstpinname="Input 2">
+   </LINK>
+   <NODE systemname="Multiply (Value)" nodename="Multiply (Value)" componentmode="Hidden" id="186">
+   <BOUNDS type="Node" left="15285" top="10365" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Input 2" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="184" srcpinname="Output" dstnodeid="186" dstpinname="Input 1">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="187">
+   <BOUNDS type="Node" left="15555" top="10020" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="15555" top="10020" width="405" height="240">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="187" srcpinname="Y Output Value" dstnodeid="186" dstpinname="Input 2">
+   </LINK>
+   <NODE systemname="Subtract (Value)" nodename="Subtract (Value)" componentmode="Hidden" id="188">
+   <BOUNDS type="Node" left="15630" top="10860" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Input 2" visible="1" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="186" srcpinname="Output" dstnodeid="188" dstpinname="Input 1">
+   </LINK>
+   <NODE systemname="Add (Value)" nodename="Add (Value)" componentmode="Hidden" id="189">
+   <BOUNDS type="Node" left="15870" top="10500" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input 2" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="185" srcpinname="Y Output Value" dstnodeid="189" dstpinname="Input 1">
+   </LINK>
+   <LINK srcnodeid="189" srcpinname="Output" dstnodeid="188" dstpinname="Input 2">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="194">
+   <BOUNDS type="Node" left="1710" top="13755" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="1710" top="13755" width="300" height="240">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="195">
+   <BOUNDS type="Node" left="4440" top="13755" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="4440" top="13755" width="300" height="240">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Group (EX9)" nodename="Group (EX9)" componentmode="Hidden" id="198">
+   <BOUNDS type="Node" left="1065" top="14715" width="8235" height="270">
+   </BOUNDS>
+   <PIN pinname="Layer 1" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Layer Template Count" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Layer 2" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   <PIN pinname="Layer 3" visible="1" slicecount="1" values="||">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="199">
+   <BOUNDS type="Node" left="7155" top="13755" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="7155" top="13755" width="300" height="240">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="2">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="201" systemname="IOBox (String)">
+   <BOUNDS type="Node" left="1470" top="9600" width="420" height="270">
+   </BOUNDS>
+   <BOUNDS type="Box" left="1470" top="9600" width="420" height="270">
+   </BOUNDS>
+   <PIN pinname="Input String" visible="0" slicecount="1" values="180">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="202">
+   <BOUNDS type="Node" left="2415" top="10140" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="2415" top="10140" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Descriptive Name" slicecount="1" values="To">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="204" systemname="IOBox (String)">
+   <BOUNDS type="Node" left="1485" top="9375" width="525" height="270">
+   </BOUNDS>
+   <BOUNDS type="Box" left="1485" top="9375" width="1710" height="300">
+   </BOUNDS>
+   <PIN pinname="Input String" visible="0" slicecount="1" values="|mapping: From - To|">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="186" srcpinname="Output" dstnodeid="126" dstpinname="Spread Count">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="205">
+   <BOUNDS type="Node" left="4350" top="10140" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="4350" top="10140" width="480" height="480">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="showX">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="206">
+   <BOUNDS type="Node" left="4920" top="10140" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="4920" top="10140" width="480" height="480">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="showY">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="207">
+   <BOUNDS type="Node" left="5490" top="10140" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="5490" top="10140" width="480" height="480">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="showZ">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Text (EX9)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Text (EX9)" componentmode="Hidden" id="210">
+   <BOUNDS type="Node" left="10215" top="19170" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   <PIN pinname="Text" visible="1">
+   </PIN>
+   <PIN pinname="Transform" visible="1">
+   </PIN>
+   <PIN pinname="Horizontal Align" slicecount="1" values="Left">
+   </PIN>
+   </NODE>
+   <NODE systemname="Group (EX9)" nodename="Group (EX9)" componentmode="Hidden" id="211">
+   <BOUNDS type="Node" left="1065" top="17505" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Layer 1" visible="1">
+   </PIN>
+   <PIN pinname="Layer 2" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   <PIN pinname="Layer Template Count" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Layer 3" visible="1" slicecount="1" values="||">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="198" srcpinname="Layer" dstnodeid="211" dstpinname="Layer 1">
+   </LINK>
+   <NODE systemname="GetSlice (String)" nodename="GetSlice (String)" componentmode="Hidden" id="212">
+   <BOUNDS type="Node" left="10710" top="16680" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Index" slicecount="1" values="9">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Transform (Transform 3d)" nodename="Transform (Transform 3d)" componentmode="Hidden" id="213">
+   <BOUNDS type="Node" left="10365" top="16005" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Transform Out" visible="1">
+   </PIN>
+   <PIN pinname="ScaleY" visible="1">
+   </PIN>
+   <PIN pinname="ScaleZ" visible="1">
+   </PIN>
+   <PIN pinname="ScaleX" visible="1">
+   </PIN>
+   <PIN pinname="TranslateY" visible="1">
+   </PIN>
+   <PIN pinname="TranslateX" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="213" srcpinname="Transform Out" dstnodeid="210" dstpinname="Transform">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="214">
+   <BOUNDS type="Node" left="11130" top="15405" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="11130" top="15405" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="0.1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="214" srcpinname="Y Output Value" dstnodeid="213" dstpinname="ScaleY">
+   </LINK>
+   <LINK srcnodeid="214" srcpinname="Y Output Value" dstnodeid="213" dstpinname="ScaleZ">
+   </LINK>
+   <LINK srcnodeid="214" srcpinname="Y Output Value" dstnodeid="213" dstpinname="ScaleX">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="215">
+   <BOUNDS type="Node" left="10530" top="14670" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="10530" top="14670" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="-0.9">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="216">
+   <BOUNDS type="Node" left="10680" top="15015" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="10680" top="15015" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="0.8">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="216" srcpinname="Y Output Value" dstnodeid="213" dstpinname="TranslateY">
+   </LINK>
+   <LINK srcnodeid="215" srcpinname="Y Output Value" dstnodeid="213" dstpinname="TranslateX">
+   </LINK>
+   <NODE systemname="Add (String)" nodename="Add (String)" componentmode="Hidden" id="217">
+   <BOUNDS type="Node" left="10530" top="18585" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Intersperse" slicecount="1" values="None">
+   </PIN>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Input 2" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (String)" nodename="IOBox (String)" componentmode="InABox" id="218">
+   <BOUNDS type="Node" left="10530" top="18210" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="10530" top="18210" width="1185" height="240">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" values="|RPS - |">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="218" srcpinname="Output String" dstnodeid="217" dstpinname="Input 1">
+   </LINK>
+   <LINK srcnodeid="217" srcpinname="Output" dstnodeid="210" dstpinname="Text">
+   </LINK>
+   <NODE systemname="Frac (Value)" nodename="Frac (Value)" componentmode="Hidden" id="219">
+   <BOUNDS type="Node" left="10710" top="17415" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Whole Part" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="AsValue (String)" nodename="AsValue (String)" componentmode="Hidden" id="220">
+   <BOUNDS type="Node" left="10710" top="17055" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="AsString (Value)" nodename="AsString (Value)" componentmode="Hidden" id="221">
+   <BOUNDS type="Node" left="10710" top="17760" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="SubType" slicecount="1" values="|Integer (MinInt .. MaxInt)|">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="212" srcpinname="Output" dstnodeid="220" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="220" srcpinname="Output" dstnodeid="219" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="219" srcpinname="Whole Part" dstnodeid="221" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="221" srcpinname="Output" dstnodeid="217" dstpinname="Input 2" linkstyle="PolyLine">
+   </LINK>
+   <NODE systemname="RegExpr (String)" nodename="RegExpr (String)" componentmode="Hidden" id="223">
+   <BOUNDS type="Node" left="4800" top="3930" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Regular Expression" slicecount="1" values="|M ( .*? ) W&cr;&lf;|">
+   </PIN>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="7" srcpinname="Output" dstnodeid="223" dstpinname="Input">
+   </LINK>
+   <NODE systemname="channel2" filename="channel2.v4p" nodename="channel2.v4p" componentmode="Hidden" id="225">
+   <BOUNDS type="Node" left="1065" top="14130" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Window" left="330" top="2070" width="14670" height="8850">
+   </BOUNDS>
+   <PIN pinname="Spread Count - Resolution - Frame Count" visible="1">
+   </PIN>
+   <PIN pinname="From" visible="1">
+   </PIN>
+   <PIN pinname="To" visible="1">
+   </PIN>
+   <PIN pinname="XYZ" visible="1">
+   </PIN>
+   <PIN pinname="showAccel" visible="1">
+   </PIN>
+   <PIN pinname="showGyro" visible="1">
+   </PIN>
+   <PIN pinname="showFinalFiltered" visible="1">
+   </PIN>
+   <PIN pinname="Reset" visible="1">
+   </PIN>
+   <PIN pinname="Enabled" visible="1">
+   </PIN>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Color" visible="1">
+   </PIN>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   <BOUNDS type="Box" left="1065" top="14130">
+   </BOUNDS>
+   </NODE>
+   <LINK srcnodeid="54" srcpinname="Y Output Value" dstnodeid="225" dstpinname="Spread Count - Resolution - Frame Count" linkstyle="Bezier">
+   <LINKPOINT x="540" y="12255">
+   </LINKPOINT>
+   <LINKPOINT x="1245" y="12255">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="123" srcpinname="Y Output Value" dstnodeid="225" dstpinname="From" linkstyle="Bezier">
+   <LINKPOINT x="1440" y="12255">
+   </LINKPOINT>
+   <LINKPOINT x="1410" y="12255">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="202" srcpinname="Y Output Value" dstnodeid="225" dstpinname="To" linkstyle="Bezier">
+   <LINKPOINT x="2430" y="12255">
+   </LINKPOINT>
+   <LINKPOINT x="1575" y="12255">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="194" srcpinname="Y Output Value" dstnodeid="225" dstpinname="XYZ">
+   </LINK>
+   <LINK srcnodeid="149" srcpinname="Y Output Value" dstnodeid="225" dstpinname="showAccel" linkstyle="Bezier">
+   <LINKPOINT x="7410" y="12360">
+   </LINKPOINT>
+   <LINKPOINT x="2085" y="12360">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="150" srcpinname="Y Output Value" dstnodeid="225" dstpinname="showGyro" linkstyle="Bezier">
+   <LINKPOINT x="8340" y="12360">
+   </LINKPOINT>
+   <LINKPOINT x="2235" y="12360">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="151" srcpinname="Y Output Value" dstnodeid="225" dstpinname="showFinalFiltered" linkstyle="Bezier">
+   <LINKPOINT x="9255" y="12360">
+   </LINKPOINT>
+   <LINKPOINT x="2400" y="12360">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="59" srcpinname="Y Output Value" dstnodeid="225" dstpinname="Reset" linkstyle="Bezier">
+   <LINKPOINT x="11325" y="12570">
+   </LINKPOINT>
+   <LINKPOINT x="2550" y="12570">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="205" srcpinname="Y Output Value" dstnodeid="225" dstpinname="Enabled" linkstyle="Bezier">
+   <LINKPOINT x="4350" y="12375">
+   </LINKPOINT>
+   <LINKPOINT x="2685" y="12375">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="67" srcpinname="Output" dstnodeid="225" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="4815" y="10905">
+   </LINKPOINT>
+   <LINKPOINT x="1110" y="10905">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="152" srcpinname="Output" dstnodeid="225" dstpinname="Color" linkstyle="Bezier">
+   <LINKPOINT x="14730" y="13290">
+   </LINKPOINT>
+   <LINKPOINT x="1920" y="13290">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="225" srcpinname="Layer" dstnodeid="198" dstpinname="Layer 1">
+   </LINK>
+   <NODE systemname="channel2" filename="channel2.v4p" nodename="channel2.v4p" componentmode="Hidden" id="226">
+   <BOUNDS type="Node" left="3795" top="14130" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Window" left="330" top="2070" width="14670" height="8850">
+   </BOUNDS>
+   <PIN pinname="Spread Count - Resolution - Frame Count" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="From" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="To" visible="1" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="XYZ" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="showAccel" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="showGyro" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="showFinalFiltered" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Reset" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Enabled" visible="1" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Input" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Color" visible="1" slicecount="1" values="|0.00000,1.00000,0.00000,1.00000|">
+   </PIN>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   <BOUNDS type="Box" left="3795" top="14130">
+   </BOUNDS>
+   </NODE>
+   <LINK srcnodeid="206" srcpinname="Y Output Value" dstnodeid="226" dstpinname="Enabled" linkstyle="Bezier">
+   <LINKPOINT x="4950" y="12375">
+   </LINKPOINT>
+   <LINKPOINT x="5400" y="12375">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="149" srcpinname="Y Output Value" dstnodeid="226" dstpinname="showAccel" linkstyle="Bezier">
+   <LINKPOINT x="7395" y="12368">
+   </LINKPOINT>
+   <LINKPOINT x="4815" y="12368">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="150" srcpinname="Y Output Value" dstnodeid="226" dstpinname="showGyro" linkstyle="Bezier">
+   <LINKPOINT x="8325" y="12368">
+   </LINKPOINT>
+   <LINKPOINT x="4965" y="12368">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="151" srcpinname="Y Output Value" dstnodeid="226" dstpinname="showFinalFiltered" linkstyle="Bezier">
+   <LINKPOINT x="9255" y="12360">
+   </LINKPOINT>
+   <LINKPOINT x="5130" y="12360">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="59" srcpinname="Y Output Value" dstnodeid="226" dstpinname="Reset" linkstyle="Bezier">
+   <LINKPOINT x="11325" y="12570">
+   </LINKPOINT>
+   <LINKPOINT x="5280" y="12570">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="155" srcpinname="Output" dstnodeid="226" dstpinname="Color" linkstyle="Bezier">
+   <LINKPOINT x="15660" y="13298">
+   </LINKPOINT>
+   <LINKPOINT x="4650" y="13298">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="195" srcpinname="Y Output Value" dstnodeid="226" dstpinname="XYZ">
+   </LINK>
+   <LINK srcnodeid="54" srcpinname="Y Output Value" dstnodeid="226" dstpinname="Spread Count - Resolution - Frame Count" linkstyle="Bezier">
+   <LINKPOINT x="570" y="12248">
+   </LINKPOINT>
+   <LINKPOINT x="3960" y="12248">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="123" srcpinname="Y Output Value" dstnodeid="226" dstpinname="From" linkstyle="Bezier">
+   <LINKPOINT x="1485" y="12248">
+   </LINKPOINT>
+   <LINKPOINT x="4110" y="12248">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="202" srcpinname="Y Output Value" dstnodeid="226" dstpinname="To" linkstyle="Bezier">
+   <LINKPOINT x="2460" y="12255">
+   </LINKPOINT>
+   <LINKPOINT x="4290" y="12255">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="67" srcpinname="Output" dstnodeid="226" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="4830" y="10905">
+   </LINKPOINT>
+   <LINKPOINT x="3825" y="10905">
+   </LINKPOINT>
+   </LINK>
+   <NODE id="227" systemname="channel2" filename="channel2.v4p" nodename="channel2.v4p" componentmode="Hidden" hiddenwhenlocked="0" managers="">
+   <PIN pinname="Input" visible="1" slicecount="1" pintype="Input" values="0">
+   </PIN>
+   <PIN pinname="Spread Count - Resolution - Frame Count" visible="1" slicecount="1" pintype="Input" values="0">
+   </PIN>
+   <PIN pinname="From" visible="1" slicecount="1" pintype="Input" values="0">
+   </PIN>
+   <PIN pinname="To" visible="1" slicecount="1" pintype="Input" values="1">
+   </PIN>
+   <PIN pinname="XYZ" visible="1" slicecount="1" pintype="Input" values="0">
+   </PIN>
+   <PIN pinname="Color" visible="1" slicecount="1" pintype="Input" values="|0.00000,1.00000,0.00000,1.00000|">
+   </PIN>
+   <PIN pinname="Reset" visible="1" slicecount="1" pintype="Input" values="0">
+   </PIN>
+   <PIN pinname="showFinalFiltered" visible="1" slicecount="1" pintype="Input" values="0">
+   </PIN>
+   <PIN pinname="showGyro" visible="1" slicecount="1" pintype="Input" values="0">
+   </PIN>
+   <PIN pinname="showAccel" visible="1" slicecount="1" pintype="Input" values="0">
+   </PIN>
+   <PIN pinname="Enabled" visible="1" slicecount="1" pintype="Input" values="1">
+   </PIN>
+   <BOUNDS type="Node" left="6510" top="14130" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Window" left="330" top="2070" width="14670" height="8850">
+   </BOUNDS>
+   <PIN pinname="Layer" visible="1" pintype="Output">
+   </PIN>
+   <BOUNDS type="Box" left="6510" top="14130" width="4800" height="3600">
+   </BOUNDS>
+   <PIN pinname="Descriptive Name" pintype="Configuration" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Evaluate" pintype="Input" visible="-1" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Window Handle" pintype="Output" visible="-1">
+   </PIN>
+   <PIN pinname="Patch" pintype="Output" visible="-1">
+   </PIN>
+   <PIN pinname="ID" pintype="Output" visible="-1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="67" srcpinname="Output" dstnodeid="227" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="4845" y="10905">
+   </LINKPOINT>
+   <LINKPOINT x="6525" y="10905">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="54" srcpinname="Y Output Value" dstnodeid="227" dstpinname="Spread Count - Resolution - Frame Count" linkstyle="Bezier">
+   <LINKPOINT x="570" y="12240">
+   </LINKPOINT>
+   <LINKPOINT x="6675" y="12240">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="123" srcpinname="Y Output Value" dstnodeid="227" dstpinname="From" linkstyle="Bezier">
+   <LINKPOINT x="1485" y="12240">
+   </LINKPOINT>
+   <LINKPOINT x="6810" y="12240">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="202" srcpinname="Y Output Value" dstnodeid="227" dstpinname="To" linkstyle="Bezier">
+   <LINKPOINT x="2475" y="12240">
+   </LINKPOINT>
+   <LINKPOINT x="6975" y="12240">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="199" srcpinname="Y Output Value" dstnodeid="227" dstpinname="XYZ">
+   </LINK>
+   <LINK srcnodeid="157" srcpinname="Output" dstnodeid="227" dstpinname="Color" linkstyle="Bezier">
+   <LINKPOINT x="16590" y="13298">
+   </LINKPOINT>
+   <LINKPOINT x="7365" y="13298">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="59" srcpinname="Y Output Value" dstnodeid="227" dstpinname="Reset" linkstyle="Bezier">
+   <LINKPOINT x="11325" y="12570">
+   </LINKPOINT>
+   <LINKPOINT x="7995" y="12570">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="151" srcpinname="Y Output Value" dstnodeid="227" dstpinname="showFinalFiltered" linkstyle="Bezier">
+   <LINKPOINT x="9255" y="12375">
+   </LINKPOINT>
+   <LINKPOINT x="7815" y="12375">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="150" srcpinname="Y Output Value" dstnodeid="227" dstpinname="showGyro" linkstyle="Bezier">
+   <LINKPOINT x="8355" y="12375">
+   </LINKPOINT>
+   <LINKPOINT x="7650" y="12375">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="149" srcpinname="Y Output Value" dstnodeid="227" dstpinname="showAccel" linkstyle="Bezier">
+   <LINKPOINT x="7440" y="12375">
+   </LINKPOINT>
+   <LINKPOINT x="7485" y="12375">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="207" srcpinname="Y Output Value" dstnodeid="227" dstpinname="Enabled" linkstyle="Bezier">
+   <LINKPOINT x="5550" y="12368">
+   </LINKPOINT>
+   <LINKPOINT x="8100" y="12368">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="227" srcpinname="Layer" dstnodeid="198" dstpinname="Layer 3">
+   </LINK>
+   <LINK srcnodeid="226" srcpinname="Layer" dstnodeid="198" dstpinname="Layer 2">
+   </LINK>
+   <NODE systemname="Renderer (EX9)" nodename="Renderer (EX9)" componentmode="InAWindow" id="228">
+   <BOUNDS type="Node" left="1065" top="18810" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="1065" top="18810" width="2400" height="1800">
+   </BOUNDS>
+   <BOUNDS type="Window" left="225" top="5910" width="6240" height="5010">
+   </BOUNDS>
+   <PIN pinname="Layers" visible="1">
+   </PIN>
+   <PIN pinname="Enabled" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="211" srcpinname="Layer" dstnodeid="228" dstpinname="Layers">
+   </LINK>
+   <NODE systemname="Text (EX9)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Text (EX9)" componentmode="Hidden" id="239">
+   <BOUNDS type="Node" left="12960" top="19170" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   <PIN pinname="Text" visible="1">
+   </PIN>
+   <PIN pinname="Transform" visible="1">
+   </PIN>
+   <PIN pinname="Horizontal Align" slicecount="1" values="Left">
+   </PIN>
+   </NODE>
+   <NODE systemname="GetSlice (String)" nodename="GetSlice (String)" componentmode="Hidden" id="238">
+   <BOUNDS type="Node" left="13455" top="16680" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="text">
+   </PIN>
+   <PIN pinname="Index" slicecount="1" values="10">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Transform (Transform 3d)" nodename="Transform (Transform 3d)" componentmode="Hidden" id="237">
+   <BOUNDS type="Node" left="13110" top="16005" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Transform Out" visible="1">
+   </PIN>
+   <PIN pinname="ScaleY" visible="1">
+   </PIN>
+   <PIN pinname="ScaleZ" visible="1">
+   </PIN>
+   <PIN pinname="ScaleX" visible="1">
+   </PIN>
+   <PIN pinname="TranslateY" visible="1">
+   </PIN>
+   <PIN pinname="TranslateX" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="237" srcpinname="Transform Out" dstnodeid="239" dstpinname="Transform">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="236">
+   <BOUNDS type="Node" left="13875" top="15405" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="13875" top="15405" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="0.1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="236" srcpinname="Y Output Value" dstnodeid="237" dstpinname="ScaleY">
+   </LINK>
+   <LINK srcnodeid="236" srcpinname="Y Output Value" dstnodeid="237" dstpinname="ScaleZ">
+   </LINK>
+   <LINK srcnodeid="236" srcpinname="Y Output Value" dstnodeid="237" dstpinname="ScaleX">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="235">
+   <BOUNDS type="Node" left="13275" top="14670" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="13275" top="14670" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="-0.9">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="234">
+   <BOUNDS type="Node" left="13425" top="15015" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="13425" top="15015" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="0.7">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="234" srcpinname="Y Output Value" dstnodeid="237" dstpinname="TranslateY">
+   </LINK>
+   <LINK srcnodeid="235" srcpinname="Y Output Value" dstnodeid="237" dstpinname="TranslateX">
+   </LINK>
+   <NODE systemname="Add (String)" nodename="Add (String)" componentmode="Hidden" id="233">
+   <BOUNDS type="Node" left="13275" top="18585" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Intersperse" slicecount="1" values="None">
+   </PIN>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Input 2" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (String)" nodename="IOBox (String)" componentmode="InABox" id="232">
+   <BOUNDS type="Node" left="13275" top="18210" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="13275" top="18210" width="1185" height="240">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" values="|MPS - |">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="232" srcpinname="Output String" dstnodeid="233" dstpinname="Input 1">
+   </LINK>
+   <LINK srcnodeid="233" srcpinname="Output" dstnodeid="239" dstpinname="Text">
+   </LINK>
+   <NODE systemname="Frac (Value)" nodename="Frac (Value)" componentmode="Hidden" id="231">
+   <BOUNDS type="Node" left="13455" top="17415" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Whole Part" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="AsValue (String)" nodename="AsValue (String)" componentmode="Hidden" id="230">
+   <BOUNDS type="Node" left="13455" top="17055" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="AsString (Value)" nodename="AsString (Value)" componentmode="Hidden" id="229">
+   <BOUNDS type="Node" left="13455" top="17760" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="SubType" slicecount="1" values="|Integer (MinInt .. MaxInt)|">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="238" srcpinname="Output" dstnodeid="230" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="230" srcpinname="Output" dstnodeid="231" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="231" srcpinname="Whole Part" dstnodeid="229" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="229" srcpinname="Output" dstnodeid="233" dstpinname="Input 2" linkstyle="PolyLine">
+   </LINK>
+   <LINK srcnodeid="27" srcpinname="Y Output Value" dstnodeid="228" dstpinname="Enabled" linkstyle="Bezier" hiddenwhenlocked="1">
+   <LINKPOINT x="5610" y="14220">
+   </LINKPOINT>
+   <LINKPOINT x="2055" y="14220">
+   </LINKPOINT>
+   </LINK>
+   <NODE systemname="Text (EX9)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Text (EX9)" componentmode="Hidden" id="261">
+   <BOUNDS type="Node" left="21180" top="19170" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   <PIN pinname="Text" visible="1">
+   </PIN>
+   <PIN pinname="Transform" visible="1">
+   </PIN>
+   <PIN pinname="Horizontal Align" slicecount="1" values="Left">
+   </PIN>
+   </NODE>
+   <NODE systemname="GetSlice (String)" nodename="GetSlice (String)" componentmode="Hidden" id="260">
+   <BOUNDS type="Node" left="21675" top="16680" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="text">
+   </PIN>
+   <PIN pinname="Index" slicecount="1" values="13">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Transform (Transform 3d)" nodename="Transform (Transform 3d)" componentmode="Hidden" id="259">
+   <BOUNDS type="Node" left="21330" top="16005" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Transform Out" visible="1">
+   </PIN>
+   <PIN pinname="ScaleY" visible="1">
+   </PIN>
+   <PIN pinname="ScaleZ" visible="1">
+   </PIN>
+   <PIN pinname="ScaleX" visible="1">
+   </PIN>
+   <PIN pinname="TranslateY" visible="1">
+   </PIN>
+   <PIN pinname="TranslateX" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="259" srcpinname="Transform Out" dstnodeid="261" dstpinname="Transform">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="258">
+   <BOUNDS type="Node" left="22095" top="15405" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="22095" top="15405" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="0.1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="258" srcpinname="Y Output Value" dstnodeid="259" dstpinname="ScaleY">
+   </LINK>
+   <LINK srcnodeid="258" srcpinname="Y Output Value" dstnodeid="259" dstpinname="ScaleZ">
+   </LINK>
+   <LINK srcnodeid="258" srcpinname="Y Output Value" dstnodeid="259" dstpinname="ScaleX">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="257">
+   <BOUNDS type="Node" left="21495" top="14670" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="21495" top="14670" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="-0.9">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="256">
+   <BOUNDS type="Node" left="21645" top="15015" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="21645" top="15015" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="0.4">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="256" srcpinname="Y Output Value" dstnodeid="259" dstpinname="TranslateY">
+   </LINK>
+   <LINK srcnodeid="257" srcpinname="Y Output Value" dstnodeid="259" dstpinname="TranslateX">
+   </LINK>
+   <NODE systemname="Add (String)" nodename="Add (String)" componentmode="Hidden" id="255">
+   <BOUNDS type="Node" left="21495" top="18585" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Intersperse" slicecount="1" values="None">
+   </PIN>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Input 2" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (String)" nodename="IOBox (String)" componentmode="InABox" id="254">
+   <BOUNDS type="Node" left="21495" top="18210" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="21495" top="18210" width="1185" height="240">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" values="|Orientation - |">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="254" srcpinname="Output String" dstnodeid="255" dstpinname="Input 1">
+   </LINK>
+   <LINK srcnodeid="255" srcpinname="Output" dstnodeid="261" dstpinname="Text">
+   </LINK>
+   <NODE systemname="Frac (Value)" nodename="Frac (Value)" componentmode="Hidden" id="253">
+   <BOUNDS type="Node" left="21675" top="17415" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Whole Part" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="AsValue (String)" nodename="AsValue (String)" componentmode="Hidden" id="252">
+   <BOUNDS type="Node" left="21675" top="17055" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="AsString (Value)" nodename="AsString (Value)" componentmode="Hidden" id="251">
+   <BOUNDS type="Node" left="21675" top="17760" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="SubType" slicecount="1" values="|Integer (MinInt .. MaxInt)|">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="260" srcpinname="Output" dstnodeid="252" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="252" srcpinname="Output" dstnodeid="253" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="253" srcpinname="Whole Part" dstnodeid="251" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="251" srcpinname="Output" dstnodeid="255" dstpinname="Input 2" linkstyle="PolyLine">
+   </LINK>
+   <NODE systemname="Text (EX9)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Text (EX9)" componentmode="Hidden" id="250">
+   <BOUNDS type="Node" left="23925" top="19170" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   <PIN pinname="Text" visible="1">
+   </PIN>
+   <PIN pinname="Transform" visible="1">
+   </PIN>
+   <PIN pinname="Horizontal Align" slicecount="1" values="Left">
+   </PIN>
+   </NODE>
+   <NODE systemname="GetSlice (String)" nodename="GetSlice (String)" componentmode="Hidden" id="249">
+   <BOUNDS type="Node" left="24420" top="16680" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="text">
+   </PIN>
+   <PIN pinname="Index" slicecount="1" values="14">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Transform (Transform 3d)" nodename="Transform (Transform 3d)" componentmode="Hidden" id="248">
+   <BOUNDS type="Node" left="24075" top="16005" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Transform Out" visible="1">
+   </PIN>
+   <PIN pinname="ScaleY" visible="1">
+   </PIN>
+   <PIN pinname="ScaleZ" visible="1">
+   </PIN>
+   <PIN pinname="ScaleX" visible="1">
+   </PIN>
+   <PIN pinname="TranslateY" visible="1">
+   </PIN>
+   <PIN pinname="TranslateX" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="248" srcpinname="Transform Out" dstnodeid="250" dstpinname="Transform">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="247">
+   <BOUNDS type="Node" left="24840" top="15405" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="24840" top="15405" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="0.1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="247" srcpinname="Y Output Value" dstnodeid="248" dstpinname="ScaleY">
+   </LINK>
+   <LINK srcnodeid="247" srcpinname="Y Output Value" dstnodeid="248" dstpinname="ScaleZ">
+   </LINK>
+   <LINK srcnodeid="247" srcpinname="Y Output Value" dstnodeid="248" dstpinname="ScaleX">
+   </LINK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="246">
+   <BOUNDS type="Node" left="24240" top="14670" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="24240" top="14670" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="-0.9">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="245">
+   <BOUNDS type="Node" left="24390" top="15015" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="24390" top="15015" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" values="0.3">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="245" srcpinname="Y Output Value" dstnodeid="248" dstpinname="TranslateY">
+   </LINK>
+   <LINK srcnodeid="246" srcpinname="Y Output Value" dstnodeid="248" dstpinname="TranslateX">
+   </LINK>
+   <NODE systemname="Add (String)" nodename="Add (String)" componentmode="Hidden" id="244">
+   <BOUNDS type="Node" left="24240" top="18585" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Intersperse" slicecount="1" values="None">
+   </PIN>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Input 2" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (String)" nodename="IOBox (String)" componentmode="InABox" id="243">
+   <BOUNDS type="Node" left="24240" top="18210" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="24240" top="18210" width="1185" height="240">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" values="|Direction - |">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="243" srcpinname="Output String" dstnodeid="244" dstpinname="Input 1">
+   </LINK>
+   <LINK srcnodeid="244" srcpinname="Output" dstnodeid="250" dstpinname="Text">
+   </LINK>
+   <NODE systemname="Frac (Value)" nodename="Frac (Value)" componentmode="Hidden" id="242">
+   <BOUNDS type="Node" left="24420" top="17415" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Whole Part" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="AsValue (String)" nodename="AsValue (String)" componentmode="Hidden" id="241">
+   <BOUNDS type="Node" left="24420" top="17055" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="AsString (Value)" nodename="AsString (Value)" componentmode="Hidden" id="240">
+   <BOUNDS type="Node" left="24420" top="17760" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="SubType" slicecount="1" values="|Integer (MinInt .. MaxInt)|">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="249" srcpinname="Output" dstnodeid="241" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="241" srcpinname="Output" dstnodeid="242" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="242" srcpinname="Whole Part" dstnodeid="240" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="240" srcpinname="Output" dstnodeid="244" dstpinname="Input 2" linkstyle="PolyLine">
+   </LINK>
+   <NODE systemname="Group (EX9)" nodename="Group (EX9)" componentmode="Hidden" id="264">
+   <BOUNDS type="Node" left="10215" top="19725" width="16515" height="270">
+   </BOUNDS>
+   <PIN pinname="Layer Template Count" slicecount="1" values="6">
+   </PIN>
+   <PIN pinname="Layer 5" visible="1">
+   </PIN>
+   <PIN pinname="Layer 6" visible="1">
+   </PIN>
+   <PIN pinname="Layer 2" visible="1">
+   </PIN>
+   <PIN pinname="Layer 1" visible="1">
+   </PIN>
+   <PIN pinname="Layer" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="261" srcpinname="Layer" dstnodeid="264" dstpinname="Layer 5">
+   </LINK>
+   <LINK srcnodeid="250" srcpinname="Layer" dstnodeid="264" dstpinname="Layer 6">
+   </LINK>
+   <NODE systemname="IOBox (String)" nodename="IOBox (String)" componentmode="InABox" id="265">
+   <BOUNDS type="Node" left="10710" top="14280" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="10710" top="14280" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Input String" visible="1">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="62" srcpinname="Output" dstnodeid="265" dstpinname="Input String">
+   </LINK>
+   <LINK srcnodeid="265" srcpinname="Output String" dstnodeid="212" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="265" srcpinname="Output String" dstnodeid="238" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="10770" y="15585">
+   </LINKPOINT>
+   <LINKPOINT x="13440" y="15585">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="265" srcpinname="Output String" dstnodeid="260" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="12175" y="15585">
+   </LINKPOINT>
+   <LINKPOINT x="20270" y="15585">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="265" srcpinname="Output String" dstnodeid="249" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="12175" y="15585">
+   </LINKPOINT>
+   <LINKPOINT x="23015" y="15585">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="239" srcpinname="Layer" dstnodeid="264" dstpinname="Layer 2">
+   </LINK>
+   <LINK srcnodeid="210" srcpinname="Layer" dstnodeid="264" dstpinname="Layer 1">
+   </LINK>
+   <LINK srcnodeid="264" srcpinname="Layer" dstnodeid="211" dstpinname="Layer 2">
+   <LINKPOINT x="9960" y="20355">
+   </LINKPOINT>
+   <LINKPOINT x="5655" y="18690">
+   </LINKPOINT>
+   <LINKPOINT x="1395" y="16905">
+   </LINKPOINT>
+   </LINK>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="266" systemname="IOBox (String)">
+   <BOUNDS type="Node" left="1455" top="8460" width="3060" height="270">
+   </BOUNDS>
+   <BOUNDS type="Box" left="1455" top="8460" width="3945" height="255">
+   </BOUNDS>
+   <PIN pinname="Input String" visible="0" slicecount="1" values="|this was written with longboardLight1_A v0.28|">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   </NODE>
+   </PATCH>

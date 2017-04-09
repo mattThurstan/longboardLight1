@@ -50,6 +50,10 @@ void readMPU6050filtered() {
     float accel_x = (float)_mpu6050AccelRead[0];
     float accel_y = (float)_mpu6050AccelRead[1];
     float accel_z = (float)_mpu6050AccelRead[2];
+
+    //add to the average for direction calc
+    _diAccelSave += accel_y;
+    _diDirectionCounter++;
     
     // Get angle values from accelerometer
     float RADIANS_TO_DEGREES = 180/3.14159;
@@ -96,94 +100,6 @@ void readMPU6050filtered() {
     else if (angle_z < -180) { _mpu6050FilteredCur[2] = abs(angle_z); }
     else  {_mpu6050FilteredCur[2] = angle_z; }
 
-
-    //direction ???
-    //..might have to go further back in the stack for these numbers cos only want the accel
-    //_mpu6050FilteredPrev[1] //Y
-    //_mpu6050FilteredCur[1]  //Y
-    //accel_y //raw acceleration value
-    //accel_angle_y //adjusted vector angle
-    //accel_y
-    //_mpu6050Accel_yPrev
-
-//    if (_mpu6050FilteredCur[1] > _mpu6050FilteredPrev[1]) {
-//      _directionCur = 0;  //going forwards
-//    } else {
-//      _directionCur = 1;  //going backwards
-//    }
-
-//    if (accel_y > _mpu6050Accel_yPrev) {
-//      _directionCur = 0;  //going forwards
-//    } else {
-//      _directionCur = 1;  //going backwards
-//    }
-
-    //this really needs to be averaged.. 
-//    if (accel_y > _mpu6050AccelZero[1]) {
-//      _diDirectionSave -= 1;  //going forwards
-//    } else if (accel_y < _mpu6050AccelZero[1]) {
-//      _diDirectionSave += 1;  //going backwards
-//    } else {
-//      //_directionCur = -1;  //stationary
-//    }
-
-    _diAccelSave += accel_y;
-    _diDirectionCounter++;
-//    Serial.print("actual = ");
-//    Serial.print(_mpu6050AccelRead[1]);
-//    Serial.print(", save = ");
-//    Serial.print(_diAccelSave);
-//    Serial.print(", counter = ");
-//    Serial.print(_diDirectionCounter);
-//    Serial.println();
-
-//    Serial.print("Current direction = ");
-//    Serial.print(_directionCur);
-//    Serial.print(", Current accel Y = ");
-//    Serial.print(accel_y);
-//    Serial.print(", _mpu6050AccelZero[1] (Y) = ");
-//    Serial.print(_mpu6050AccelZero[1]);
-//    Serial.print(", _mpu6050AccelRead[1] (Y) = ");
-//    Serial.print(_mpu6050AccelRead[1]);
-//    Serial.print(", _mpu6050AccelReadAverage[1] (Y) = ");
-//    Serial.print(_mpu6050AccelReadAverage[1]);
-//    Serial.println();
-    
-/*    #ifdef DEBUG_MPU6050
-      Serial.print(accel_angle_x);
-      Serial.print(", ");
-      Serial.print(unfiltered_gyro_angle_x);
-      Serial.print(", ");
-      Serial.print(angle_x); //_mpu6050FilteredCurX
-
-      Serial.print(", ");
-      
-      Serial.print(accel_angle_y);
-      Serial.print(", ");
-      Serial.print(unfiltered_gyro_angle_y);
-      Serial.print(", ");
-      Serial.print(angle_y);
-      
-      Serial.print(", ");
-      
-      Serial.print(accel_angle_z);
-      Serial.print(", ");
-      Serial.print(unfiltered_gyro_angle_z);
-      Serial.print(", ");
-      Serial.print(angle_z);
-      
-      //Serial.print(", ");
-      //Serial.print(_orientation);   //this will be 1 frame behind, but outweighs other stuff for debug..
-      //int oM0;
-      //oM0 = orMatrix[0];
-      //Serial.print(oM0);
-      
-      //linebreak
-      Serial.write(10);
-      Serial.write(13);
-    #endif
-*/
-    
     // Update the previous saved data with the latest values - saving un-adjusted values to previous, not minus/plus values..
     set_last_read_angle_data(mpu6050ReadCurMillis, accel_y, angle_x, angle_y, angle_z, unfiltered_gyro_angle_x, unfiltered_gyro_angle_y, unfiltered_gyro_angle_z);
 
@@ -193,27 +109,21 @@ void readMPU6050filtered() {
   if (_diDirectionCounter >= _directionSampleTotal) {
     //int average = _diDirectionSave / _directionSampleTotal;
     unsigned int average = (_diAccelSave / _directionSampleTotal);
-    if (average > _mpu6050AccelZero[1] + 150) {
+    if (average > _mpu6050AccelZero[1] + 100) {
       _directionCur = 0;  //going forwards
-    } else if (average < _mpu6050AccelZero[1] - 150) {
+    } else if (average < _mpu6050AccelZero[1] - 100) {
       _directionCur = 1;  //going backwards
     } else {
       //_directionCur = -1;  //stationary
     }
     _diAccelSave = 0;
     _diDirectionCounter = 0;
-    //_directionCur = average;
-    #ifdef DEBUG
-//    Serial.print("actual = ");
-//    Serial.print(_mpu6050AccelRead[1]);
-//    Serial.print(", average = ");
-//    Serial.print(average);
-      Serial.print(", Current direction = ");
-      Serial.print(_directionCur);
-      Serial.println();
-    #endif
+//    #ifdef DEBUG
+//      Serial.print(", Current direction = ");
+//      Serial.print(_directionCur);
+//      Serial.println();
+//    #endif
   }
 
 } //END readMPU6050filtered
-
 

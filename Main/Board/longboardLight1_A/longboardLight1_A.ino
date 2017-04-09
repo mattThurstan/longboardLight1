@@ -44,7 +44,7 @@
 #define DEBUG 1                           //comment/un-comment
 //#define DEBUG_MPU6050 1                   //..
 //#define DEBUG_ORIENTATION 1               //
-#define DEBUG_WHEEL 1                    //DEUBUG wheel sensor(s)
+//#define DEBUG_WHEEL 1                    //DEUBUG wheel sensor(s)
 //#define DEBUG_INTERRUPT 1
 
 //3-axis accelerometer  calibration (these will be moved and integrated later when have communications)
@@ -63,6 +63,7 @@ boolean _doQuickCalibration = true;                      //set to true to run qu
 //#endif
 boolean _batteryPowered = false;          //are we running on battery or plugged into the computer?
 const int _buttonTotal = 1;               //how many butons are there? - cannot set Bounce using this unfortunately!
+const float _wheelRadius = 0.0345;        //half of diameter, my wheels are (worn to) 69mm diameter (70mm from the factory, give or take a bit) 
 const int _wheelSensorTotal = 1;          //how many wheels have we mounted sensors on?
 const int _wheelMagnetTotal = 8; //4;          //how many magnets are mounted on each wheel?
 
@@ -104,13 +105,15 @@ const int _ledPin = 13;                         //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.27";             //wheel tracking and direction
+const String _progVers = "0.28";             //wheel tracking and direction - cleanup
 //const int _mainLoopDelay = 0;               //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;        //starts false
 #ifdef DEBUG
 String _inputString = "";                   // a string to hold incoming data
 boolean _stringComplete = false;             // whether the string is complete
 #endif
+const unsigned long _sendMovementDataStreamInterval = 500;//100   //read loop interval in milliseconds   1000
+unsigned long _sendMovementDataStreamPrevMillis = 0;         //previous time for reference
 
 /*----------------------------modes----------------------------*/
 boolean _sleepActive = false;                       //init false at power-up
@@ -136,12 +139,12 @@ Bounce button[1] = {
 //boolean _buttonToggled[_butttonTotal] = { false };        //array of button toggle states
 
 /*----------------------------sensors----------------------------*/
-//latching bipolar hall effect sensor mounted on chassis, with 4 magents mounted on wheel
+//latching bipolar hall effect sensor mounted on chassis, with 4/8 magents mounted on wheel
 volatile byte _wheelCounter = 0;                          //byte may not be large enough (0-255), might have to use an int - starts at 0, uses 1-4
 const unsigned long _wheelSensorReadInterval = 1000;      //read loop interval in milliseconds   1000
 unsigned long _wheelSensorReadPrevMillis = 0;             //previous time for reference
 // NEXT ..these all need to be long or somit ???
-//double _wheelSpeedRps = 0;
+double _wheelSpeedRps = 0;                                //wheel revolutions per second
 double _wheelSpeedMps = 0;                                   //wheel speed in Meters Per Second
 //int _wheelSpeedMpm = 0;                                   //wheel speed in Meters Per Minute    - don't think need to save these..
 //int _wheelSpeedKph = 0;                                   //wheel speed in Kilometers Per Hour
@@ -163,7 +166,7 @@ double _wheelSpeedMps = 0;                                   //wheel speed in Me
 //meters will roll over 6.5 times a day (using unsigned int)
 //kilometers will roll over in about 30 years (using unsigned int)
 unsigned long _distTraveledForward = 0;                   //total distance traveled forward in meters
-//unsigned long _distTraveledBackward = 0;                  //total distance traveled backward in meters
+unsigned long _distTraveledBackward = 0;                  //total distance traveled backward in meters
 //_distanceTraveledLeft                                   //gotta get these in later..
 //_distanceTraveledRight
 //_distanceTraveledUp
@@ -172,7 +175,7 @@ unsigned long _distTraveledForward = 0;                   //total distance trave
 //int _wheelRadius = 0.035;                                  //radius (dist from center to the edge) of wheels in use (meters ..cos) eg. 70mm diameter
 //const float _wheelDiameter = 0.07;
 //const float _wheelDiameter = 0.069;                        //my wheels are worn to about 69mm
-const float _wheelRadius = 0.0345;                          //half of diameter
+//..moved up top.. const float _wheelRadius = 0.0345;                          //half of diameter
 //const int _wheelMagnetRadius = 0.01;                      //radius of the magnet positioning (millimeters). prob about 10mm
 //const int _wheelCircumference = 2 * PI * _wheelRadius;    //circumference = 2 * PI * radius (meters)
 const float _wheelCircumference = 2 * PI * _wheelRadius;
@@ -185,12 +188,9 @@ const float _wheelCircumference = 2 * PI * _wheelRadius;
   #include "Wire.h"
 #endif
 MPU6050 _mpu6050;  //accel gyro;
-//int16_t _mpu6050AccelCurX, _mpu6050AccelCurY, _mpu6050AccelCurZ;
-//int16_t _mpu6050GyroCurX, _mpu6050GyroCurY, _mpu6050GyroCurZ;
-//int _mpu6050AccelAverageX, _mpu6050AccelAverageY, _mpu6050AccelAverageZ, _mpu6050GyroAverageX, _mpu6050GyroAverageY, _mpu6050GyroAverageZ;
 int16_t _mpu6050AccelOffset[3] = {436, 1956, 1318};       //XYZ accel offsets to write to the MPU6050 - get from full calibration and save to memory
 int16_t _mpu6050GyroOffset[3] = {9, -32, 69};             //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
-const int _mpu6050CalibrateSampleTotal = 100; //100;             //how many samples to take at once when calibrating
+const int _mpu6050CalibrateSampleTotal = 100; //100;      //how many samples to take at once when calibrating
 const int _mpu6050CalibrateAccelThreshold = 10;           //threshold tolerance for 'dead zone' at center of readings
 const int _mpu6050CalibrateGyroThreshold = 3;             //..for gyro
 long _mpu6050CalibratePrevMillis = 0;                     //previous time for reference
@@ -214,11 +214,12 @@ float _mpu6050FilteredCur[3];                     //XYZ FINAL filtered combined 
 float _mpu6050FilteredPrev[3];                    //XYZ Previous FINAL readings..
 
 //prob won't use 'stationary' cos the calculations will need something to get started, otherwise they will be a frame behind. better to have wrong direction for a split second, than have more complicated code
+//also might try this as the average of a rolling buffer
 const int _directionSampleTotal = 10;             //how many times to sample direction before making a decision on whether it is true or not
 int _diDirectionSave = 0;                         //used to hold the direction during comparison
 unsigned int _diAccelSave = 0;
 int _diDirectionCounter = 0;                      //
-int _directionCur = 0;                          // -1 = stationary, 0 = forward, 1=back, 2=up, 3=down, 4=left, 5=right
+int _directionCur = 0;                            // -1 = stationary, 0 = forward, 1=back, 2=up, 3=down, 4=left, 5=right
 
 
 /*----------------------------orientation----------------------------*/
@@ -246,6 +247,7 @@ int _ledGlobalBrightnessCur = 255;              //current global brightness - ad
 int _ledBrightnessIncDecAmount = 10;            //the brightness amount to increase or decrease
 int _headLightsBrightness = 200;
 int _rearLightsBrightness = 200;
+int _trackLightsFadeAmount = 64;                //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
 LED_SEGMENT ledSegment[_segmentTotal] = { 
   { 0, 1, 2 },      //front head lights
   { 2, 19, 18 },    //left side
@@ -269,26 +271,20 @@ void setup() {
   #endif
   setupSerial();                          //..see 'util'
   //loadSettings();                         //load any saved settings eg. save state when turn board power off. - not implemented yet !!!
-  setupInterrupts();                       //set any interrupts..
+  setupInterrupts();                      //set any interrupts..
   delay(3000);                            //..after setting interrupts, give the power, LED strip, etc. a couple of secs to stabilise
   setupLEDs();                            //setup LEDs first and then use as setup indicator lights
-  //_leds[ledSegment[1].first] = CRGB::Yellow;
-  //_leds[ledSegment[2].first] = CRGB::Yellow;
   fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Yellow, ledSegment[1].first+1, CRGB::Yellow);
   fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::Yellow, ledSegment[2].first+1, CRGB::Yellow);
-  delay(1);
+  delay(2);
   FastLED.show();
   setupSensors();                         //setup all sensor inputs (note: sensors on wheels use interrupt pins)
-  delay(1);
-  //_leds[ledSegment[1].first+1] = CRGB::Fuchsia;
-  //_leds[ledSegment[2].first+1] = CRGB::Fuchsia;
+  delay(2);
   fill_gradient_RGB(_leds, ledSegment[1].first+2, CRGB::Fuchsia, ledSegment[1].first+3, CRGB::Fuchsia);
   fill_gradient_RGB(_leds, ledSegment[2].first+2, CRGB::Fuchsia, ledSegment[2].first+3, CRGB::Fuchsia);
   FastLED.show();
   setupUserInputs();                      //setup any user inputs - buttons, WIFI, bluetooth etc.
-  delay(1);
-  //_leds[ledSegment[1].first+2] = CRGB::Green;
-  //_leds[ledSegment[2].first+2] = CRGB::Green;
+  delay(2);
   fill_gradient_RGB(_leds, ledSegment[1].first+4, CRGB::Green, ledSegment[1].first+5, CRGB::Green);
   fill_gradient_RGB(_leds, ledSegment[2].first+4, CRGB::Green, ledSegment[2].first+5, CRGB::Green);
   FastLED.show();
@@ -299,9 +295,7 @@ void setup() {
     Serial.println();
     blinkStatusLED();
   #endif
-  delay(1);
-  //_leds[ledSegment[1].first+3] = CRGB::MediumTurquoise;
-  //_leds[ledSegment[2].first+3] = CRGB::MediumTurquoise;
+  delay(2);
   fill_gradient_RGB(_leds, ledSegment[1].first+6, CRGB::MediumTurquoise, ledSegment[1].first+7, CRGB::MediumTurquoise);
   fill_gradient_RGB(_leds, ledSegment[2].first+6, CRGB::MediumTurquoise, ledSegment[2].first+7, CRGB::MediumTurquoise);
   FastLED.show();
@@ -322,12 +316,10 @@ void loop() {
     _firstTimeSetupDone = true;
   }
 
-  if (_doQuickCalibration == true) {
-    //cut everything out of the loop and do calibrations - put board flat and press button to start these loops
-    quickCalibration();
-  } else if (_doFullCalibration == true) {
-    fullCalibration();
-  } else {
+  //cut everything out of the loop and do calibrations - put board flat and press button to start these loops
+  if (_doQuickCalibration == true) { quickCalibration(); }
+  else if (_doFullCalibration == true) { fullCalibration(); }
+  else {
     //run the loop normally
     loopUserInputs();
     loopSensors();
@@ -335,7 +327,9 @@ void loop() {
   }
   
   FastLED.show();                           //send all the data to the strips
+  #ifdef DEBUG
+    sendMovementDataStream();
+  #endif
   FastLED.delay(1000 / UPDATES_PER_SECOND);
 }
-
 

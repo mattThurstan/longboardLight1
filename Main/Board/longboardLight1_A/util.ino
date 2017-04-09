@@ -35,5 +35,157 @@ void serialEvent() {
   #endif
 }
 
+/*----------------------------util - send data----------------------------*/
+//..see '_longboardLight1_A_SerialTestDataViewer.v4p' for the first receiving end
+
+/*
+ * Calibration data sent as dump
+ * 
+ * XYZ_
+ * _mpu6050AccelZero[0]
+ * _mpu6050AccelZero[1]
+ * _mpu6050AccelZero[2]
+ * _mpu6050GyroZero[0]
+ * _mpu6050GyroZero[1]
+ * _mpu6050GyroZero[2]
+ * _mpu6050AccelReadAverage[0]
+ * _mpu6050AccelReadAverage[1]
+ * _mpu6050AccelReadAverage[2]
+ * _mpu6050GyroReadAverage[0]
+ * _mpu6050GyroReadAverage[1]
+ * _mpu6050GyroReadAverage[2]
+ */
+
+void sendCalibrationDataDump() {
+  
+      Serial.print(_mpu6050AccelZero[0]);
+      Serial.print(", ");
+      Serial.print(_mpu6050AccelZero[1]);
+      Serial.print(", ");
+      Serial.print(_mpu6050AccelZero[2]);
+      Serial.print(", ");
+      Serial.print(_mpu6050GyroZero[0]);
+      Serial.print(", ");
+      Serial.print(_mpu6050GyroZero[1]);
+      Serial.print(", ");
+      Serial.print(_mpu6050GyroZero[2]);
+      Serial.print(", ");
+      Serial.print(_mpu6050AccelReadAverage[0]);
+      Serial.print(", ");
+      Serial.print(_mpu6050AccelReadAverage[1]);
+      Serial.print(", ");
+      Serial.print(_mpu6050AccelReadAverage[2]);
+      Serial.print(", ");
+      Serial.print(_mpu6050GyroReadAverage[0]);
+      Serial.print(", ");
+      Serial.print(_mpu6050GyroReadAverage[1]);
+      Serial.print(", ");
+      Serial.print(_mpu6050GyroReadAverage[2]);
+      
+      //linebreak
+      Serial.write(10);
+      Serial.write(13);
+}
+
+/*
+ * Movement data sent as stream
+ * 
+ * RAW XYZ_
+ * _mpu6050AccelRead[0]
+ * _mpu6050AccelRead[1]
+ * _mpu6050AccelRead[2]
+ * _mpu6050GyroRead[0]
+ * _mpu6050GyroRead[1]
+ * _mpu6050GyroRead[2]
+
+ * FINAL XYZ_
+ * _mpu6050FilteredCur[0]
+ * _mpu6050FilteredCur[1]
+ * _mpu6050FilteredCur[2]
+
+ * MOVEMENT_
+ * _wheelSpeedRps
+ * _wheelSpeedMps
+ * _distTraveledForward
+ * _distTraveledBackward
+ * _orientation
+ * _directionCur
+ */
+void sendMovementDataStream() {
+  
+  unsigned long sendMovementDataStreamCurMillis = millis();     //get current time
+  
+  if((unsigned long) (sendMovementDataStreamCurMillis - _sendMovementDataStreamPrevMillis) >= _sendMovementDataStreamInterval) {
+  
+      //Serial.print("M");  //29 inc this one and last
+      //Serial.print(", ");
+      Serial.print(_mpu6050AccelRead[0]);
+      Serial.print(", ");
+      Serial.print(_mpu6050AccelRead[1]);
+      Serial.print(", ");
+      Serial.print(_mpu6050AccelRead[2]);
+      Serial.print(", ");
+      Serial.print(_mpu6050GyroRead[0]);
+      Serial.print(", ");
+      Serial.print(_mpu6050GyroRead[1]);
+      Serial.print(", ");
+      Serial.print(_mpu6050GyroRead[2]);
+      Serial.print(", ");
+      Serial.print(_mpu6050FilteredCur[0]);
+      Serial.print(", ");
+      Serial.print(_mpu6050FilteredCur[1]);
+      Serial.print(", ");
+      Serial.print(_mpu6050FilteredCur[2]);
+      Serial.print(", ");
+      Serial.print(_wheelSpeedRps); 
+      Serial.print(", ");
+      Serial.print(_wheelSpeedMps); 
+      Serial.print(", ");
+      Serial.print(_distTraveledForward); 
+      Serial.print(", ");
+      Serial.print(_distTraveledBackward); 
+      Serial.print(", ");
+      Serial.print(_orientation); 
+      Serial.print(", ");
+      Serial.print(_directionCur); 
+      //Serial.print(", ");
+      //Serial.print("W");  //29 inc this one and last
+      
+      //linebreak
+      Serial.write(10);
+      Serial.write(13);
+      
+    _sendMovementDataStreamPrevMillis = millis();               //store the current time
+  } //END timed-loop
+} //END sendMovementDataStream
+
+/*
+ * Settings sent as requested dump
+ * 
+ * _progName
+ * _progVers
+  
+ * _wheelRadius
+ * _ledGlobalBrightnessCur
+ * _headLightsBrightness
+ * _rearLightsBrightness
+ * _trackLightsFadeAmount
+  
+ * _doFullCalibration
+ * _doQuickCalibration
+  
+ * _sleepActive
+ * _breathingActive
+ * _headLightsActive
+ * _rearLightsActive
+ * _mainLightsSubMode
+ * _brakeActive
+ * _indicatorsEnabled
+ * _indicatorLeftActive
+ * _indicatorRightActive
+ */
+void sendSettingsDataDump() {
+  
+}
 
 
