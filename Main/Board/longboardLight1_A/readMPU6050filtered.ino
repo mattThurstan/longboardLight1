@@ -52,6 +52,7 @@ void readMPU6050filtered() {
     float accel_z = (float)_mpu6050AccelRead[2];
 
     //add to the average for direction calc
+    //..this really needs to be a rolling average
     _diAccelSave += accel_y;
     _diDirectionCounter++;
     
@@ -106,8 +107,10 @@ void readMPU6050filtered() {
     _mpu6050ReadPrevMillis = millis();               //store the current time
   } //END timed-loop
 
+//might make this dependant on whether tracking sub-mode is actually running, otherwise waste of processing..
   if (_diDirectionCounter >= _directionSampleTotal) {
     //int average = _diDirectionSave / _directionSampleTotal;
+    //..this really needs to be a rolling average
     unsigned int average = (_diAccelSave / _directionSampleTotal);
     if (average > _mpu6050AccelZero[1] + 100) {
       _directionCur = 0;  //going forwards

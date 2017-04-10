@@ -1,25 +1,23 @@
 /*----------------------------calibration----------------------------*/
 
 void quickCalibration() {
-  if (_doQuickCalibration == true) {
-    quickCalibrateMPU6050Gyro();
-    _doQuickCalibration = false;
-    #ifdef DEBUG
-      Serial.print(F("Quick calibration done"));
-      Serial.println();
-    #endif
-  }
+  quickCalibrateMPU6050Gyro();
+  _doQuickCalibration = false;
+  #ifdef DEBUG
+    Serial.print(F("Quick calibration done"));
+    Serial.println();
+  //sendCalibrationDataDump();
+  #endif
 }
 
 void fullCalibration() {
-  if (_doFullCalibration == true) {
-    calibrateMPU6050();
-    _doFullCalibration = false;
-    #ifdef DEBUG
-      Serial.print(F("Full calibration done"));
-      Serial.println();
-    #endif
-  }
+  calibrateMPU6050();
+  _doFullCalibration = false;
+  #ifdef DEBUG
+    Serial.print(F("Full calibration done"));
+    Serial.println();
+  //sendSettingsDataDump();
+  #endif
 }
 
 //
@@ -34,7 +32,7 @@ void quickCalibrateMPU6050Gyro() {
    * ..could loop a few times and average that aswell.. 
    * still wouldn't notice the time
    */
-  doMPU6050ReadAverage();
+  doMPU6050ReadAverage();         //..see 'MPU6050' tab..
   for (int i = 0; i < 3; i++) {
      _mpu6050AccelZero[i] = _mpu6050AccelReadAverage[i];  //used in orientation
      _mpu6050GyroZero[i] = _mpu6050GyroReadAverage[i];    //used at start of MPU6050 filtering loop

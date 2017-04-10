@@ -6,15 +6,8 @@
  * called from main loop
  */
 void loopModes() {
-  boolean orientationTest = false;
-  if (orientationTest == true) {
-    fadeToBlackBy( _leds, _ledNum, 10);
-    if (_orientation == 0) { _leds[ledSegment[2].first] = CRGB::White;  } //_leds[ledSegment[0].first]
-    if (_orientation == 1) { _leds[ledSegment[2].first+1] = CRGB::White; }
-    if (_orientation == 2) { _leds[ledSegment[2].first+2] = CRGB::White; }
-    if (_orientation == 3) { _leds[ledSegment[2].first+3] = CRGB::White; }
-    if (_orientation == 4) { _leds[ledSegment[2].first+4] = CRGB::White; }
-    if (_orientation == 5) { _leds[ledSegment[2].first+5] = CRGB::White; }
+  if (_orientationTest == true) {
+    showOrientation();
   } else {
     if (_sleepActive == false) {
       //NOTICE: fadeToBlackBy is annoying the customers down the street. implement only when needed
@@ -33,20 +26,23 @@ void loopModes() {
       //fadeToBlackBy( _leds, _ledNum, 64); //(array, count, percent) eg. 192/256 = 75% (use 192), 64 = 25%
       //fill_solid(_leds, _ledNum, CRGB::Black);  //TEMP colour
       loopBreathing(); //breathing here is not overlaid by rear lights
-    }
-  } //END test
+    } //END if _sleepActive
+  } //END if orientationTest
 }
 
 void loopHeadLights() {
   if (_headLightsActive == true) {
     //fill_solid( leds, _ledNum, CRGB::White);
-    fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::White, ledSegment[0].last, CRGB::White );
+    //fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::White, ledSegment[0].last, CRGB::White );
+    //_headLightsBrightness
+    _leds(ledSegment[0].first, ledSegment[0].total) = CRGB::White;
   }
 }
 
 void loopRearLights() {
   if (_rearLightsActive == true) { 
-    fill_gradient_RGB(_leds, ledSegment[3].first, CRGB::Red, ledSegment[3].last, CRGB::Red );
+    //fill_gradient_RGB(_leds, ledSegment[3].first, CRGB::Red, ledSegment[3].last, CRGB::Red );
+    _leds(ledSegment[3].first, ledSegment[3].total) = CRGB::Red;
   }
 }
 
@@ -63,22 +59,36 @@ void loopMainLights() {
     fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::White, ledSegment[2].last, CRGB::Red );
   } else if (_mainLightsSubMode == 3) {
     loopTrackLights();
+  } else if (_mainLightsSubMode == 4) {
+    Fire2012();
+  } else if (_mainLightsSubMode == 5) {
+    confetti();
+  } else if (_mainLightsSubMode == 6) {
+    sinelon();
+  } else if (_mainLightsSubMode == 7) {
+    bpm();
+  } else if (_mainLightsSubMode == 8) {
+    juggle();
   }
 }
 
 void loopEmergencyFlash() {
   //emergency flash (upside-down)
-    fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Orange, ledSegment[2].last, CRGB::Orange );
+  fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Orange, ledSegment[2].last, CRGB::Orange );
+  _leds( ledSegment[1].first, (ledSegment[2].last + 1) ) = CRGB::Orange;
+  FastLED.show();
 }
 
 void loopSideLight() {
   //emergency light (stood on a side)
   if (_orientation == 4) {
     //left
-    fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::White, ledSegment[2].last, CRGB::White );
+    //fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::White, ledSegment[2].last, CRGB::White );
+    _leds( ledSegment[2].first, (ledSegment[2].total) ) = CRGB::White;
   } else if (_orientation == 5) {
     //right
-    fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::White, ledSegment[1].last, CRGB::White );
+    //fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::White, ledSegment[1].last, CRGB::White );
+    _leds( ledSegment[1].first, (ledSegment[1].total) ) = CRGB::White;
   }
 }
 
@@ -95,18 +105,9 @@ void loopIndicatorFlash() {
 
 void loopTrackLights() {
   //wheel tracked lights
-  if (_directionCur == 0) {
-    //
-  } else if (_directionCur == 1) {
-    //
-  } else {
-    //
-  }
-  
-  //make any unused pixels fade out
-  fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);  //2
-  //_leds(ledSegment[1].first, ledSegment[1].total).fadeToBlackBy(_trackLightsFadeAmount);
-  //_leds(ledSegment[2].first, ledSegment[2].total).fadeToBlackBy(_trackLightsFadeAmount);
+  //position from wheel data combined with direction from MPU6050
+
+  fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);   //make any unused pixels fade out
   
   //wrap-around for segments 1 and 2  
   if (_ledMovePos > ledSegment[1].total) {
@@ -116,6 +117,8 @@ void loopTrackLights() {
   }
   _leds[ledSegment[1].last - _ledMovePos] = CRGB::White;
   _leds[ledSegment[2].last - _ledMovePos] = CRGB::White;
+  
+  FastLED.show();
 }
 
 /*----------------------------Breathing----------------------------*/
@@ -156,6 +159,7 @@ void breathRiseFall() {
         fill_gradient_RGB(_leds, ledSegment[2].first, c, ledSegment[2].last, c );
       }
     }
+    FastLED.show();
     if (_breathRiseFallDirection == true) {
       _breathRiseFallCounter++;       //we are rising, increase the counter
     } else if (_breathRiseFallDirection == false) {

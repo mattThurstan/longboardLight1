@@ -16,30 +16,45 @@ void loopUserInputs() {
 /*----------------------------buttons----------------------------*/
 
 void setupButtons() {
-  for (int i = 0; i < _buttonTotal; i++) {
-    pinMode(_buttonPin[i], INPUT_PULLUP); //activate internal pullup resistor on pin    
+  for (byte i = 0; i < _buttonTotal; i++) {
+    pinMode(_buttonPin[i], INPUT_PULLUP); //activate internal pullup resistor on pin
+    _button[i].attach(_buttonPin[i]);
+    _button[i].interval(_buttonDebounceTime);
   }
 }
 
+void checkStartupButtons() {
+  _button[0].update(); //update buttons (this handles everything to do with reading the pins)
+    //doing the bare minimum here, don't need fast and acurate, just want to hold the button 'for a sec', then it will do something
+    int btRead = _button[0].read();
+    if (btRead == LOW) {
+      _doFullCalibration = true;  //if held when power on, do full calibration
+    }
+}
+
 void loopButtons() {
-  //sub-loop - reads all buttons (digital pins)
-  //fallingEdge/risingEdge may be wrong way round cos using NC switches ?
-  for (int i = 0; i < _buttonTotal; i++) {
-    button[i].update(); //update buttons (this handles everything to do with reading the pins)
-    if (button[i].fallingEdge()) {
-      //button pressed (connected to ground) - NC ON STATE
-      //..do something
-      //_buttonToggled[i] = true;     //toggle the button state so we can use it elswhere
-      //if (i == 0) { swap sub-modes }
-      //if (i == 1) { _doQuickCalibration = true; }
-    } //end fallingEdge
+  unsigned long loopButtonsCurMillis = millis();    //get current time
+  
+  if((unsigned long) (loopButtonsCurMillis - _loopButtonsPrevMillis) >= _loopButtonsInterval) {
     
-    if (button[i].risingEdge()) {
-      //button released (internal pullup to HIGH) - NC OFF STATE
-      //..do something
-    } //end risingEdge
-    
-  } //end button for loop
+    for (byte i = 0; i < _buttonTotal; i++) {
+      //sub-loop - reads all buttons (digital pins)
+      _button[i].update(); //update buttons (this handles everything to do with reading the pins)
+      //doing the bare minimum here, don't need fast and acurate, just want to hold the button 'for a sec', then it will do something
+      int btRead = _button[i].read();
+      if (btRead == LOW) {
+        _buttonToggled[i] = true;
+        if (i == 0) { 
+          //_doQuickCalibration = true; 
+          incrementMainLightsSubMode();   //TEMP hijacking !!!
+          }  //use same bt at startup eg. if held when power on, do full calibration
+        //if (i == 1) { incrementMainLightsSubMode(); } 
+      }
+    } //end button for loop
+  
+    _loopButtonsPrevMillis = millis();              //store the current time
+  } //END timed-loop
+  
 } //end loopButtons
 
 /*----------------------------WIFI/bluetooth----------------------------*/

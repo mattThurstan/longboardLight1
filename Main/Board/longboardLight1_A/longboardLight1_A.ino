@@ -34,6 +34,20 @@
  * http://www.nxp.com/assets/documents/data/en/application-notes/AN3461.pdf
  * http://theboredengineers.com/2012/09/the-quadcopter-get-its-orientation-from-sensors/
  * https://forum.arduino.cc/index.php?topic=383064.0
+ * 
+ * byte   = unsigned 8-bit value, 0-255
+ * uint8_t   = same as byte
+ * 
+ * short   = 16-bit (2-byte) value, -32,768 to 32,767
+ * int   = 16-bit (2-byte) value, -32,768 to 32,767
+ * int16_t   = 16-bit (2-byte) value, -32,768 to 32,767
+ * unsigned int  = 16-bit (2-byte) value, 0 to 65,535
+ * uint16_t  = 16-bit (2-byte) value, 0 to 65,535
+ * 
+ * long    = 32 bits (4 bytes), from -2,147,483,648 to 2,147,483,647
+ *     eg. long speedOfLight = 186000L;   //must declare the 'L'
+ * unsigned long = 32 bits (4 bytes), from 0 to 4,294,967,295
+ * 
  */
 
 /* 
@@ -41,15 +55,17 @@
  this will remove all debug code when compiling rather than just switching off
  ..for now only use serial when in debug. this will be changed when wireless communication is implemented.
 */
-#define DEBUG 1                           //comment/un-comment
+//#define DEBUG 1                           //comment/un-comment
 //#define DEBUG_MPU6050 1                   //..
 //#define DEBUG_ORIENTATION 1               //
 //#define DEBUG_WHEEL 1                    //DEUBUG wheel sensor(s)
 //#define DEBUG_INTERRUPT 1
 
 //3-axis accelerometer  calibration (these will be moved and integrated later when have communications)
-boolean _doFullCalibration = false;                       //set to true to run full calibration. it will reset itself to false when finished.
-boolean _doQuickCalibration = true;                      //set to true to run quick calibration. it will reset itself to false when finished.
+boolean _doFullCalibration = false;        //set to true to run full calibration. it will reset itself to false when finished.
+//a quick calibration will normally be done, unless it gets turned off at the end of a full calibration.
+boolean _doQuickCalibration = true;        //set to true to run quick calibration. it will reset itself to false when finished.
+boolean _orientationTest = false;         //used as a test override. not during normal operation. will prob remove later
 /*
  * black marked side of magents are North)
  * my wheels 1 - shark wheels 70mm diameter / 78A (about 69mm dues to wear etc.)
@@ -62,10 +78,10 @@ boolean _doQuickCalibration = true;                      //set to true to run qu
 ////
 //#endif
 boolean _batteryPowered = false;          //are we running on battery or plugged into the computer?
-const int _buttonTotal = 1;               //how many butons are there? - cannot set Bounce using this unfortunately!
+const byte _buttonTotal = 1;               //how many butons are there? - cannot set Bounce using this unfortunately!
 const float _wheelRadius = 0.0345;        //half of diameter, my wheels are (worn to) 69mm diameter (70mm from the factory, give or take a bit) 
-const int _wheelSensorTotal = 1;          //how many wheels have we mounted sensors on?
-const int _wheelMagnetTotal = 8; //4;          //how many magnets are mounted on each wheel?
+const byte _wheelSensorTotal = 1;          //how many wheels have we mounted sensors on?
+const byte _wheelMagnetTotal = 8; //4;          //how many magnets are mounted on each wheel?
 
 
 /*----------------------------arduino pins----------------------------*/
@@ -84,15 +100,15 @@ const int _wheelMagnetTotal = 8; //4;          //how many magnets are mounted on
 //ArduinoMiniPro A5 -> GY-521 (MPU6050) SCL
 //GY-521 (MPU6050) INT (interrupt) pin optional - needs interrupt pin to check its fancy onboard calculations such as no-motion status
  
-const int _wheelSensorPin[_wheelSensorTotal] = { 2 };     //array of wheel sensor inputs (!!all interrupt pins!!!) - uses _wheelSensorTotal
+const byte _wheelSensorPin[_wheelSensorTotal] = { 2 };     //array of wheel sensor inputs (!!all interrupt pins!!!) - uses _wheelSensorTotal
 //const int _mpu6050InterruptPin = 2;   //??? - don't think will need MPU6050 interrupt stuff, even with wireless. ..just use interrupts for wheels
 //DOut -> LED strip DIn (0 = rear break lights, 1 = left strip + front head lights, 2 = right strip)
 //FastLED doesn't like an array being used for the pins eg. _ledDOutPin[0]  ..am i addressing it correctly?
-const int _ledDOutPin0 = 5; //6
-const int _ledDOutPin1 = 6; //7
-const int _ledDOutPin2 = 9; //8
-const int _buttonPin[_buttonTotal] = { 10 };  //array of user input buttons - uses _buttonTotal
-const int _ledPin = 13;                         //built-in LED
+const byte _ledDOutPin0 = 5; //6
+const byte _ledDOutPin1 = 6; //7
+const byte _ledDOutPin2 = 9; //8
+const byte _buttonPin[_buttonTotal] = { 10 };  //array of user input buttons - uses _buttonTotal
+const byte _ledPin = 13;                         //built-in LED
 
 
 /*----------------------------libraries----------------------------*/
@@ -105,7 +121,7 @@ const int _ledPin = 13;                         //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.28";             //wheel tracking and direction - cleanup
+const String _progVers = "0.286";             //wheel tracking, direction, buttons and making values more concise
 //const int _mainLoopDelay = 0;               //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;        //starts false
 #ifdef DEBUG
@@ -121,22 +137,30 @@ boolean _breathingActive = true;                      //the board 'breathes' (gl
 boolean _headLightsActive = false;
 boolean _rearLightsActive = false;
 //main lights on/off is controlled using the blank sub-mode
-int _mainLightsSubMode = 0;                   //sub-mode for main lights loop: 0=none/blank, 1= , 2= , 3=
+const byte _mainLightsSubModeTotal = 9;       //9 (0-8)       //4 (0-3)     //never gonna have more than 256 lighting modes..
+byte _mainLightsSubMode = 0;                   //sub-mode for main lights loop: 0=none/blank, 1= , 2= , 3=
 boolean _brakeActive = false;                 //give the brake lights a slight brightness boost when decelerating
 boolean _indicatorsEnabled = false;            //indicators for turning left/right
 boolean _indicatorLeftActive = false;
 boolean _indicatorRightActive = false;
 
 /*----------------------------buttons----------------------------*/
-const unsigned long debounceTime = 5;           //5 milli-seconds debounce time
+const unsigned long _buttonDebounceTime = 5;           //5 milli-seconds debounce time
 /* !!! remember to change bounce number to match '_buttonTotal' !!! */
-Bounce button[1] = {
-  Bounce(_buttonPin[0], debounceTime),
-  //Bounce(_wheelSensorPin[1], debounceTime),
-  //Bounce(_wheelSensorPin[2], debounceTime),
-  //Bounce(_wheelSensorPin[3], debounceTime),
-  };
-//boolean _buttonToggled[_butttonTotal] = { false };        //array of button toggle states
+//Bounce button[1] = {
+//  Bounce(_buttonPin[0], debounceTime),
+//  //Bounce(_wheelSensorPin[1], debounceTime),
+//  //Bounce(_wheelSensorPin[2], debounceTime),
+//  //Bounce(_wheelSensorPin[3], debounceTime),
+//  };
+//Bounce _button = Bounce();
+//Bounce _button[1];
+Bounce *_button = new Bounce[1];  //pointer to new array of N buttons
+//Bounce _button[0] = Bounce();
+ 
+const unsigned long _loopButtonsInterval = 1000;      //read loop interval in milliseconds   1000
+unsigned long _loopButtonsPrevMillis = 0;             //previous time for reference
+boolean _buttonToggled[_buttonTotal] = { false };        //array of button toggle states
 
 /*----------------------------sensors----------------------------*/
 //latching bipolar hall effect sensor mounted on chassis, with 4/8 magents mounted on wheel
@@ -215,46 +239,49 @@ float _mpu6050FilteredPrev[3];                    //XYZ Previous FINAL readings.
 
 //prob won't use 'stationary' cos the calculations will need something to get started, otherwise they will be a frame behind. better to have wrong direction for a split second, than have more complicated code
 //also might try this as the average of a rolling buffer
-const int _directionSampleTotal = 10;             //how many times to sample direction before making a decision on whether it is true or not
-int _diDirectionSave = 0;                         //used to hold the direction during comparison
+const byte _directionSampleTotal = 10;             //how many times to sample direction before making a decision on whether it is true or not
+//int _diDirectionSave = 0;                         //used to hold the direction during comparison - NOT USED NOW
 unsigned int _diAccelSave = 0;
-int _diDirectionCounter = 0;                      //
-int _directionCur = 0;                            // -1 = stationary, 0 = forward, 1=back, 2=up, 3=down, 4=left, 5=right
+byte _diDirectionCounter = 0;                      //restricted by '_directionSampleTotal'
+byte _directionCur = 0;                            // -1 = stationary, 0 = forward, 1=back, 2=up, 3=down, 4=left, 5=right
 
 
 /*----------------------------orientation----------------------------*/
-int _orientation = 0;                             //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
-int orMatrix[3] = { 0, 0, 0 };                    //TEMP x =  0(low) / 1(mid) / 2(hi)       - wanted to use -1, 0, 1 but too convoluted    -- XYZ timed
-int _orOrientationSave = 0;                       //used to hold the orientation during comparison
-int _orOrientationTemp = 0;                       //used to hold the orientation (then convert to _orientation)
+byte _orientation = 0;                             //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
+byte orMatrix[3] = { 0, 0, 0 };                    //TEMP x =  0(low) / 1(mid) / 2(hi)       - wanted to use -1, 0, 1 but too convoluted    -- XYZ timed
+byte _orOrientationSave = 0;                       //used to hold the orientation during comparison
+byte _orOrientationTemp = 0;                       //used to hold the orientation (then convert to _orientation)
 boolean orFlag = false;                           //flag 0 x
 unsigned long orCounter = 0;                      //TEMP time
 const unsigned long orInterval = 450;    //400         //interval at which to check whether flags have changed - are we still in the same orientation - how long to trigger
 const unsigned long _orientationInterval = 200;//100   //read loop interval in milliseconds   1000
 unsigned long _orientationPrevMillis = 0;         //previous time for reference
+byte _orientationTestSideMidpoint = 0;            //side LED strip midpoint, calculated in startup
 
 /*----------------------------LED----------------------------*/
 #define UPDATES_PER_SECOND 120                  //main loop FastLED show delay  //100
 typedef struct {
   byte first;
   byte last;
-  byte total;
+  byte total;                                   //haven't got more than 256 LEDs in a segment
 } LED_SEGMENT;
-const int _ledNum = 40;                         //18 LED strip each side and 2 each end = 40 LEDs (2280mA max)
-const int _segmentTotal = 4;                    //2 sides, 2 ends
-const int _ledGlobalBrightness = 255;           //global brightness - used to cap - might remove..
-int _ledGlobalBrightnessCur = 255;              //current global brightness - adjust this
-int _ledBrightnessIncDecAmount = 10;            //the brightness amount to increase or decrease
-int _headLightsBrightness = 200;
-int _rearLightsBrightness = 200;
-int _trackLightsFadeAmount = 64;                //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
+const byte _ledNum = 40;                         //18 LED strip each side and 2 each end = 40 LEDs (2280mA max)
+const byte _segmentTotal = 4;                    //2 sides, 2 ends
+const byte _ledGlobalBrightness = 255;           //global brightness - used to cap - might remove..
+byte _ledGlobalBrightnessCur = 255;              //current global brightness - adjust this
+byte _ledBrightnessIncDecAmount = 10;            //the brightness amount to increase or decrease
+byte _headLightsBrightness = 200;
+byte _rearLightsBrightness = 200;
+byte _trackLightsFadeAmount = 64;                //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
 LED_SEGMENT ledSegment[_segmentTotal] = { 
   { 0, 1, 2 },      //front head lights
   { 2, 19, 18 },    //left side
   { 20, 37, 18 },   //right side
   { 38, 39, 2 },     //rear brake lights
 };
-CRGB _leds[_ledNum];                         //global RGB array
+//CRGB _leds[_ledNum];                       //global RGB array
+//CRGBSet _ledsSideSet(_leds, 36);            //set made from segements 1 and 2 combined
+CRGBArray<_ledNum> _leds;                     //CRGBArray means can do multiple '_leds(0, 2).fadeToBlackBy(40);' as well as single '_leds[0].fadeToBlackBy(40);'
 int _ledState = LOW;                        //use to toggle LOW/HIGH (ledState = !ledState)
 volatile byte _ledMovePos = 0;              //center point for tracking LEDs to wheels
 
@@ -274,19 +301,22 @@ void setup() {
   setupInterrupts();                      //set any interrupts..
   delay(3000);                            //..after setting interrupts, give the power, LED strip, etc. a couple of secs to stabilise
   setupLEDs();                            //setup LEDs first and then use as setup indicator lights
-  fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Yellow, ledSegment[1].first+1, CRGB::Yellow);
-  fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::Yellow, ledSegment[2].first+1, CRGB::Yellow);
+  //fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Yellow, ledSegment[1].first+1, CRGB::Yellow);
+  //fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::Yellow, ledSegment[2].first+1, CRGB::Yellow);
+  _leds(ledSegment[1].first, 2) = CRGB::Yellow;
   delay(2);
   FastLED.show();
   setupSensors();                         //setup all sensor inputs (note: sensors on wheels use interrupt pins)
   delay(2);
-  fill_gradient_RGB(_leds, ledSegment[1].first+2, CRGB::Fuchsia, ledSegment[1].first+3, CRGB::Fuchsia);
-  fill_gradient_RGB(_leds, ledSegment[2].first+2, CRGB::Fuchsia, ledSegment[2].first+3, CRGB::Fuchsia);
+  //fill_gradient_RGB(_leds, ledSegment[1].first+2, CRGB::Fuchsia, ledSegment[1].first+3, CRGB::Fuchsia);
+  //fill_gradient_RGB(_leds, ledSegment[2].first+2, CRGB::Fuchsia, ledSegment[2].first+3, CRGB::Fuchsia);
+  _leds(ledSegment[1].first+3, 2) = CRGB::Fuchsia;
   FastLED.show();
   setupUserInputs();                      //setup any user inputs - buttons, WIFI, bluetooth etc.
   delay(2);
-  fill_gradient_RGB(_leds, ledSegment[1].first+4, CRGB::Green, ledSegment[1].first+5, CRGB::Green);
-  fill_gradient_RGB(_leds, ledSegment[2].first+4, CRGB::Green, ledSegment[2].first+5, CRGB::Green);
+  //fill_gradient_RGB(_leds, ledSegment[1].first+4, CRGB::Green, ledSegment[1].first+5, CRGB::Green);
+  //fill_gradient_RGB(_leds, ledSegment[2].first+4, CRGB::Green, ledSegment[2].first+5, CRGB::Green);
+  _leds(ledSegment[1].first+6, 2) = CRGB::Green;
   FastLED.show();
   //
   #ifdef DEBUG
@@ -296,8 +326,9 @@ void setup() {
     blinkStatusLED();
   #endif
   delay(2);
-  fill_gradient_RGB(_leds, ledSegment[1].first+6, CRGB::MediumTurquoise, ledSegment[1].first+7, CRGB::MediumTurquoise);
-  fill_gradient_RGB(_leds, ledSegment[2].first+6, CRGB::MediumTurquoise, ledSegment[2].first+7, CRGB::MediumTurquoise);
+  //fill_gradient_RGB(_leds, ledSegment[1].first+6, CRGB::MediumTurquoise, ledSegment[1].first+7, CRGB::MediumTurquoise);
+  //fill_gradient_RGB(_leds, ledSegment[2].first+6, CRGB::MediumTurquoise, ledSegment[2].first+7, CRGB::MediumTurquoise);
+  _leds(ledSegment[1].first+9, 2) = CRGB::MediumTurquoise;
   FastLED.show();
 
   //TEMP for testing. these will get saved as settings later
@@ -305,7 +336,11 @@ void setup() {
   _headLightsActive = true;
   _rearLightsActive = true;
   _indicatorsEnabled = true;
-  _mainLightsSubMode = 3; //1;
+  _mainLightsSubMode = 3;
+
+  //_orientationTestSideMidpoint = ledSegment[1].first + (ledSegment[1].total/2);
+  _orientationTestSideMidpoint = ledSegment[1].total / 2; //add it later, easier for 2 segments
+  checkStartupButtons();  //check to see if any button has been held down during startup eg. full calibration
 }
 
 void loop() {
@@ -317,8 +352,12 @@ void loop() {
   }
 
   //cut everything out of the loop and do calibrations - put board flat and press button to start these loops
-  if (_doQuickCalibration == true) { quickCalibration(); }
-  else if (_doFullCalibration == true) { fullCalibration(); }
+  //check for full calibration bt first
+  if (_doFullCalibration == true) { 
+    fullCalibration(); 
+    _doQuickCalibration = false; //if we have just done a full one, we don't need to do a quick one.
+  }
+  else if (_doQuickCalibration == true) { quickCalibration(); }   //..if not, try for a quick one
   else {
     //run the loop normally
     loopUserInputs();
@@ -328,7 +367,7 @@ void loop() {
   
   FastLED.show();                           //send all the data to the strips
   #ifdef DEBUG
-    sendMovementDataStream();
+    sendMovementDataStream();               //send readings to PC/app
   #endif
   FastLED.delay(1000 / UPDATES_PER_SECOND);
 }

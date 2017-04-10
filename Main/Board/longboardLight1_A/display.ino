@@ -18,7 +18,8 @@ void setupLEDs() {
   #ifdef DEBUG
     if (_batteryPowered == true) {
       //running on 7.4v 2700mAhour battery
-      FastLED.setMaxPowerInVoltsAndMilliamps(5, 1800);  //limit power draw to 1.8A at 5v (with 7.4V 2700mAhours power supply this gives us a bit of head room for board, lights etc.)
+FastLED.setMaxPowerInVoltsAndMilliamps(5, 450);   //..for testing, just in case. change when sure..
+      //FastLED.setMaxPowerInVoltsAndMilliamps(5, 1800);  //limit power draw to 1.8A at 5v (with 7.4V 2700mAhours power supply this gives us a bit of head room for board, lights etc.)
     } else {
       //plugged into the computer
       FastLED.setMaxPowerInVoltsAndMilliamps(5, 450);  //board TEST

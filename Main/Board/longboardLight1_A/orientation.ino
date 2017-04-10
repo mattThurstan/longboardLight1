@@ -86,4 +86,42 @@ void orientation() {
 } //END orientation
 
 
+void showOrientation() {
+  fadeToBlackBy( _leds, _ledNum, 16);
+  if (_orientation == 0) {
+    //flat
+    //fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::White, ledSegment[0].last, CRGB::White ); //midpoint back
+    //_leds[ ledSegment[1].first + (ledSegment[1].total/2) ] = CRGB::White;  //midpoint left
+    //_leds[ ledSegment[2].first + (ledSegment[2].total/2) ] = CRGB::White;  //midpoint right
+    //fill_gradient_RGB(_leds, ledSegment[3].first, CRGB::White, ledSegment[3].last, CRGB::White ); //midpoint front
+    
+    _leds(ledSegment[0].first, ledSegment[0].last) = CRGB::White;  //(midpoint) back
+    _leds[ledSegment[1].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint left
+    _leds[ledSegment[2].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint right
+    _leds(ledSegment[3].first, ledSegment[3].last) = CRGB::White;  //(midpoint) front
+  }
+  if (_orientation == 1) {
+    //upside-down
+    //_leds[ledSegment[2].first+1] = CRGB::White;
+    //
+  }
+  if (_orientation == 2) {
+    //up
+    _leds(ledSegment[3].first, ledSegment[3].last) = CRGB::White;  //(midpoint) front
+  }
+  if (_orientation == 3) {
+    //down
+    _leds(ledSegment[0].first, ledSegment[0].last) = CRGB::White;  //(midpoint) back
+  }
+  if (_orientation == 4) {
+    //on its left-side
+    _leds[ledSegment[1].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint left
+  }
+  if (_orientation == 5) {
+    //on its right-side
+    _leds[ledSegment[2].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint right
+  }
+  
+} //END showOrientation
+
 

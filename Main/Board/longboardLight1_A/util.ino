@@ -1,5 +1,20 @@
 /*----------------------------util----------------------------*/
 
+void incrementMainLightsSubMode() {
+  if ( _mainLightsSubMode >= (_mainLightsSubModeTotal - 1) ) {
+    _mainLightsSubMode = 0;    //wrap-around at end back to 0
+  } else {
+    _mainLightsSubMode += 1;   //increase by 1
+  }
+}
+void decrementMainLightsSubMode() {
+  if ( _mainLightsSubMode <= 0 ) {
+    _mainLightsSubMode = (byte)(_mainLightsSubModeTotal - 1);    //wrap-around at beginning to the end (1 less than the total)
+  } else {
+    _mainLightsSubMode -= 1;   //decrease by 1
+  }
+}
+
 void setupSerial() {
   #ifdef DEBUG
     Serial.begin(9600);                     //usb

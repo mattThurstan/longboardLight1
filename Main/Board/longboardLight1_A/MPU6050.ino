@@ -107,9 +107,11 @@ void doMPU6050ReadAverage() {
   _mpu6050GyroReadAverage[0] = (gyroSampleX / _mpu6050CalibrateSampleTotal);
   _mpu6050GyroReadAverage[1] = (gyroSampleY / _mpu6050CalibrateSampleTotal);
   _mpu6050GyroReadAverage[2] = (gyroSampleZ / _mpu6050CalibrateSampleTotal);
-  
-  Serial.print(_mpu6050AccelReadAverage[1]);
-  Serial.println();
+
+  #ifdef DEBUG_MPU6050
+    Serial.print(_mpu6050AccelReadAverage[1]);
+    Serial.println();
+  #endif
 }
 
 void calibrateMPU6050() {
