@@ -32,7 +32,7 @@ FastLED.setMaxPowerInVoltsAndMilliamps(5, 450);   //..for testing, just in case.
   FastLED.addLeds<WS2812B, _ledDOutPin1, GRB>(_leds, ledSegment[1].first, ledSegment[1].total).setCorrection( TypicalSMD5050 );  //left strip
   FastLED.addLeds<WS2812B, _ledDOutPin2, GRB>(_leds, ledSegment[2].first, (ledSegment[2].total + ledSegment[3].total)).setCorrection( TypicalSMD5050 );  //right strip + rear lights
 
-  FastLED.setBrightness(_ledGlobalBrightness);      //set global brightness
+  FastLED.setBrightness(_ledGlobalBrightnessCur);      //set global brightness
   FastLED.setTemperature(UncorrectedTemperature);   //set first temperature
 
   //calculateBreathRiseFallRates(); //recalculate if used changes max breath brightness

@@ -6,6 +6,7 @@ void incrementMainLightsSubMode() {
   } else {
     _mainLightsSubMode += 1;   //increase by 1
   }
+  EEPROM.write(8, _mainLightsSubMode);
 }
 void decrementMainLightsSubMode() {
   if ( _mainLightsSubMode <= 0 ) {
@@ -13,6 +14,7 @@ void decrementMainLightsSubMode() {
   } else {
     _mainLightsSubMode -= 1;   //decrease by 1
   }
+  EEPROM.write(8, _mainLightsSubMode);
 }
 
 void setupSerial() {

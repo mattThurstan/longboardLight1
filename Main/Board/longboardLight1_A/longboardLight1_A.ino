@@ -121,7 +121,7 @@ const byte _ledPin = 13;                         //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.286";             //wheel tracking, direction, buttons and making values more concise
+const String _progVers = "0.29";             //added save and load settings
 //const int _mainLoopDelay = 0;               //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;        //starts false
 #ifdef DEBUG
@@ -132,20 +132,31 @@ const unsigned long _sendMovementDataStreamInterval = 500;//100   //read loop in
 unsigned long _sendMovementDataStreamPrevMillis = 0;         //previous time for reference
 
 /*----------------------------modes----------------------------*/
-boolean _sleepActive = false;                       //init false at power-up
-boolean _breathingActive = true;                      //the board 'breathes' (glows gently) at 12 times a minute (average breathing rate of sleeping adult)
+/*
+ * ..the following example line is wrong, and will then be explained..
+ * 'the user could put the board to sleep, then turn off, then expect the same when turned on later'
+ * 
+ * 'the user puts the board to sleep' - all good
+ * 'then turns off' - still good
+ * 'then expect the same when turned on later' - wrong, cos handling the board to turn it on would result in waking it from sleep
+ * ..therefore _sleep is 'Active', NOT 'Enabled' and not saved to memory
+ */
+boolean _sleepActive = false;                            //init false at power-up
+boolean _breathingEnabled = true;                        //the board 'breathes' (glows gently) at 12 times a minute (average breathing rate of sleeping adult)
+boolean _headLightsEnabled = false;                      //have we switched on the headlights?
 boolean _headLightsActive = false;
+boolean _rearLightsEnabled = false;                      //have we switched on the rearlights?
 boolean _rearLightsActive = false;
-//main lights on/off is controlled using the blank sub-mode
-const byte _mainLightsSubModeTotal = 9;       //9 (0-8)       //4 (0-3)     //never gonna have more than 256 lighting modes..
-byte _mainLightsSubMode = 0;                   //sub-mode for main lights loop: 0=none/blank, 1= , 2= , 3=
-boolean _brakeActive = false;                 //give the brake lights a slight brightness boost when decelerating
-boolean _indicatorsEnabled = false;            //indicators for turning left/right
+boolean _brakeActive = false;                           //give the brake lights a slight brightness boost when decelerating
+boolean _indicatorsEnabled = false;                     //indicators for turning left/right
 boolean _indicatorLeftActive = false;
 boolean _indicatorRightActive = false;
+//main lights on/off is controlled using the blank sub-mode
+const byte _mainLightsSubModeTotal = 9;       //9 (0-8)       //4 (0-3)     //never gonna have more than 256 lighting modes..
+byte _mainLightsSubMode = 0;                            //sub-mode for main lights loop: 0=none/blank, 1= , 2= , 3=
 
 /*----------------------------buttons----------------------------*/
-const unsigned long _buttonDebounceTime = 5;           //5 milli-seconds debounce time
+const unsigned long _buttonDebounceTime = 5;            //5 milli-seconds debounce time
 /* !!! remember to change bounce number to match '_buttonTotal' !!! */
 //Bounce button[1] = {
 //  Bounce(_buttonPin[0], debounceTime),
@@ -267,7 +278,7 @@ typedef struct {
 } LED_SEGMENT;
 const byte _ledNum = 40;                         //18 LED strip each side and 2 each end = 40 LEDs (2280mA max)
 const byte _segmentTotal = 4;                    //2 sides, 2 ends
-const byte _ledGlobalBrightness = 255;           //global brightness - used to cap - might remove..
+//const byte _ledGlobalBrightness = 255;           //global brightness - used to cap - might remove..
 byte _ledGlobalBrightnessCur = 255;              //current global brightness - adjust this
 byte _ledBrightnessIncDecAmount = 10;            //the brightness amount to increase or decrease
 byte _headLightsBrightness = 200;
@@ -297,7 +308,7 @@ void setup() {
       Fastwire::setup(400, true);
   #endif
   setupSerial();                          //..see 'util'
-  //loadSettings();                         //load any saved settings eg. save state when turn board power off. - not implemented yet !!!
+  loadAllSettings();                         //load any saved settings eg. save state when turn board power off. - not implemented yet !!!
   setupInterrupts();                      //set any interrupts..
   delay(3000);                            //..after setting interrupts, give the power, LED strip, etc. a couple of secs to stabilise
   setupLEDs();                            //setup LEDs first and then use as setup indicator lights
@@ -332,11 +343,13 @@ void setup() {
   FastLED.show();
 
   //TEMP for testing. these will get saved as settings later
-  _sleepActive = false;
-  _headLightsActive = true;
-  _rearLightsActive = true;
-  _indicatorsEnabled = true;
-  _mainLightsSubMode = 3;
+//  _sleepActive = false;
+//  _headLightsEnabled = true;
+//  _headLightsActive = true;
+//  _rearLightsEnabled = true;
+//  _rearLightsActive = true;
+//  _indicatorsEnabled = true;
+//  _mainLightsSubMode = 3;
 
   //_orientationTestSideMidpoint = ledSegment[1].first + (ledSegment[1].total/2);
   _orientationTestSideMidpoint = ledSegment[1].total / 2; //add it later, easier for 2 segments

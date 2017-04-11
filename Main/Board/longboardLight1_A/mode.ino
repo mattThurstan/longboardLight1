@@ -31,7 +31,7 @@ void loopModes() {
 }
 
 void loopHeadLights() {
-  if (_headLightsActive == true) {
+  if (_headLightsEnabled == true && _headLightsActive == true) {
     //fill_solid( leds, _ledNum, CRGB::White);
     //fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::White, ledSegment[0].last, CRGB::White );
     //_headLightsBrightness
@@ -40,7 +40,7 @@ void loopHeadLights() {
 }
 
 void loopRearLights() {
-  if (_rearLightsActive == true) { 
+  if (_rearLightsEnabled == true && _rearLightsActive == true) { 
     //fill_gradient_RGB(_leds, ledSegment[3].first, CRGB::Red, ledSegment[3].last, CRGB::Red );
     _leds(ledSegment[3].first, ledSegment[3].total) = CRGB::Red;
   }
@@ -134,7 +134,7 @@ CRGB c;
 
 void loopBreathing() {
   //'breathing'
-  if (_breathingActive == true) { 
+  if (_breathingEnabled == true) { 
     breathRiseFall();
   }
 }
