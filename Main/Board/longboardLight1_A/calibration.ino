@@ -1,6 +1,10 @@
 /*----------------------------calibration----------------------------*/
 
 void quickCalibration() {
+  #ifdef DEBUG
+    Serial.print(F("Quick calibration started"));
+    Serial.println();
+  #endif
   quickCalibrateMPU6050Gyro();
   _doQuickCalibration = false;
   #ifdef DEBUG
@@ -11,6 +15,10 @@ void quickCalibration() {
 }
 
 void fullCalibration() {
+  #ifdef DEBUG
+    Serial.print(F("Full calibration started"));
+    Serial.println();
+  #endif
   calibrateMPU6050();
   _doFullCalibration = false;
   #ifdef DEBUG

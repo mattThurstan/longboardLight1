@@ -28,7 +28,8 @@ void checkStartupButtons() {
     //doing the bare minimum here, don't need fast and acurate, just want to hold the button 'for a sec', then it will do something
     int btRead = _button[0].read();
     if (btRead == LOW) {
-      _doFullCalibration = true;  //if held when power on, do full calibration
+      //_doFullCalibration = true;  //if held when power on, do full calibration
+      _doQuickCalibration = true;
     }
 }
 
@@ -45,10 +46,15 @@ void loopButtons() {
       if (btRead == LOW) {
         _buttonToggled[i] = true;
         if (i == 0) { 
-          //_doQuickCalibration = true; 
-          incrementMainLightsSubMode();   //TEMP hijacking !!!
+          _doQuickCalibration = true; 
+          //incrementMainLightsSubMode();   //TEMP hijacking !!!
           }  //use same bt at startup eg. if held when power on, do full calibration
-        //if (i == 1) { incrementMainLightsSubMode(); } 
+        if (i == 1) { incrementMainLightsSubMode(); } 
+        #ifdef DEBUG
+          Serial.print(F("Button pressed "));
+          Serial.print(i);
+          Serial.println();
+        #endif
       }
     } //end button for loop
   

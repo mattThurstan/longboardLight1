@@ -55,7 +55,7 @@
  this will remove all debug code when compiling rather than just switching off
  ..for now only use serial when in debug. this will be changed when wireless communication is implemented.
 */
-//#define DEBUG 1                           //comment/un-comment
+#define DEBUG 1                           //comment/un-comment
 //#define DEBUG_MPU6050 1                   //..
 //#define DEBUG_ORIENTATION 1               //
 //#define DEBUG_WHEEL 1                    //DEUBUG wheel sensor(s)
@@ -64,7 +64,7 @@
 //3-axis accelerometer  calibration (these will be moved and integrated later when have communications)
 boolean _doFullCalibration = false;        //set to true to run full calibration. it will reset itself to false when finished.
 //a quick calibration will normally be done, unless it gets turned off at the end of a full calibration.
-boolean _doQuickCalibration = true;        //set to true to run quick calibration. it will reset itself to false when finished.
+boolean _doQuickCalibration = false;        //set to true to run quick calibration. it will reset itself to false when finished.
 boolean _orientationTest = false;         //used as a test override. not during normal operation. will prob remove later
 /*
  * black marked side of magents are North)
@@ -78,7 +78,7 @@ boolean _orientationTest = false;         //used as a test override. not during 
 ////
 //#endif
 boolean _batteryPowered = false;          //are we running on battery or plugged into the computer?
-const byte _buttonTotal = 1;               //how many butons are there? - cannot set Bounce using this unfortunately!
+const byte _buttonTotal = 2;               //how many butons are there? - cannot set Bounce using this unfortunately!
 const float _wheelRadius = 0.0345;        //half of diameter, my wheels are (worn to) 69mm diameter (70mm from the factory, give or take a bit) 
 const byte _wheelSensorTotal = 1;          //how many wheels have we mounted sensors on?
 const byte _wheelMagnetTotal = 8; //4;          //how many magnets are mounted on each wheel?
@@ -104,10 +104,10 @@ const byte _wheelSensorPin[_wheelSensorTotal] = { 2 };     //array of wheel sens
 //const int _mpu6050InterruptPin = 2;   //??? - don't think will need MPU6050 interrupt stuff, even with wireless. ..just use interrupts for wheels
 //DOut -> LED strip DIn (0 = rear break lights, 1 = left strip + front head lights, 2 = right strip)
 //FastLED doesn't like an array being used for the pins eg. _ledDOutPin[0]  ..am i addressing it correctly?
-const byte _ledDOutPin0 = 5; //6
-const byte _ledDOutPin1 = 6; //7
-const byte _ledDOutPin2 = 9; //8
-const byte _buttonPin[_buttonTotal] = { 10 };  //array of user input buttons - uses _buttonTotal
+const byte _ledDOutPin0 = 5; //head lights
+const byte _ledDOutPin1 = 6; //left
+const byte _ledDOutPin2 = 9; //right and rear lights
+const byte _buttonPin[_buttonTotal] = { 10, 11 };  //array of user input buttons - uses _buttonTotal
 const byte _ledPin = 13;                         //built-in LED
 
 
@@ -121,7 +121,7 @@ const byte _ledPin = 13;                         //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.29";             //added save and load settings
+const String _progVers = "0.291";             //last fixes before next upload and testing - WORKS !!!
 //const int _mainLoopDelay = 0;               //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;        //starts false
 #ifdef DEBUG
@@ -144,19 +144,19 @@ unsigned long _sendMovementDataStreamPrevMillis = 0;         //previous time for
 boolean _sleepActive = false;                            //init false at power-up
 boolean _breathingEnabled = true;                        //the board 'breathes' (glows gently) at 12 times a minute (average breathing rate of sleeping adult)
 boolean _headLightsEnabled = false;                      //have we switched on the headlights?
-boolean _headLightsActive = false;
+boolean _headLightsActive = true;                         //start true
 boolean _rearLightsEnabled = false;                      //have we switched on the rearlights?
-boolean _rearLightsActive = false;
+boolean _rearLightsActive = true;                         //start true
 boolean _brakeActive = false;                           //give the brake lights a slight brightness boost when decelerating
 boolean _indicatorsEnabled = false;                     //indicators for turning left/right
 boolean _indicatorLeftActive = false;
 boolean _indicatorRightActive = false;
 //main lights on/off is controlled using the blank sub-mode
 const byte _mainLightsSubModeTotal = 9;       //9 (0-8)       //4 (0-3)     //never gonna have more than 256 lighting modes..
-byte _mainLightsSubMode = 0;                            //sub-mode for main lights loop: 0=none/blank, 1= , 2= , 3=
+byte _mainLightsSubMode = 3;                            //sub-mode for main lights loop: 0=none/blank, 1= , 2= , 3=
 
 /*----------------------------buttons----------------------------*/
-const unsigned long _buttonDebounceTime = 5;            //5 milli-seconds debounce time
+const unsigned long _buttonDebounceTime = 750;//5;            //5 milli-seconds debounce time
 /* !!! remember to change bounce number to match '_buttonTotal' !!! */
 //Bounce button[1] = {
 //  Bounce(_buttonPin[0], debounceTime),
@@ -166,7 +166,7 @@ const unsigned long _buttonDebounceTime = 5;            //5 milli-seconds deboun
 //  };
 //Bounce _button = Bounce();
 //Bounce _button[1];
-Bounce *_button = new Bounce[1];  //pointer to new array of N buttons
+Bounce *_button = new Bounce[_buttonTotal];  //pointer to new array of N buttons
 //Bounce _button[0] = Bounce();
  
 const unsigned long _loopButtonsInterval = 1000;      //read loop interval in milliseconds   1000
@@ -299,6 +299,9 @@ volatile byte _ledMovePos = 0;              //center point for tracking LEDs to 
 
 /*----------------------------MAIN----------------------------*/
 void setup() {
+
+  clearAllSettings();   // TEMP
+  
   blinkStatusLED1();
   
   // join I2C bus (I2Cdev library doesn't do this automatically)
@@ -312,22 +315,22 @@ void setup() {
   setupInterrupts();                      //set any interrupts..
   delay(3000);                            //..after setting interrupts, give the power, LED strip, etc. a couple of secs to stabilise
   setupLEDs();                            //setup LEDs first and then use as setup indicator lights
-  //fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Yellow, ledSegment[1].first+1, CRGB::Yellow);
-  //fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::Yellow, ledSegment[2].first+1, CRGB::Yellow);
-  _leds(ledSegment[1].first, 2) = CRGB::Yellow;
+  fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Yellow, ledSegment[1].first+1, CRGB::Yellow);
+  fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::Yellow, ledSegment[2].first+1, CRGB::Yellow);
+  //_leds(ledSegment[1].first, 2) = CRGB::Yellow;
   delay(2);
   FastLED.show();
   setupSensors();                         //setup all sensor inputs (note: sensors on wheels use interrupt pins)
   delay(2);
-  //fill_gradient_RGB(_leds, ledSegment[1].first+2, CRGB::Fuchsia, ledSegment[1].first+3, CRGB::Fuchsia);
-  //fill_gradient_RGB(_leds, ledSegment[2].first+2, CRGB::Fuchsia, ledSegment[2].first+3, CRGB::Fuchsia);
-  _leds(ledSegment[1].first+3, 2) = CRGB::Fuchsia;
+  fill_gradient_RGB(_leds, ledSegment[1].first+2, CRGB::Fuchsia, ledSegment[1].first+3, CRGB::Fuchsia);
+  fill_gradient_RGB(_leds, ledSegment[2].first+2, CRGB::Fuchsia, ledSegment[2].first+3, CRGB::Fuchsia);
+  //_leds(ledSegment[1].first+3, 2) = CRGB::Fuchsia;
   FastLED.show();
   setupUserInputs();                      //setup any user inputs - buttons, WIFI, bluetooth etc.
   delay(2);
-  //fill_gradient_RGB(_leds, ledSegment[1].first+4, CRGB::Green, ledSegment[1].first+5, CRGB::Green);
-  //fill_gradient_RGB(_leds, ledSegment[2].first+4, CRGB::Green, ledSegment[2].first+5, CRGB::Green);
-  _leds(ledSegment[1].first+6, 2) = CRGB::Green;
+  fill_gradient_RGB(_leds, ledSegment[1].first+4, CRGB::Green, ledSegment[1].first+5, CRGB::Green);
+  fill_gradient_RGB(_leds, ledSegment[2].first+4, CRGB::Green, ledSegment[2].first+5, CRGB::Green);
+  //_leds(ledSegment[1].first+6, 2) = CRGB::Green;
   FastLED.show();
   //
   #ifdef DEBUG
@@ -337,9 +340,9 @@ void setup() {
     blinkStatusLED();
   #endif
   delay(2);
-  //fill_gradient_RGB(_leds, ledSegment[1].first+6, CRGB::MediumTurquoise, ledSegment[1].first+7, CRGB::MediumTurquoise);
-  //fill_gradient_RGB(_leds, ledSegment[2].first+6, CRGB::MediumTurquoise, ledSegment[2].first+7, CRGB::MediumTurquoise);
-  _leds(ledSegment[1].first+9, 2) = CRGB::MediumTurquoise;
+  fill_gradient_RGB(_leds, ledSegment[1].first+6, CRGB::MediumTurquoise, ledSegment[1].first+7, CRGB::MediumTurquoise);
+  fill_gradient_RGB(_leds, ledSegment[2].first+6, CRGB::MediumTurquoise, ledSegment[2].first+7, CRGB::MediumTurquoise);
+  //_leds(ledSegment[1].first+9, 2) = CRGB::MediumTurquoise;
   FastLED.show();
 
   //TEMP for testing. these will get saved as settings later
@@ -354,6 +357,9 @@ void setup() {
   //_orientationTestSideMidpoint = ledSegment[1].first + (ledSegment[1].total/2);
   _orientationTestSideMidpoint = ledSegment[1].total / 2; //add it later, easier for 2 segments
   checkStartupButtons();  //check to see if any button has been held down during startup eg. full calibration
+
+  delay(2);
+  FastLED.clear();
 }
 
 void loop() {

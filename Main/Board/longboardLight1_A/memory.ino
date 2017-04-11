@@ -21,13 +21,33 @@
  * 
  * 
  */
+void setDefaultSettings() {
+  #ifdef DEBUG
+    Serial.print(F("Setting default settings"));
+    Serial.println();
+  #endif
+  
+  _breathingEnabled = false;    //true
+  _headLightsEnabled = true;   //true
+  _rearLightsEnabled = true;   //true
+  _indicatorsEnabled = false;   //true
+
+  _mainLightsSubMode = 3;
+  _ledGlobalBrightnessCur = 255;
+  _headLightsBrightness = 200;
+  _rearLightsBrightness = 200;
+  _trackLightsFadeAmount = 64;
+}
 
 void loadAllSettings() {
   //this gets called at the beginning of setup.
   
   //if system settings saved flag set at pos 7 is '1', then we have system data to be read from memory.. failsafe
   if (EEPROM.read(7) == 1) {
-    
+    #ifdef DEBUG
+      Serial.print(F("Loading settings"));
+      Serial.println();
+    #endif
     //redo these later into 1 bit mask
     if (EEPROM.read(1) == 255) { _breathingEnabled = true; }
     else { _breathingEnabled = false; }
@@ -45,31 +65,25 @@ void loadAllSettings() {
     _trackLightsFadeAmount = EEPROM.read(12);
   } else {
     //set defaults then saveSettings
-    _breathingEnabled = true;
-    _headLightsEnabled = true;
-    _rearLightsEnabled = true;
-    _indicatorsEnabled = true;
-
-    _mainLightsSubMode = 3;
-    _ledGlobalBrightnessCur = 255;
-    _headLightsBrightness = 200;
-    _rearLightsBrightness = 200;
-    _trackLightsFadeAmount = 64;
-    
+    setDefaultSettings();
     saveAllSettings();
   }
 }
 
 void saveAllSettings() {
-
+  #ifdef DEBUG
+    Serial.print(F("Saving settings"));
+    Serial.println();
+  #endif
+    
   //redo these later into 1 bit mask
-  if (_breathingEnabled = true;) { EEPROM.write(1, 255); }
+  if (_breathingEnabled == true) { EEPROM.write(1, 255); }
   else { EEPROM.write(1, 0); }
-  if (_headLightsEnabled = true;) { EEPROM.write(2, 255); }
+  if (_headLightsEnabled == true) { EEPROM.write(2, 255); }
   else { EEPROM.write(2, 0); }
-  if (_rearLightsEnabled = true;) { EEPROM.write(3, 255); }
+  if (_rearLightsEnabled == true) { EEPROM.write(3, 255); }
   else { EEPROM.write(3, 0); }
-  if (_indicatorsEnabled = true;) { EEPROM.write(4, 255); }
+  if (_indicatorsEnabled == true) { EEPROM.write(4, 255); }
   else { EEPROM.write(4, 0); }
     
   EEPROM.write(7, 1); //write a 1 to pos 7 to indicate that system data has been saved and is available for use.
@@ -81,4 +95,16 @@ void saveAllSettings() {
   EEPROM.write(12, _trackLightsFadeAmount);
   
 }
+
+void clearAllSettings() {
+  #ifdef DEBUG
+    Serial.print(F("Clearing settings"));
+    Serial.println();
+  #endif
+  for (int i = 0 ; i < EEPROM.length() ; i++) {
+    EEPROM.write(i, 0);
+  } // TEMP
+  setDefaultSettings();
+}
+
 

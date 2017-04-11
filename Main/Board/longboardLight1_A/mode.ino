@@ -33,16 +33,16 @@ void loopModes() {
 void loopHeadLights() {
   if (_headLightsEnabled == true && _headLightsActive == true) {
     //fill_solid( leds, _ledNum, CRGB::White);
-    //fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::White, ledSegment[0].last, CRGB::White );
+    fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::White, ledSegment[0].last, CRGB::White );
     //_headLightsBrightness
-    _leds(ledSegment[0].first, ledSegment[0].total) = CRGB::White;
+    //_leds(ledSegment[0].first, ledSegment[0].total) = CRGB::White;
   }
 }
 
 void loopRearLights() {
   if (_rearLightsEnabled == true && _rearLightsActive == true) { 
-    //fill_gradient_RGB(_leds, ledSegment[3].first, CRGB::Red, ledSegment[3].last, CRGB::Red );
-    _leds(ledSegment[3].first, ledSegment[3].total) = CRGB::Red;
+    fill_gradient_RGB(_leds, ledSegment[3].first, CRGB::Red, ledSegment[3].last, CRGB::Red );
+    //_leds(ledSegment[3].first, ledSegment[3].total) = CRGB::Red;
   }
 }
 
@@ -75,7 +75,7 @@ void loopMainLights() {
 void loopEmergencyFlash() {
   //emergency flash (upside-down)
   fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Orange, ledSegment[2].last, CRGB::Orange );
-  _leds( ledSegment[1].first, (ledSegment[2].last + 1) ) = CRGB::Orange;
+  //_leds( ledSegment[1].first, (ledSegment[2].last + 1) ) = CRGB::Orange;
   FastLED.show();
 }
 
@@ -83,12 +83,12 @@ void loopSideLight() {
   //emergency light (stood on a side)
   if (_orientation == 4) {
     //left
-    //fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::White, ledSegment[2].last, CRGB::White );
-    _leds( ledSegment[2].first, (ledSegment[2].total) ) = CRGB::White;
+    fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::White, ledSegment[2].last, CRGB::White );
+    //_leds( ledSegment[2].first, (ledSegment[2].total) ) = CRGB::White;
   } else if (_orientation == 5) {
     //right
-    //fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::White, ledSegment[1].last, CRGB::White );
-    _leds( ledSegment[1].first, (ledSegment[1].total) ) = CRGB::White;
+    fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::White, ledSegment[1].last, CRGB::White );
+    //_leds( ledSegment[1].first, (ledSegment[1].total) ) = CRGB::White;
   }
 }
 
@@ -108,6 +108,7 @@ void loopTrackLights() {
   //position from wheel data combined with direction from MPU6050
 
   fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);   //make any unused pixels fade out
+  //_leds.fadeToBlackBy(_trackLightsFadeAmount);
   
   //wrap-around for segments 1 and 2  
   if (_ledMovePos > ledSegment[1].total) {
@@ -115,8 +116,8 @@ void loopTrackLights() {
   } else if (_ledMovePos < 1) {
     _ledMovePos = _ledMovePos + ledSegment[1].total;
   }
-  _leds[ledSegment[1].last - _ledMovePos] = CRGB::White;
-  _leds[ledSegment[2].last - _ledMovePos] = CRGB::White;
+  _leds[ledSegment[1].last - _ledMovePos + 1] = CRGB::White;
+  _leds[ledSegment[2].last - _ledMovePos + 1] = CRGB::White;
   
   FastLED.show();
 }
