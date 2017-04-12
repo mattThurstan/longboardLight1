@@ -41,17 +41,15 @@ void loopButtons() {
     for (byte i = 0; i < _buttonTotal; i++) {
       //sub-loop - reads all buttons (digital pins)
       _button[i].update(); //update buttons (this handles everything to do with reading the pins)
-      //doing the bare minimum here, don't need fast and acurate, just want to hold the button 'for a sec', then it will do something
-      int btRead = _button[i].read();
-      if (btRead == LOW) {
+      //doing the bare minimum here
+      if ( _button[i].fell() ) {
         _buttonToggled[i] = true;
         if (i == 0) { 
-          _doQuickCalibration = true; 
-          //incrementMainLightsSubMode();   //TEMP hijacking !!!
+          _doQuickCalibration = true;
           }  //use same bt at startup eg. if held when power on, do full calibration
         if (i == 1) { incrementMainLightsSubMode(); } 
         #ifdef DEBUG
-          Serial.print(F("Button pressed "));
+          Serial.print(F("Button fell "));
           Serial.print(i);
           Serial.println();
         #endif

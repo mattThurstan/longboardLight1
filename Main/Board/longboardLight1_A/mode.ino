@@ -108,7 +108,7 @@ void loopTrackLights() {
   //position from wheel data combined with direction from MPU6050
 
   fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);   //make any unused pixels fade out
-  //_leds.fadeToBlackBy(_trackLightsFadeAmount);
+  //_leds.fadeToBlackBy(_trackLightsFadeAmount);            //..or do it like this cos we are using a CRGBArray
   
   //wrap-around for segments 1 and 2  
   if (_ledMovePos > ledSegment[1].total) {

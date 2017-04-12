@@ -27,7 +27,8 @@ void loopWheel() {
   //timed-loop
   unsigned long wheelSensorReadCurMillis = millis();    //get current time
   //this has the potential to be innacurate, but should be good enough, plus we can correct a bit using other sensors
-  if((unsigned long) (wheelSensorReadCurMillis - _wheelSensorReadPrevMillis) >= _wheelSensorReadInterval) {
+  //if((unsigned long) (wheelSensorReadCurMillis - _wheelSensorReadPrevMillis) >= _wheelSensorReadInterval) {
+  if((unsigned long) (wheelSensorReadCurMillis - _wheelSensorReadPrevMillis) >= 1000) {
     //get direction
     detachInterrupt(0);     //no interrupts whilst we process !!!
     _wheelSpeedRps = _wheelCounter / _wheelMagnetTotal;

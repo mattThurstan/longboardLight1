@@ -55,17 +55,17 @@
  this will remove all debug code when compiling rather than just switching off
  ..for now only use serial when in debug. this will be changed when wireless communication is implemented.
 */
-#define DEBUG 1                           //comment/un-comment
-//#define DEBUG_MPU6050 1                   //..
-//#define DEBUG_ORIENTATION 1               //
-//#define DEBUG_WHEEL 1                    //DEUBUG wheel sensor(s)
+//#define DEBUG 1                                   //comment/un-comment
+//#define DEBUG_MPU6050 1                           //..
+//#define DEBUG_ORIENTATION 1                       //
+//#define DEBUG_WHEEL 1                             //DEUBUG wheel sensor(s)
 //#define DEBUG_INTERRUPT 1
 
 //3-axis accelerometer  calibration (these will be moved and integrated later when have communications)
-boolean _doFullCalibration = false;        //set to true to run full calibration. it will reset itself to false when finished.
+boolean _doFullCalibration = false;               //set to true to run full calibration. it will reset itself to false when finished.
 //a quick calibration will normally be done, unless it gets turned off at the end of a full calibration.
-boolean _doQuickCalibration = false;        //set to true to run quick calibration. it will reset itself to false when finished.
-boolean _orientationTest = false;         //used as a test override. not during normal operation. will prob remove later
+boolean _doQuickCalibration = false;              //set to true to run quick calibration. it will reset itself to false when finished.
+boolean _orientationTest = false;                 //used as a test override. not during normal operation. will prob remove later
 /*
  * black marked side of magents are North)
  * my wheels 1 - shark wheels 70mm diameter / 78A (about 69mm dues to wear etc.)
@@ -77,11 +77,11 @@ boolean _orientationTest = false;         //used as a test override. not during 
 //#ifdef DEBUG     
 ////
 //#endif
-boolean _batteryPowered = false;          //are we running on battery or plugged into the computer?
-const byte _buttonTotal = 2;               //how many butons are there? - cannot set Bounce using this unfortunately!
-const float _wheelRadius = 0.0345;        //half of diameter, my wheels are (worn to) 69mm diameter (70mm from the factory, give or take a bit) 
-const byte _wheelSensorTotal = 1;          //how many wheels have we mounted sensors on?
-const byte _wheelMagnetTotal = 8; //4;          //how many magnets are mounted on each wheel?
+boolean _batteryPowered = true;                   //are we running on battery or plugged into the computer?
+const byte _buttonTotal = 2;                      //how many butons are there? - cannot set Bounce using this unfortunately!
+const float _wheelRadius = 0.0345;                //half of diameter, my wheels are (worn to) 69mm diameter (70mm from the factory, give or take a bit) 
+const byte _wheelSensorTotal = 1;                 //how many wheels have we mounted sensors on?
+const byte _wheelMagnetTotal = 8; //4;            //how many magnets are mounted on each wheel?
 
 
 /*----------------------------arduino pins----------------------------*/
@@ -104,31 +104,31 @@ const byte _wheelSensorPin[_wheelSensorTotal] = { 2 };     //array of wheel sens
 //const int _mpu6050InterruptPin = 2;   //??? - don't think will need MPU6050 interrupt stuff, even with wireless. ..just use interrupts for wheels
 //DOut -> LED strip DIn (0 = rear break lights, 1 = left strip + front head lights, 2 = right strip)
 //FastLED doesn't like an array being used for the pins eg. _ledDOutPin[0]  ..am i addressing it correctly?
-const byte _ledDOutPin0 = 5; //head lights
-const byte _ledDOutPin1 = 6; //left
-const byte _ledDOutPin2 = 9; //right and rear lights
-const byte _buttonPin[_buttonTotal] = { 10, 11 };  //array of user input buttons - uses _buttonTotal
-const byte _ledPin = 13;                         //built-in LED
+const byte _ledDOutPin0 = 5;                      //head lights
+const byte _ledDOutPin1 = 6;                      //left
+const byte _ledDOutPin2 = 9;                      //right and rear lights
+const byte _buttonPin[_buttonTotal] = { 10, 11 }; //array of user input buttons - uses _buttonTotal
+const byte _ledPin = 13;                          //built-in LED
 
 
 /*----------------------------libraries----------------------------*/
-#include <EEPROM.h>                       //Arduino Pro Mini ATmega328 5V 16MHz - 1kBs EEPROM
-#include <Bounce2.h>                      //buttons with de-bounce
-#include <FastLED.h>                      //WS2812B LED strip control and effects
-#include <I2Cdev.h>                       //I2C devices
-#include <MPU6050.h>                      //MPU6050 6-axis motion sensor
+#include <EEPROM.h>                               //Arduino Pro Mini ATmega328 5V 16MHz - 1kBs EEPROM
+#include <Bounce2.h>                              //buttons with de-bounce
+#include <FastLED.h>                              //WS2812B LED strip control and effects
+#include <I2Cdev.h>                               //I2C devices
+#include <MPU6050.h>                              //MPU6050 6-axis motion sensor
 #include <Wire.h>
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.291";             //last fixes before next upload and testing - WORKS !!!
-//const int _mainLoopDelay = 0;               //just in case  - using FastLED.delay instead..
-boolean _firstTimeSetupDone = false;        //starts false
+const String _progVers = "0.292";                 //testing and adjusting timings
+//const int _mainLoopDelay = 0;                   //just in case  - using FastLED.delay instead..
+boolean _firstTimeSetupDone = false;              //starts false
 #ifdef DEBUG
-String _inputString = "";                   // a string to hold incoming data
-boolean _stringComplete = false;             // whether the string is complete
+String _inputString = "";                         // a string to hold incoming data
+boolean _stringComplete = false;                  // whether the string is complete
 #endif
-const unsigned long _sendMovementDataStreamInterval = 500;//100   //read loop interval in milliseconds   1000
+const unsigned long _sendMovementDataStreamInterval = 1000;//100   //send loop interval in milliseconds   1000
 unsigned long _sendMovementDataStreamPrevMillis = 0;         //previous time for reference
 
 /*----------------------------modes----------------------------*/
@@ -141,78 +141,48 @@ unsigned long _sendMovementDataStreamPrevMillis = 0;         //previous time for
  * 'then expect the same when turned on later' - wrong, cos handling the board to turn it on would result in waking it from sleep
  * ..therefore _sleep is 'Active', NOT 'Enabled' and not saved to memory
  */
-boolean _sleepActive = false;                            //init false at power-up
-boolean _breathingEnabled = true;                        //the board 'breathes' (glows gently) at 12 times a minute (average breathing rate of sleeping adult)
-boolean _headLightsEnabled = false;                      //have we switched on the headlights?
-boolean _headLightsActive = true;                         //start true
-boolean _rearLightsEnabled = false;                      //have we switched on the rearlights?
-boolean _rearLightsActive = true;                         //start true
-boolean _brakeActive = false;                           //give the brake lights a slight brightness boost when decelerating
-boolean _indicatorsEnabled = false;                     //indicators for turning left/right
+boolean _sleepActive = false;                     //init false at power-up
+boolean _breathingEnabled = true;                 //the board 'breathes' (glows gently) at 12 times a minute (average breathing rate of sleeping adult)
+boolean _headLightsEnabled = false;               //have we switched on the headlights?
+boolean _headLightsActive = true;                 //start true
+boolean _rearLightsEnabled = false;               //have we switched on the rearlights?
+boolean _rearLightsActive = true;                 //start true
+boolean _brakeActive = false;                     //give the brake lights a slight brightness boost when decelerating
+boolean _indicatorsEnabled = false;               //indicators for turning left/right
 boolean _indicatorLeftActive = false;
 boolean _indicatorRightActive = false;
 //main lights on/off is controlled using the blank sub-mode
-const byte _mainLightsSubModeTotal = 9;       //9 (0-8)       //4 (0-3)     //never gonna have more than 256 lighting modes..
-byte _mainLightsSubMode = 3;                            //sub-mode for main lights loop: 0=none/blank, 1= , 2= , 3=
+const byte _mainLightsSubModeTotal = 9;           //9 (0-8)       //4 (0-3)     //never gonna have more than 256 lighting modes..
+byte _mainLightsSubMode = 3;                      //sub-mode for main lights loop: 0=none/blank, 1= , 2= , 3=
 
 /*----------------------------buttons----------------------------*/
-const unsigned long _buttonDebounceTime = 750;//5;            //5 milli-seconds debounce time
-/* !!! remember to change bounce number to match '_buttonTotal' !!! */
-//Bounce button[1] = {
-//  Bounce(_buttonPin[0], debounceTime),
-//  //Bounce(_wheelSensorPin[1], debounceTime),
-//  //Bounce(_wheelSensorPin[2], debounceTime),
-//  //Bounce(_wheelSensorPin[3], debounceTime),
-//  };
-//Bounce _button = Bounce();
-//Bounce _button[1];
-Bounce *_button = new Bounce[_buttonTotal];  //pointer to new array of N buttons
-//Bounce _button[0] = Bounce();
- 
-const unsigned long _loopButtonsInterval = 1000;      //read loop interval in milliseconds   1000
-unsigned long _loopButtonsPrevMillis = 0;             //previous time for reference
-boolean _buttonToggled[_buttonTotal] = { false };        //array of button toggle states
+const unsigned long _buttonDebounceTime = 5;//5;  //5 milli-seconds debounce time
+Bounce *_button = new Bounce[_buttonTotal];       //pointer to new array of N buttons
+const unsigned long _loopButtonsInterval = 500;   //read loop interval in milliseconds   500= press button, count '1 (mabye 2',  then let go.
+unsigned long _loopButtonsPrevMillis = 0;         //previous time for reference
+boolean _buttonToggled[_buttonTotal] = { false }; //array of button toggle states
 
 /*----------------------------sensors----------------------------*/
 //latching bipolar hall effect sensor mounted on chassis, with 4/8 magents mounted on wheel
-volatile byte _wheelCounter = 0;                          //byte may not be large enough (0-255), might have to use an int - starts at 0, uses 1-4
-const unsigned long _wheelSensorReadInterval = 1000;      //read loop interval in milliseconds   1000
-unsigned long _wheelSensorReadPrevMillis = 0;             //previous time for reference
-// NEXT ..these all need to be long or somit ???
-double _wheelSpeedRps = 0;                                //wheel revolutions per second
-double _wheelSpeedMps = 0;                                   //wheel speed in Meters Per Second
-//int _wheelSpeedMpm = 0;                                   //wheel speed in Meters Per Minute    - don't think need to save these..
-//int _wheelSpeedKph = 0;                                   //wheel speed in Kilometers Per Hour
-//int _wheelSpeedMph = 0;                                   //wheel speed in Miles Per Hour
-//byte == 0 to 255
-//int == -32,768 to 32,767
-//unsigned int == 0 to 65,535
-//long == -2,147,483,648 to 2,147,483,647
-//unsigned long == 0 to 4,294,967,295
-//6.5km per day (bout 4nabit miles) * 365 = 2372.5 kilometers per year
-//6500m per day * 365 = 2,372,500 meters per year
-//..int far too small, long far too big..
-//using int will let me store data for bout 10 days
-//using long will let me store data for bout 1,809 years ?
-//..or could rollover meters and increment kilometers as seperate ints
-//if ((unsigned int)distInMeters >= 1000) {
-//  (unsigned int)distInMeters = 0;
-//  (unsigned int)distInKm += 1;
-//meters will roll over 6.5 times a day (using unsigned int)
-//kilometers will roll over in about 30 years (using unsigned int)
-unsigned long _distTraveledForward = 0;                   //total distance traveled forward in meters
-unsigned long _distTraveledBackward = 0;                  //total distance traveled backward in meters
-//_distanceTraveledLeft                                   //gotta get these in later..
+volatile byte _wheelCounter = 0;                  //byte may not be large enough (0-255), might have to use an int - starts at 0, uses 1-4
+//'_wheelSensorReadInterval' needs to be hardcoded to 1 sec, otherwise we don't get 'revolutions per SECOND'
+//const unsigned long _wheelSensorReadInterval = 1000;      //read loop interval in milliseconds   1000
+unsigned long _wheelSensorReadPrevMillis = 0;            //previous time for reference
+double _wheelSpeedRps = 0;                        //wheel revolutions per second
+double _wheelSpeedMps = 0;                        //wheel speed in Meters Per Second
+unsigned long _distTraveledForward = 0;           //total distance traveled forward in meters
+unsigned long _distTraveledBackward = 0;          //total distance traveled backward in meters
+//_distanceTraveledLeft                           //gotta get these in later..
 //_distanceTraveledRight
 //_distanceTraveledUp
 //_distanceTraveledDown
 //_distanceTraveledOtherWays
-//int _wheelRadius = 0.035;                                  //radius (dist from center to the edge) of wheels in use (meters ..cos) eg. 70mm diameter
+//int _wheelRadius = 0.035;                         //radius (dist from center to the edge) of wheels in use (meters ..cos) eg. 70mm diameter
 //const float _wheelDiameter = 0.07;
-//const float _wheelDiameter = 0.069;                        //my wheels are worn to about 69mm
+//const float _wheelDiameter = 0.069;               //my wheels are worn to about 69mm
 //..moved up top.. const float _wheelRadius = 0.0345;                          //half of diameter
-//const int _wheelMagnetRadius = 0.01;                      //radius of the magnet positioning (millimeters). prob about 10mm
-//const int _wheelCircumference = 2 * PI * _wheelRadius;    //circumference = 2 * PI * radius (meters)
+//const int _wheelMagnetRadius = 0.01;                        //radius of the magnet positioning (millimeters). prob about 10mm
+//const int _wheelCircumference = 2 * PI * _wheelRadius;      //circumference = 2 * PI * radius (meters)
 const float _wheelCircumference = 2 * PI * _wheelRadius;
 
 
@@ -227,13 +197,13 @@ int16_t _mpu6050AccelOffset[3] = {436, 1956, 1318};       //XYZ accel offsets to
 int16_t _mpu6050GyroOffset[3] = {9, -32, 69};             //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
 const int _mpu6050CalibrateSampleTotal = 100; //100;      //how many samples to take at once when calibrating
 const int _mpu6050CalibrateAccelThreshold = 10;           //threshold tolerance for 'dead zone' at center of readings
-const int _mpu6050CalibrateGyroThreshold = 3;             //..for gyro
-long _mpu6050CalibratePrevMillis = 0;                     //previous time for reference
-const long _mpu6050CalibrateInterval = 1000;              //sampling interval in milliseconds
-const long _mpu6050CalibrateTimeout = 30000;              //sampling interval in milliseconds
+const int _mpu6050CalibrateGyroThreshold = 3;     //..for gyro
+long _mpu6050CalibratePrevMillis = 0;             //previous time for reference
+const long _mpu6050CalibrateInterval = 1000;      //sampling interval in milliseconds
+const long _mpu6050CalibrateTimeout = 30000;      //sampling interval in milliseconds
 
 //stuff for filtering
-const unsigned long _mpu6050ReadInterval = 40;    //read loop interval in milliseconds   1000
+const unsigned long _mpu6050ReadInterval = 20; //40 //read loop interval in milliseconds   1000
 unsigned long _mpu6050ReadPrevMillis = 0;         //previous time for reference
 float _mpu6050AccelZero[3] = {0, 0, 0};           //XYZ quick calibration zero average save for accel - quick offsets to use whilst running
 float _mpu6050GyroZero[3] = {0, 0, 0};            //XYZ quick calibration zero average save for gyro
@@ -249,52 +219,52 @@ float _mpu6050FilteredCur[3];                     //XYZ FINAL filtered combined 
 float _mpu6050FilteredPrev[3];                    //XYZ Previous FINAL readings..
 
 //prob won't use 'stationary' cos the calculations will need something to get started, otherwise they will be a frame behind. better to have wrong direction for a split second, than have more complicated code
-//also might try this as the average of a rolling buffer
-const byte _directionSampleTotal = 10;             //how many times to sample direction before making a decision on whether it is true or not
+//also might try this as the average of a rolling buffer cos for 10 samples we wait 200 or 400ms..
+const byte _directionSampleTotal = 10;            //how many times to sample direction before making a decision on whether it is true or not
 //int _diDirectionSave = 0;                         //used to hold the direction during comparison - NOT USED NOW
 unsigned int _diAccelSave = 0;
-byte _diDirectionCounter = 0;                      //restricted by '_directionSampleTotal'
-byte _directionCur = 0;                            // -1 = stationary, 0 = forward, 1=back, 2=up, 3=down, 4=left, 5=right
+byte _diDirectionCounter = 0;                     //restricted by '_directionSampleTotal'
+byte _directionCur = 0;                           // -1 = stationary, 0 = forward, 1=back, 2=up, 3=down, 4=left, 5=right
 
 
 /*----------------------------orientation----------------------------*/
-byte _orientation = 0;                             //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
-byte orMatrix[3] = { 0, 0, 0 };                    //TEMP x =  0(low) / 1(mid) / 2(hi)       - wanted to use -1, 0, 1 but too convoluted    -- XYZ timed
-byte _orOrientationSave = 0;                       //used to hold the orientation during comparison
-byte _orOrientationTemp = 0;                       //used to hold the orientation (then convert to _orientation)
+byte _orientation = 0;                            //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
+byte orMatrix[3] = { 0, 0, 0 };                   //TEMP x =  0(low) / 1(mid) / 2(hi)       - wanted to use -1, 0, 1 but too convoluted    -- XYZ timed
+byte _orOrientationSave = 0;                      //used to hold the orientation during comparison
+byte _orOrientationTemp = 0;                      //used to hold the orientation (then convert to _orientation)
 boolean orFlag = false;                           //flag 0 x
 unsigned long orCounter = 0;                      //TEMP time
-const unsigned long orInterval = 450;    //400         //interval at which to check whether flags have changed - are we still in the same orientation - how long to trigger
-const unsigned long _orientationInterval = 200;//100   //read loop interval in milliseconds   1000
+const unsigned long _orientationInterval = 100; //200 //100   //main orientation read loop interval in milliseconds   1000
+const unsigned long orInterval = 400; //250 //450 //400 //interval at which to check whether flags have changed - are we still in the same orientation - how long to trigger
 unsigned long _orientationPrevMillis = 0;         //previous time for reference
 byte _orientationTestSideMidpoint = 0;            //side LED strip midpoint, calculated in startup
 
 /*----------------------------LED----------------------------*/
-#define UPDATES_PER_SECOND 120                  //main loop FastLED show delay  //100
+#define UPDATES_PER_SECOND 120                    //main loop FastLED show delay  //100
 typedef struct {
   byte first;
   byte last;
-  byte total;                                   //haven't got more than 256 LEDs in a segment
+  byte total;                                     //haven't got more than 256 LEDs in a segment
 } LED_SEGMENT;
-const byte _ledNum = 40;                         //18 LED strip each side and 2 each end = 40 LEDs (2280mA max)
-const byte _segmentTotal = 4;                    //2 sides, 2 ends
-//const byte _ledGlobalBrightness = 255;           //global brightness - used to cap - might remove..
-byte _ledGlobalBrightnessCur = 255;              //current global brightness - adjust this
-byte _ledBrightnessIncDecAmount = 10;            //the brightness amount to increase or decrease
+const byte _ledNum = 40;                          //18 LED strip each side and 2 each end = 40 LEDs (2280mA max)
+const byte _segmentTotal = 4;                     //2 sides, 2 ends
+//const byte _ledGlobalBrightness = 255;            //global brightness - used to cap - might remove..
+byte _ledGlobalBrightnessCur = 255;               //current global brightness - adjust this
+byte _ledBrightnessIncDecAmount = 10;             //the brightness amount to increase or decrease
 byte _headLightsBrightness = 200;
 byte _rearLightsBrightness = 200;
-byte _trackLightsFadeAmount = 64;                //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
+byte _trackLightsFadeAmount = 64;                 //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
 LED_SEGMENT ledSegment[_segmentTotal] = { 
   { 0, 1, 2 },      //front head lights
   { 2, 19, 18 },    //left side
   { 20, 37, 18 },   //right side
   { 38, 39, 2 },     //rear brake lights
 };
-//CRGB _leds[_ledNum];                       //global RGB array
-//CRGBSet _ledsSideSet(_leds, 36);            //set made from segements 1 and 2 combined
-CRGBArray<_ledNum> _leds;                     //CRGBArray means can do multiple '_leds(0, 2).fadeToBlackBy(40);' as well as single '_leds[0].fadeToBlackBy(40);'
-int _ledState = LOW;                        //use to toggle LOW/HIGH (ledState = !ledState)
-volatile byte _ledMovePos = 0;              //center point for tracking LEDs to wheels
+//CRGB _leds[_ledNum];                              //global RGB array
+//CRGBSet _ledsSideSet(_leds, 36);                  //set made from segements 1 and 2 combined
+CRGBArray<_ledNum> _leds;                         //CRGBArray means can do multiple '_leds(0, 2).fadeToBlackBy(40);' as well as single '_leds[0].fadeToBlackBy(40);'
+int _ledState = LOW;                              //use to toggle LOW/HIGH (ledState = !ledState)
+volatile byte _ledMovePos = 0;                    //center point for tracking LEDs to wheels
 
 
 /*----------------------------MAIN----------------------------*/
@@ -389,5 +359,6 @@ void loop() {
     sendMovementDataStream();               //send readings to PC/app
   #endif
   FastLED.delay(1000 / UPDATES_PER_SECOND);
+  //delay(_mainLoopDelay);
 }
 
