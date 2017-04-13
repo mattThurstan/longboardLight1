@@ -47,7 +47,12 @@ void loopButtons() {
         if (i == 0) { 
           _doQuickCalibration = true;
           }  //use same bt at startup eg. if held when power on, do full calibration
-        if (i == 1) { incrementMainLightsSubMode(); } 
+        if (i == 1) { 
+          //incrementMainLightsSubMode(); 
+          //TEMP HIJACK !!!
+            if (_sleepActive == true) { _sleepActive = false; } 
+            else if (_sleepActive == false) { _sleepActive = true; }
+        } 
         #ifdef DEBUG
           Serial.print(F("Button fell "));
           Serial.print(i);

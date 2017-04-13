@@ -121,7 +121,7 @@ const byte _ledPin = 13;                          //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.293";                 //tweaking (inc. swapped front and rear lights)
+const String _progVers = "0.294";                 //freeze for hardware rebuild
 //const int _mainLoopDelay = 0;                   //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;              //starts false
 #ifdef DEBUG
