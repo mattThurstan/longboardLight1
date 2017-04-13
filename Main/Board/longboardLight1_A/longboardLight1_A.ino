@@ -102,11 +102,11 @@ const byte _wheelMagnetTotal = 8; //4;            //how many magnets are mounted
  
 const byte _wheelSensorPin[_wheelSensorTotal] = { 2 };     //array of wheel sensor inputs (!!all interrupt pins!!!) - uses _wheelSensorTotal
 //const int _mpu6050InterruptPin = 2;   //??? - don't think will need MPU6050 interrupt stuff, even with wireless. ..just use interrupts for wheels
-//DOut -> LED strip DIn (0 = rear break lights, 1 = left strip + front head lights, 2 = right strip)
+//DOut -> LED strip DIn (0 = rear break lights, 1 = left strip, 2 = right strip + front head lights (or 3 ???))
 //FastLED doesn't like an array being used for the pins eg. _ledDOutPin[0]  ..am i addressing it correctly?
-const byte _ledDOutPin0 = 5;                      //head lights
+const byte _ledDOutPin0 = 5;                      //rear lights
 const byte _ledDOutPin1 = 6;                      //left
-const byte _ledDOutPin2 = 9;                      //right and rear lights
+const byte _ledDOutPin2 = 9;                      //right and head lights
 const byte _buttonPin[_buttonTotal] = { 10, 11 }; //array of user input buttons - uses _buttonTotal
 const byte _ledPin = 13;                          //built-in LED
 
@@ -121,7 +121,7 @@ const byte _ledPin = 13;                          //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.292";                 //testing and adjusting timings
+const String _progVers = "0.293";                 //tweaking (inc. swapped front and rear lights)
 //const int _mainLoopDelay = 0;                   //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;              //starts false
 #ifdef DEBUG
@@ -221,7 +221,6 @@ float _mpu6050FilteredPrev[3];                    //XYZ Previous FINAL readings.
 //prob won't use 'stationary' cos the calculations will need something to get started, otherwise they will be a frame behind. better to have wrong direction for a split second, than have more complicated code
 //also might try this as the average of a rolling buffer cos for 10 samples we wait 200 or 400ms..
 const byte _directionSampleTotal = 10;            //how many times to sample direction before making a decision on whether it is true or not
-//int _diDirectionSave = 0;                         //used to hold the direction during comparison - NOT USED NOW
 unsigned int _diAccelSave = 0;
 byte _diDirectionCounter = 0;                     //restricted by '_directionSampleTotal'
 byte _directionCur = 0;                           // -1 = stationary, 0 = forward, 1=back, 2=up, 3=down, 4=left, 5=right
@@ -239,8 +238,9 @@ const unsigned long orInterval = 400; //250 //450 //400 //interval at which to c
 unsigned long _orientationPrevMillis = 0;         //previous time for reference
 byte _orientationTestSideMidpoint = 0;            //side LED strip midpoint, calculated in startup
 
+
 /*----------------------------LED----------------------------*/
-#define UPDATES_PER_SECOND 120                    //main loop FastLED show delay  //100
+#define UPDATES_PER_SECOND 120                    //main loop FastLED show delay - 1000/120
 typedef struct {
   byte first;
   byte last;
@@ -255,10 +255,10 @@ byte _headLightsBrightness = 200;
 byte _rearLightsBrightness = 200;
 byte _trackLightsFadeAmount = 64;                 //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
 LED_SEGMENT ledSegment[_segmentTotal] = { 
-  { 0, 1, 2 },      //front head lights
+  { 0, 1, 2 },      //rear brake lights
   { 2, 19, 18 },    //left side
   { 20, 37, 18 },   //right side
-  { 38, 39, 2 },     //rear brake lights
+  { 38, 39, 2 },     //front head lights
 };
 //CRGB _leds[_ledNum];                              //global RGB array
 //CRGBSet _ledsSideSet(_leds, 36);                  //set made from segements 1 and 2 combined
@@ -270,7 +270,7 @@ volatile byte _ledMovePos = 0;                    //center point for tracking LE
 /*----------------------------MAIN----------------------------*/
 void setup() {
 
-  clearAllSettings();   // TEMP
+  //clearAllSettings();   // TEMP
   
   blinkStatusLED1();
   
@@ -288,16 +288,16 @@ void setup() {
   fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Yellow, ledSegment[1].first+1, CRGB::Yellow);
   fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::Yellow, ledSegment[2].first+1, CRGB::Yellow);
   //_leds(ledSegment[1].first, 2) = CRGB::Yellow;
-  delay(2);
+  delay(250);
   FastLED.show();
   setupSensors();                         //setup all sensor inputs (note: sensors on wheels use interrupt pins)
-  delay(2);
+  delay(250);
   fill_gradient_RGB(_leds, ledSegment[1].first+2, CRGB::Fuchsia, ledSegment[1].first+3, CRGB::Fuchsia);
   fill_gradient_RGB(_leds, ledSegment[2].first+2, CRGB::Fuchsia, ledSegment[2].first+3, CRGB::Fuchsia);
   //_leds(ledSegment[1].first+3, 2) = CRGB::Fuchsia;
   FastLED.show();
   setupUserInputs();                      //setup any user inputs - buttons, WIFI, bluetooth etc.
-  delay(2);
+  delay(250);
   fill_gradient_RGB(_leds, ledSegment[1].first+4, CRGB::Green, ledSegment[1].first+5, CRGB::Green);
   fill_gradient_RGB(_leds, ledSegment[2].first+4, CRGB::Green, ledSegment[2].first+5, CRGB::Green);
   //_leds(ledSegment[1].first+6, 2) = CRGB::Green;
@@ -309,7 +309,7 @@ void setup() {
     Serial.println();
     blinkStatusLED();
   #endif
-  delay(2);
+  delay(250);
   fill_gradient_RGB(_leds, ledSegment[1].first+6, CRGB::MediumTurquoise, ledSegment[1].first+7, CRGB::MediumTurquoise);
   fill_gradient_RGB(_leds, ledSegment[2].first+6, CRGB::MediumTurquoise, ledSegment[2].first+7, CRGB::MediumTurquoise);
   //_leds(ledSegment[1].first+9, 2) = CRGB::MediumTurquoise;
@@ -328,7 +328,7 @@ void setup() {
   _orientationTestSideMidpoint = ledSegment[1].total / 2; //add it later, easier for 2 segments
   checkStartupButtons();  //check to see if any button has been held down during startup eg. full calibration
 
-  delay(2);
+  delay(250);
   FastLED.clear();
 }
 

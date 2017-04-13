@@ -18,10 +18,11 @@ void loopModes() {
       if (_orientation == 2) { fadeToBlackBy( _leds, _ledNum, 64); loopBreathing(); _headLightsActive = false; } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
       else { _headLightsActive = true; }  //turn the headlights back on when you put the board down.
       if (_orientation == 4 || _orientation == 5) { fadeToBlackBy( _leds, _ledNum, 64); loopSideLight(); }
-      loopHeadLights(); //..after the main bits
+      loopHeadLights(); //..overlay after the main bits
       loopRearLights(); //..
       loopIndicatorFlash();
     } else {
+//TODO
       //sleep - defined by a period of no movement, a switch, or a wireless command.
       //fadeToBlackBy( _leds, _ledNum, 64); //(array, count, percent) eg. 192/256 = 75% (use 192), 64 = 25%
       //fill_solid(_leds, _ledNum, CRGB::Black);  //TEMP colour
@@ -33,7 +34,7 @@ void loopModes() {
 void loopHeadLights() {
   if (_headLightsEnabled == true && _headLightsActive == true) {
     //fill_solid( leds, _ledNum, CRGB::White);
-    fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::White, ledSegment[0].last, CRGB::White );
+    fill_gradient_RGB(_leds, ledSegment[3].first, CRGB::White, ledSegment[3].last, CRGB::White );
     //_headLightsBrightness
     //_leds(ledSegment[0].first, ledSegment[0].total) = CRGB::White;
   }
@@ -41,7 +42,7 @@ void loopHeadLights() {
 
 void loopRearLights() {
   if (_rearLightsEnabled == true && _rearLightsActive == true) { 
-    fill_gradient_RGB(_leds, ledSegment[3].first, CRGB::Red, ledSegment[3].last, CRGB::Red );
+    fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::Red, ledSegment[0].last, CRGB::Red );
     //_leds(ledSegment[3].first, ledSegment[3].total) = CRGB::Red;
   }
 }
@@ -51,12 +52,12 @@ void loopMainLights() {
   //0=none/blank, 1= , 2= , 3=
   if (_mainLightsSubMode == 0) {
     //do nothing - 'off'
-    fadeToBlackBy( _leds, _ledNum, 30);  //
+    fadeToBlackBy( _leds, _ledNum, 32);  //
   } else if (_mainLightsSubMode == 1) {
     fill_gradient_RGB(_leds, ledSegment[1].first, CRGB(16, 16, 16), ledSegment[2].last, CRGB(16, 16, 16) );
   } else if (_mainLightsSubMode == 2) {
-    fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::White, ledSegment[1].last, CRGB::Red );
-    fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::White, ledSegment[2].last, CRGB::Red );
+    fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Red, ledSegment[1].last, CRGB::White );
+    fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::Red, ledSegment[2].last, CRGB::White );
   } else if (_mainLightsSubMode == 3) {
     loopTrackLights();
   } else if (_mainLightsSubMode == 4) {
@@ -148,7 +149,9 @@ void breathRiseFall() {
       c.r = _breathRiseFallCounter-_breathRiseFallSpacer;
       c.g = _breathRiseFallCounter-_breathRiseFallSpacer;
       c.b = _breathRiseFallCounter-_breathRiseFallSpacer;
-      fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::Black, ledSegment[3].last, CRGB::Black );
+      //fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::Black, ledSegment[3].last, CRGB::Black );
+      fadeToBlackBy( _leds, _ledNum, 64);   //make any unused pixels fade out
+      //_leds.fadeToBlackBy(_trackLightsFadeAmount);            //..or do it like this cos we are using a CRGBArray
       if (_orientation == 2) {
         fill_gradient_RGB(_leds, ledSegment[1].first, c, ledSegment[1].last - (ledSegment[1].total / 3), CRGB::Black );
         fill_gradient_RGB(_leds, ledSegment[2].first, c, ledSegment[2].last - (ledSegment[2].total / 3), CRGB::Black );

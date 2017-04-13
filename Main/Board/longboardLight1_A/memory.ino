@@ -27,10 +27,10 @@ void setDefaultSettings() {
     Serial.println();
   #endif
   
-  _breathingEnabled = false;    //true
+  _breathingEnabled = true;    //true
   _headLightsEnabled = true;   //true
   _rearLightsEnabled = true;   //true
-  _indicatorsEnabled = false;   //true
+  _indicatorsEnabled = true;   //true - not done yet
 
   _mainLightsSubMode = 3;
   _ledGlobalBrightnessCur = 255;
