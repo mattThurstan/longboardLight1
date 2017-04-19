@@ -61,11 +61,6 @@
 //#define DEBUG_WHEEL 1                             //DEUBUG wheel sensor(s)
 //#define DEBUG_INTERRUPT 1
 
-//3-axis accelerometer  calibration (these will be moved and integrated later when have communications)
-boolean _doFullCalibration = false;               //set to true to run full calibration. it will reset itself to false when finished.
-//a quick calibration will normally be done, unless it gets turned off at the end of a full calibration.
-boolean _doQuickCalibration = false;              //set to true to run quick calibration. it will reset itself to false when finished.
-boolean _orientationTest = false;                 //used as a test override. not during normal operation. will prob remove later
 /*
  * black marked side of magents are North)
  * my wheels 1 - shark wheels 70mm diameter / 78A (about 69mm dues to wear etc.)
@@ -83,6 +78,11 @@ const float _wheelRadius = 0.0345;                //half of diameter, my wheels 
 const byte _wheelSensorTotal = 1;                 //how many wheels have we mounted sensors on?
 const byte _wheelMagnetTotal = 8; //4;            //how many magnets are mounted on each wheel?
 
+//3-axis accelerometer  calibration (these will be moved and integrated later when have communications)
+boolean _doFullCalibration = false;               //set to true to run full calibration. it will reset itself to false when finished.
+//a quick calibration will normally be done, unless it gets turned off at the end of a full calibration.
+boolean _doQuickCalibration = false;              //set to true to run quick calibration. it will reset itself to false when finished.
+boolean _orientationTest = false;                 //used as a test override. not during normal operation. will prob remove later
 
 /*----------------------------arduino pins----------------------------*/
 
@@ -104,10 +104,13 @@ const byte _wheelSensorPin[_wheelSensorTotal] = { 2 };     //array of wheel sens
 //const int _mpu6050InterruptPin = 2;   //??? - don't think will need MPU6050 interrupt stuff, even with wireless. ..just use interrupts for wheels
 //DOut -> LED strip DIn (0 = rear break lights, 1 = left strip, 2 = right strip + front head lights (or 3 ???))
 //FastLED doesn't like an array being used for the pins eg. _ledDOutPin[0]  ..am i addressing it correctly?
-const byte _ledDOutPin0 = 5;                      //rear lights
-const byte _ledDOutPin1 = 6;                      //left
-const byte _ledDOutPin2 = 9;                      //right and head lights
-const byte _buttonPin[_buttonTotal] = { 10, 11 }; //array of user input buttons - uses _buttonTotal
+//const byte _ledDOutPin0 = 5;                      //rear lights
+//const byte _ledDOutPin1 = 6;                      //left
+//const byte _ledDOutPin2 = 9;                      //right and head lights
+const byte _ledDOutPin0 = 9;                      //rear lights
+const byte _ledDOutPin1 = 5;                      //left
+const byte _ledDOutPin2 = 6;                      //right and head lights
+const byte _buttonPin[_buttonTotal] = { 11, 12 }; //array of user input buttons - uses _buttonTotal - opps.. think I burned out pin 10 by mistake - nope, just wired button 90deg wrong way
 const byte _ledPin = 13;                          //built-in LED
 
 
@@ -121,7 +124,7 @@ const byte _ledPin = 13;                          //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.294";                 //freeze for hardware rebuild
+const String _progVers = "0.295";                 //tweak for veloboard setup 1 - working
 //const int _mainLoopDelay = 0;                   //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;              //starts false
 #ifdef DEBUG
@@ -281,7 +284,7 @@ void setup() {
       Fastwire::setup(400, true);
   #endif
   setupSerial();                          //..see 'util'
-  loadAllSettings();                         //load any saved settings eg. save state when turn board power off. - not implemented yet !!!
+  loadAllSettings();                         //load any saved settings eg. save state when turn board power off. - not fully implemented yet !!!
   setupInterrupts();                      //set any interrupts..
   delay(3000);                            //..after setting interrupts, give the power, LED strip, etc. a couple of secs to stabilise
   setupLEDs();                            //setup LEDs first and then use as setup indicator lights

@@ -40,6 +40,7 @@ void loopButtons() {
     
     for (byte i = 0; i < _buttonTotal; i++) {
       //sub-loop - reads all buttons (digital pins)
+      //if ( _button[i].update() ) { }; //returns a 1 if changed
       _button[i].update(); //update buttons (this handles everything to do with reading the pins)
       //doing the bare minimum here
       if ( _button[i].fell() ) {
@@ -48,10 +49,10 @@ void loopButtons() {
           _doQuickCalibration = true;
           }  //use same bt at startup eg. if held when power on, do full calibration
         if (i == 1) { 
-          //incrementMainLightsSubMode(); 
+          incrementMainLightsSubMode(); 
           //TEMP HIJACK !!!
-            if (_sleepActive == true) { _sleepActive = false; } 
-            else if (_sleepActive == false) { _sleepActive = true; }
+          //  if (_sleepActive == true) { _sleepActive = false; } 
+          //  else if (_sleepActive == false) { _sleepActive = true; }
         } 
         #ifdef DEBUG
           Serial.print(F("Button fell "));
