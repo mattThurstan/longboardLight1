@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    https://github.com/mattKsp/
+    https://github.com/thurstan/
 */
 
 /*
@@ -60,6 +60,7 @@
 //#define DEBUG_ORIENTATION 1                       //
 //#define DEBUG_WHEEL 1                             //DEUBUG wheel sensor(s)
 //#define DEBUG_INTERRUPT 1
+//#define DATA_LOGGING 1                            //turn data logging on or off eg. distance travelled under sensors
 
 /*
  * black marked side of magents are North)
@@ -124,7 +125,7 @@ const byte _ledPin = 13;                          //built-in LED
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.295";                 //tweak for veloboard setup 1 - working
+const String _progVers = "0.297";                 //clean-up before re-build
 //const int _mainLoopDelay = 0;                   //just in case  - using FastLED.delay instead..
 boolean _firstTimeSetupDone = false;              //starts false
 #ifdef DEBUG
@@ -161,13 +162,13 @@ byte _mainLightsSubMode = 3;                      //sub-mode for main lights loo
 /*----------------------------buttons----------------------------*/
 const unsigned long _buttonDebounceTime = 5;//5;  //5 milli-seconds debounce time
 Bounce *_button = new Bounce[_buttonTotal];       //pointer to new array of N buttons
-const unsigned long _loopButtonsInterval = 500;   //read loop interval in milliseconds   500= press button, count '1 (mabye 2',  then let go.
+const unsigned long _loopButtonsInterval = 1000;   //read loop interval in milliseconds   500= press button, count '1 (mabye 2',  then let go.
 unsigned long _loopButtonsPrevMillis = 0;         //previous time for reference
 boolean _buttonToggled[_buttonTotal] = { false }; //array of button toggle states
 
 /*----------------------------sensors----------------------------*/
 //latching bipolar hall effect sensor mounted on chassis, with 4/8 magents mounted on wheel
-volatile byte _wheelCounter = 0;                  //byte may not be large enough (0-255), might have to use an int - starts at 0, uses 1-4
+volatile byte _wheelCounter = 0;                  //byte may not be large enough (0-255), might have to use an int
 //'_wheelSensorReadInterval' needs to be hardcoded to 1 sec, otherwise we don't get 'revolutions per SECOND'
 //const unsigned long _wheelSensorReadInterval = 1000;      //read loop interval in milliseconds   1000
 unsigned long _wheelSensorReadPrevMillis = 0;            //previous time for reference
@@ -244,6 +245,7 @@ byte _orientationTestSideMidpoint = 0;            //side LED strip midpoint, cal
 
 /*----------------------------LED----------------------------*/
 #define UPDATES_PER_SECOND 120                    //main loop FastLED show delay - 1000/120
+//mabye struct should contain int16_t instead of byte. eg. fill_gradient asks for it..
 typedef struct {
   byte first;
   byte last;
@@ -254,9 +256,9 @@ const byte _segmentTotal = 4;                     //2 sides, 2 ends
 //const byte _ledGlobalBrightness = 255;            //global brightness - used to cap - might remove..
 byte _ledGlobalBrightnessCur = 255;               //current global brightness - adjust this
 byte _ledBrightnessIncDecAmount = 10;             //the brightness amount to increase or decrease
-byte _headLightsBrightness = 200;
-byte _rearLightsBrightness = 200;
-byte _trackLightsFadeAmount = 64;                 //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
+byte _headLightsBrightness = 200;                 //use function to set
+byte _rearLightsBrightness = 200;                 //use function to set
+byte _trackLightsFadeAmount = 32;          //64   //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
 LED_SEGMENT ledSegment[_segmentTotal] = { 
   { 0, 1, 2 },      //rear brake lights
   { 2, 19, 18 },    //left side
@@ -268,7 +270,10 @@ LED_SEGMENT ledSegment[_segmentTotal] = {
 CRGBArray<_ledNum> _leds;                         //CRGBArray means can do multiple '_leds(0, 2).fadeToBlackBy(40);' as well as single '_leds[0].fadeToBlackBy(40);'
 int _ledState = LOW;                              //use to toggle LOW/HIGH (ledState = !ledState)
 volatile byte _ledMovePos = 0;                    //center point for tracking LEDs to wheels
-
+//CRGB _headLightsCol;                              //colour of the head lights. restricted by 'headLightsBrightness', use functions to set. 
+CHSV _headLightsColHSV( 0, 0, 200);               //default - white @ 200
+//CRGB _rearLightsCol;                              //colour of the rear lights. restricted by 'rearLightsBrightness', use functions to set.
+CHSV _rearLightsColHSV( 0, 255, 200);               //default - red @ 200
 
 /*----------------------------MAIN----------------------------*/
 void setup() {
@@ -291,16 +296,16 @@ void setup() {
   fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Yellow, ledSegment[1].first+1, CRGB::Yellow);
   fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::Yellow, ledSegment[2].first+1, CRGB::Yellow);
   //_leds(ledSegment[1].first, 2) = CRGB::Yellow;
-  delay(250);
+  delay(400);
   FastLED.show();
   setupSensors();                         //setup all sensor inputs (note: sensors on wheels use interrupt pins)
-  delay(250);
+  delay(400);
   fill_gradient_RGB(_leds, ledSegment[1].first+2, CRGB::Fuchsia, ledSegment[1].first+3, CRGB::Fuchsia);
   fill_gradient_RGB(_leds, ledSegment[2].first+2, CRGB::Fuchsia, ledSegment[2].first+3, CRGB::Fuchsia);
   //_leds(ledSegment[1].first+3, 2) = CRGB::Fuchsia;
   FastLED.show();
-  setupUserInputs();                      //setup any user inputs - buttons, WIFI, bluetooth etc.
-  delay(250);
+//  setupUserInputs();                      //setup any user inputs - buttons, WIFI, bluetooth etc.
+  delay(400);
   fill_gradient_RGB(_leds, ledSegment[1].first+4, CRGB::Green, ledSegment[1].first+5, CRGB::Green);
   fill_gradient_RGB(_leds, ledSegment[2].first+4, CRGB::Green, ledSegment[2].first+5, CRGB::Green);
   //_leds(ledSegment[1].first+6, 2) = CRGB::Green;
@@ -312,7 +317,7 @@ void setup() {
     Serial.println();
     blinkStatusLED();
   #endif
-  delay(250);
+  delay(400);
   fill_gradient_RGB(_leds, ledSegment[1].first+6, CRGB::MediumTurquoise, ledSegment[1].first+7, CRGB::MediumTurquoise);
   fill_gradient_RGB(_leds, ledSegment[2].first+6, CRGB::MediumTurquoise, ledSegment[2].first+7, CRGB::MediumTurquoise);
   //_leds(ledSegment[1].first+9, 2) = CRGB::MediumTurquoise;
@@ -328,10 +333,10 @@ void setup() {
 //  _mainLightsSubMode = 3;
 
   //_orientationTestSideMidpoint = ledSegment[1].first + (ledSegment[1].total/2);
-  _orientationTestSideMidpoint = ledSegment[1].total / 2; //add it later, easier for 2 segments
-  checkStartupButtons();  //check to see if any button has been held down during startup eg. full calibration
+  _orientationTestSideMidpoint = ledSegment[1].total / 2; //change it later, easier for 2 segments
+//  checkStartupButtons();  //check to see if any button has been held down during startup eg. full calibration
 
-  delay(250);
+  delay(400);
   FastLED.clear();
 }
 
@@ -349,10 +354,10 @@ void loop() {
     fullCalibration(); 
     _doQuickCalibration = false; //if we have just done a full one, we don't need to do a quick one.
   }
-  else if (_doQuickCalibration == true) { quickCalibration(); }   //..if not, try for a quick one
+  else if (_doQuickCalibration == true) { quickCalibration(); }   //..if not, try for a quick one - this has issues!
   else {
     //run the loop normally
-    loopUserInputs();
+//    loopUserInputs();   //if a board with more interrupts for the buttons, that would cut out this whole loop!
     loopSensors();
     loopModes();
   }

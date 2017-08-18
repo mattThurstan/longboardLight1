@@ -43,7 +43,9 @@ void wheelInterrupt0() {
       Serial.println();
     }
   #endif
-  _wheelCounter++;
+  #ifdef DATA_LOGGING 
+    _wheelCounter++;
+  #endif
   //not sure if arduino pro mini 328 5V 16MHz is fast enough to do this ???
   if (_directionCur == 0) { _ledMovePos++; /*forward*/ }
   else if (_directionCur == 1) { _ledMovePos--; /*backward*/ }

@@ -46,8 +46,10 @@ void loopButtons() {
       if ( _button[i].fell() ) {
         _buttonToggled[i] = true;
         if (i == 0) { 
-          _doQuickCalibration = true;
-          }  //use same bt at startup eg. if held when power on, do full calibration
+          //_doQuickCalibration = true;
+          _headLightsEnabled = !_headLightsEnabled;
+          _rearLightsEnabled = !_rearLightsEnabled;
+        }  //use same bt at startup eg. if held when power on, do full calibration
         if (i == 1) { 
           incrementMainLightsSubMode(); 
           //TEMP HIJACK !!!

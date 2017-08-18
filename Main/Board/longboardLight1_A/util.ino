@@ -1,5 +1,40 @@
 /*----------------------------util----------------------------*/
 
+void setHeadLightsBrightness(byte l) {
+  _headLightsBrightness = l;
+  _headLightsColHSV.val = l;
+}
+//void setHeadLightsRGB(byte r, byte g, byte b) {
+//  _headLightsCol.r = r; //= CRGB(r, g, b);
+//  _headLightsCol.g = g;
+//  _headLightsCol.b = b;
+//}
+void setHeadLightsHSV(byte h, byte s, byte v) {
+  _headLightsColHSV.hue = h;
+  _headLightsColHSV.sat = s;
+  //byte vv = constrain(v, 0, 255, 0, _headLightsBrightness);
+  _headLightsColHSV.val = v;
+}
+void setHeadLightsHS(byte h, byte s) {
+  _headLightsColHSV.hue = h;
+  _headLightsColHSV.sat = s;
+  _headLightsColHSV.val = _headLightsBrightness;
+}
+void setRearLightsBrightness(byte k) {
+  _rearLightsBrightness = k;
+  _rearLightsColHSV.val = k;
+}
+void setRearLightsHSV(byte h, byte s, byte v) {
+  _rearLightsColHSV.hue = h;
+  _rearLightsColHSV.sat = s;
+  _rearLightsColHSV.val = v;
+}
+void setRearLightsHS(byte h, byte s) {
+  _rearLightsColHSV.hue = h;
+  _rearLightsColHSV.sat = s;
+  _rearLightsColHSV.val = _rearLightsBrightness;
+}
+
 void incrementMainLightsSubMode() {
   if ( _mainLightsSubMode >= (_mainLightsSubModeTotal - 1) ) {
     _mainLightsSubMode = 0;    //wrap-around at end back to 0

@@ -34,9 +34,19 @@ void setDefaultSettings() {
 
   _mainLightsSubMode = 3;
   _ledGlobalBrightnessCur = 255;
-  _headLightsBrightness = 200;
-  _rearLightsBrightness = 200;
+  //_headLightsBrightness = 200;
+  setHeadLightsBrightness(200);
+  //_rearLightsBrightness = 200;
+  setRearLightsBrightness(200);
   _trackLightsFadeAmount = 64;
+
+  //_headLightsColHSV( 0, 0, 200);
+  setHeadLightsHSV(0, 0, 200);      //white
+  setRearLightsHSV(0, 255, 200);    //red
+
+  //offsets not done yet, requires splitting numbers, or just wait till get replacement board with WIFI/Bluetooth and more memory
+  //_mpu6050AccelOffset[3] = {436, 1956, 1318};       //XYZ accel offsets to write to the MPU6050 - get from full calibration and save to memory
+  //_mpu6050GyroOffset[3] = {9, -32, 69};             //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
 }
 
 void loadAllSettings() {
@@ -60,8 +70,10 @@ void loadAllSettings() {
     
     _mainLightsSubMode = EEPROM.read(8);  
     _ledGlobalBrightnessCur = EEPROM.read(9);
-    _headLightsBrightness = EEPROM.read(10);
-    _rearLightsBrightness = EEPROM.read(11);
+    //_headLightsBrightness = EEPROM.read(10);
+    setHeadLightsBrightness( EEPROM.read(10) );
+    //_rearLightsBrightness = EEPROM.read(11);
+    setRearLightsBrightness( EEPROM.read(11) );
     _trackLightsFadeAmount = EEPROM.read(12);
   } else {
     //set defaults then saveSettings

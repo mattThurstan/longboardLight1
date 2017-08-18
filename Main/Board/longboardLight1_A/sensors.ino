@@ -11,7 +11,7 @@ void setupSensors() {
 void loopSensors() {
   readMPU6050filtered();
   orientation();
-  loopWheel();                       //loop wheel tracking
+  if (_orientation == 0 &&_mainLightsSubMode == 3) { loopWheel(); /*wheel tracking*/ }
 }
 
 /*----------------------------wheel sensors----------------------------*/
@@ -23,7 +23,7 @@ void setupWheel() {
 }
 
 void loopWheel() {
-  
+#ifdef DATA_LOGGING 
   //timed-loop
   unsigned long wheelSensorReadCurMillis = millis();    //get current time
   //this has the potential to be innacurate, but should be good enough, plus we can correct a bit using other sensors
@@ -40,6 +40,10 @@ void loopWheel() {
       _distTraveledBackward = (_distTraveledBackward + (unsigned long)_wheelSpeedMps);
     }
     
+    _wheelCounter = 0;                                  //reset counter to 0 (why did i put 1? ..was it just 3 in the morning?)
+    attachInterrupt(digitalPinToInterrupt(_wheelSensorPin[0]), wheelInterrupt0, CHANGE);  //re-attach the interrupt !!!
+    _wheelSensorReadPrevMillis = millis();              //store the current time
+    
     #ifdef DEBUG_WHEEL
       Serial.print("RPS=");
       Serial.print(_wheelSpeedRps);
@@ -55,11 +59,7 @@ void loopWheel() {
       Serial.print(_directionCur);
       Serial.println();
     #endif
-
-    _wheelCounter = 0;                                  //reset counter to 0 (why did i put 1? ..was it just 3 in the morning?)
-    _wheelSensorReadPrevMillis = millis();              //store the current time
-    attachInterrupt(digitalPinToInterrupt(_wheelSensorPin[0]), wheelInterrupt0, CHANGE);  //re-attach the interrupt !!!
   } //END timed-loop
-
+#endif  //END if DATA_LOGGING
 } //END loopWheel
 

@@ -107,26 +107,28 @@ void readMPU6050filtered() {
     _mpu6050ReadPrevMillis = millis();               //store the current time
   } //END timed-loop
 
-//might make this dependant on whether tracking sub-mode is actually running, otherwise waste of processing..
-  if (_diDirectionCounter >= _directionSampleTotal) {
-    //int average = _diDirectionSave / _directionSampleTotal;
-    //..this really needs to be a rolling average
-    unsigned int average = (_diAccelSave / _directionSampleTotal);
-    if (average > _mpu6050AccelZero[1] + 100) {
-      _directionCur = 0;  //going forwards
-    } else if (average < _mpu6050AccelZero[1] - 100) {
-      _directionCur = 1;  //going backwards
-    } else {
-      //_directionCur = -1;  //stationary
+  //dependant on whether tracking sub-mode is actually running, otherwise waste of processing..
+  if (_orientation == 0 &&_mainLightsSubMode == 3) { 
+    if (_diDirectionCounter >= _directionSampleTotal) {
+      //int average = _diDirectionSave / _directionSampleTotal;
+      //..this really needs to be a rolling average
+      unsigned int average = (_diAccelSave / _directionSampleTotal);
+      if (average > _mpu6050AccelZero[1] + 100) {
+        _directionCur = 0;  //going forwards
+      } else if (average < _mpu6050AccelZero[1] - 100) {
+        _directionCur = 1;  //going backwards
+      } else {
+        //_directionCur = -1;  //stationary
+      }
+      _diAccelSave = 0;
+      _diDirectionCounter = 0;
+  //    #ifdef DEBUG
+  //      Serial.print(", Current direction = ");
+  //      Serial.print(_directionCur);
+  //      Serial.println();
+  //    #endif
     }
-    _diAccelSave = 0;
-    _diDirectionCounter = 0;
-//    #ifdef DEBUG
-//      Serial.print(", Current direction = ");
-//      Serial.print(_directionCur);
-//      Serial.println();
-//    #endif
-  }
+  } //END dependant
 
 } //END readMPU6050filtered
 
