@@ -2,8 +2,9 @@
 
 void orientation() {
 
-  unsigned long orientationCurMillis = millis();     //get current time
-  if((unsigned long) (orientationCurMillis - _orientationPrevMillis) >= _orientationInterval) {
+//  unsigned long orientationCurMillis = millis();     //get current time
+//  if((unsigned long) (orientationCurMillis - _orientationPrevMillis) >= _orientationInterval) {
+  EVERY_N_MILLISECONDS(_orientationInterval) {                     //FastLED based non-blocking delay to update/display the sequence.
 
     float cutoff = 45;  //starting at zero calibration, we need to know 90deg either way, so 45 is halfway point anywhere from 0
     for (int i = 0; i < 3; i++) {
@@ -55,24 +56,24 @@ void orientation() {
   
     #ifdef DEBUG_ORIENTATION
       //stil sending 10 values here cos outputing to same VVVV test patch as readMPU6050filtered
-      Serial.print("0");
-      Serial.print(", ");
-      Serial.print("0");
-      Serial.print(", ");
+      Serial.print(F("0"));
+      Serial.print(F(", "));
+      Serial.print(F("0"));
+      Serial.print(F(", "));
       Serial.print(_mpu6050FilteredCur[0]);  //orMatrix[0]
-      Serial.print(", ");
-      Serial.print("0");
-      Serial.print(", ");
-      Serial.print("0");
-      Serial.print(", ");
+      Serial.print(F(", "));
+      Serial.print(F("0"));
+      Serial.print(F(", "));
+      Serial.print(F("0"));
+      Serial.print(F(", "));
       Serial.print(_mpu6050FilteredCur[1]);
-      Serial.print(", ");
-      Serial.print("0");
-      Serial.print(", ");
-      Serial.print("0");
-      Serial.print(", ");
-      Serial.print(_mpu6050FilteredCur[2]);
-      Serial.print(", ");
+      Serial.print(F(", "));
+      Serial.print(F("0"));
+      Serial.print(F(", "));
+      Serial.print(F("0"));
+      Serial.print(F(", "));
+      Serial.print(_mpu60500FilteredCur[2]);
+      Serial.print(F(", "));
       Serial.print(_orientation); 
       
       //linebreak
@@ -80,7 +81,7 @@ void orientation() {
       Serial.write(13);
     #endif
 
-    _orientationPrevMillis = millis();               //store the current time
+//    _orientationPrevMillis = millis();               //store the current time
   } //END timed-loop
   
 } //END orientation
@@ -90,28 +91,22 @@ void showOrientation() {
   fadeToBlackBy( _leds, _ledNum, 16);
   if (_orientation == 0) {
     //flat
-    //fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::White, ledSegment[0].last, CRGB::White ); //midpoint back
-    //_leds[ ledSegment[1].first + (ledSegment[1].total/2) ] = CRGB::White;  //midpoint left
-    //_leds[ ledSegment[2].first + (ledSegment[2].total/2) ] = CRGB::White;  //midpoint right
-    //fill_gradient_RGB(_leds, ledSegment[3].first, CRGB::White, ledSegment[3].last, CRGB::White ); //midpoint front
-    
-    _leds(ledSegment[0].first, ledSegment[0].last) = CRGB::White;  //(midpoint) back
+    _leds(ledSegment[0].first, ledSegment[0].last) = CRGB::White;             //(midpoint) back
     _leds[ledSegment[1].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint left
     _leds[ledSegment[2].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint right
-    _leds(ledSegment[3].first, ledSegment[3].last) = CRGB::White;  //(midpoint) front
+    _leds(ledSegment[3].first, ledSegment[3].last) = CRGB::White;             //(midpoint) front
   }
   if (_orientation == 1) {
     //upside-down
     //_leds[ledSegment[2].first+1] = CRGB::White;
-    //
   }
   if (_orientation == 2) {
     //up
-    _leds(ledSegment[3].first, ledSegment[3].last) = CRGB::White;  //(midpoint) front
+    _leds(ledSegment[3].first, ledSegment[3].last) = CRGB::White;             //(midpoint) front
   }
   if (_orientation == 3) {
     //down
-    _leds(ledSegment[0].first, ledSegment[0].last) = CRGB::White;  //(midpoint) back
+    _leds(ledSegment[0].first, ledSegment[0].last) = CRGB::White;             //(midpoint) back
   }
   if (_orientation == 4) {
     //on its left-side

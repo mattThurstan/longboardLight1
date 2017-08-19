@@ -34,9 +34,9 @@ void checkStartupButtons() {
 }
 
 void loopButtons() {
-  unsigned long loopButtonsCurMillis = millis();    //get current time
-  
-  if((unsigned long) (loopButtonsCurMillis - _loopButtonsPrevMillis) >= _loopButtonsInterval) {
+//  unsigned long loopButtonsCurMillis = millis();    //get current time
+//  if((unsigned long) (loopButtonsCurMillis - _loopButtonsPrevMillis) >= _loopButtonsInterval) {
+  EVERY_N_MILLISECONDS(_loopButtonsInterval) {                     //FastLED based non-blocking delay to update/display the sequence.
     
     for (byte i = 0; i < _buttonTotal; i++) {
       //sub-loop - reads all buttons (digital pins)
@@ -64,7 +64,7 @@ void loopButtons() {
       }
     } //end button for loop
   
-    _loopButtonsPrevMillis = millis();              //store the current time
+//    _loopButtonsPrevMillis = millis();              //store the current time
   } //END timed-loop
   
 } //end loopButtons

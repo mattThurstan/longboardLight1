@@ -35,36 +35,34 @@ void setRearLightsHS(byte h, byte s) {
   _rearLightsColHSV.val = _rearLightsBrightness;
 }
 
-void incrementMainLightsSubMode() {
-  if ( _mainLightsSubMode >= (_mainLightsSubModeTotal - 1) ) {
-    _mainLightsSubMode = 0;    //wrap-around at end back to 0
-  } else {
-    _mainLightsSubMode += 1;   //increase by 1
-  }
-  EEPROM.write(8, _mainLightsSubMode);
-}
-void decrementMainLightsSubMode() {
-  if ( _mainLightsSubMode <= 0 ) {
-    _mainLightsSubMode = (byte)(_mainLightsSubModeTotal - 1);    //wrap-around at beginning to the end (1 less than the total)
-  } else {
-    _mainLightsSubMode -= 1;   //decrease by 1
-  }
-  EEPROM.write(8, _mainLightsSubMode);
-}
+//void incrementMainLightsSubMode() {
+//  if ( _mainLightsSubMode >= (_mainLightsSubModeTotal - 1) ) {
+//    _mainLightsSubMode = 0;    //wrap-around at end back to 0
+//  } else {
+//    _mainLightsSubMode += 1;   //increase by 1
+//  }
+//  EEPROM.write(8, _mainLightsSubMode);
+//}
+//void decrementMainLightsSubMode() {
+//  if ( _mainLightsSubMode <= 0 ) {
+//    _mainLightsSubMode = (byte)(_mainLightsSubModeTotal - 1);    //wrap-around at beginning to the end (1 less than the total)
+//  } else {
+//    _mainLightsSubMode -= 1;   //decrease by 1
+//  }
+//  EEPROM.write(8, _mainLightsSubMode);
+//}
 
 void setupSerial() {
-  #ifdef DEBUG
     Serial.begin(9600);                     //usb
     //Serial.begin(38400);                    //for doing MPU6050 stuff - don't really need it this fast cos not controlling it over serial
     _inputString.reserve(200);              // reserve 200 bytes for the inputString:
     Serial.println();
     Serial.print(_progName);
     Serial.print(" ");
-    Serial.print(_progVers);
-    Serial.println();
+//    Serial.print(_progVers);
+//    Serial.println();
     Serial.print("..");
     Serial.println();
-  #endif
 }
 
 /*
@@ -74,7 +72,6 @@ void setupSerial() {
  response.  Multiple bytes of data may be available.
  */
 void serialEvent() {
-  #ifdef DEBUG
     while (Serial.available()) {
       char inChar = (char)Serial.read();      // get the new byte:
       _inputString += inChar;                 // add it to the inputString:
@@ -84,7 +81,6 @@ void serialEvent() {
         _stringComplete = true;
       }
     }
-  #endif
 }
 
 /*----------------------------util - send data----------------------------*/

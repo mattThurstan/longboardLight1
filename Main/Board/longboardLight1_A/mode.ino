@@ -1,31 +1,33 @@
 /*----------------------------mode----------------------------*/
 
-//_orientation: 0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
-
-/* modes loop
- * called from main loop
+/* Modes loop (called from Main loop) 
+ *  _orientation: 
+ *  0=flat, 
+ *  1=upside-down, 
+ *  2=up, 
+ *  3=down, 
+ *  4=left-side, 
+ *  5=right-side
  */
 void loopModes() {
-  if (_orientationTest == true) {
-    showOrientation();
-  } else {
+  if (_orientationTest == true) { showOrientation(); } 
+  else {
     if (_sleepActive == false) {
       //NOTICE: fadeToBlackBy is annoying the customers down the street. implement only when needed
       //..oops, this will have bust a few things, like breathing
       //fadeToBlackBy( _leds, _ledNum, 64);   //anything not used gets set to fade off
+//      _leds.fadeToBlackBy(64); //haven't tried this yet !!!
       if (_orientation == 0) { loopMainLights(); }
-      //if (_orientation == 1) { fadeToBlackBy( _leds, _ledNum, 64); loopEmergencyFlash(); }  //upside-down not working yet
-      if (_orientation == 2) { /*fadeToBlackBy( _leds, _ledNum, 64);*/ loopBreathing(); _headLightsActive = false; } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
-      else { _headLightsActive = true; }  //turn the headlights back on when you put the board down.
-      if (_orientation == 4 || _orientation == 5) { fadeToBlackBy( _leds, _ledNum, 64); loopSideLight(); }
-      loopHeadLights(); //..overlay after the main bits
+      if (_orientation == 1) { /* fadeToBlackBy( _leds, _ledNum, 64); loopEmergencyFlash(); */ }  //upside-down is not working yet
+      if (_orientation == 2) { loopBreathing(); _headLightsActive = false; } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
+      else { _headLightsActive = true; }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
+      if (_orientation == 4 || _orientation == 5) { _leds.fadeToBlackBy(32); loopSideLight(); }
+      loopHeadLights(); //..overlay AFTER the main bits
       loopRearLights(); //..
       loopIndicatorFlash();
     } else {
 //TODO
-      //sleep - defined by a period of no movement, a switch, or a wireless command.
-      //fadeToBlackBy( _leds, _ledNum, 64); //(array, count, percent) eg. 192/256 = 75% (use 192), 64 = 25%
-      //fill_solid(_leds, _ledNum, CRGB::Black);  //TEMP colour
+      //sleep - can be defined by a period of no movement, a switch, or a wireless command.
       loopBreathing(); //breathing here is not overlaid by rear lights
     } //END if _sleepActive
   } //END if orientationTest
@@ -33,96 +35,63 @@ void loopModes() {
 
 void loopHeadLights() {
   if (_headLightsEnabled == true && _headLightsActive == true) {
-    //fill_solid( leds, _ledNum, CRGB::White);
-    //fill_gradient_RGB(_leds, ledSegment[3].first, CRGB::White, ledSegment[3].last, CRGB::White );
-    //fill_gradient(_leds, ledSegment[3].first, _headLightsColHSV, ledSegment[3].last, _headLightsColHSV, SHORTEST_HUES);
-    _leds(ledSegment[3].first, ledSegment[3].last).fill_gradient(_headLightsColHSV, _headLightsColHSV, SHORTEST_HUES);
-    //_headLightsBrightness
-    //_leds(ledSegment[0].first, ledSegment[0].total) = CRGB::White;
+    _leds(ledSegment[3].first, ledSegment[3].last) = _headLightsColHSV;
   }
 }
 
 void loopRearLights() {
   if (_rearLightsEnabled == true && _rearLightsActive == true) { 
-    //fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::Red, ledSegment[0].last, CRGB::Red );
-    //fill_gradient(_leds, ledSegment[0].first, _rearLightsColHSV, ledSegment[0].last, _rearLightsColHSV, SHORTEST_HUES);
-    _leds(ledSegment[0].first, ledSegment[0].last).fill_gradient(_rearLightsColHSV, _rearLightsColHSV, SHORTEST_HUES);
-    //_leds(ledSegment[3].first, ledSegment[3].total) = CRGB::Red;
+    _leds(ledSegment[0].first, ledSegment[0].last) = _rearLightsColHSV;
   }
 }
 
+/* Normal running (flat) - with 4 sub-modes:
+ * 0= none (black), 
+ * 1= glow, 
+ * 2= gradient (end to end), 
+ * 3= wheel tracking
+ */
 void loopMainLights() {
-  //normal running (flat) - with sub-modes: none, full, track, pretty patterns, etc.
-  //0=none/blank, 1= , 2= , 3=
   if (_mainLightsSubMode == 0) {
-    //do nothing - 'off'
-    //fadeToBlackBy( _leds, _ledNum, 32);  //
-    _leds.fadeToBlackBy(32);
+    _leds.fadeToBlackBy(32);  //do nothing - make sure everything is 'off' at this point in the proceedings
   } else if (_mainLightsSubMode == 1) {
-    //glow
-    fill_gradient_RGB(_leds, ledSegment[1].first, CRGB(16, 16, 16), ledSegment[2].last, CRGB(16, 16, 16) );
+    _leds(ledSegment[1].first, ledSegment[2].last) = CRGB(16, 16, 16);
   } else if (_mainLightsSubMode == 2) {
-    fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Red, ledSegment[1].last, CRGB::White );
-    fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::Red, ledSegment[2].last, CRGB::White );
+    _leds(ledSegment[1].first, ledSegment[1].last).fill_gradient(_rearLightsColHSV, _headLightsColHSV);
+    _leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
   } else if (_mainLightsSubMode == 3) {
     loopTrackLights();
-  } else if (_mainLightsSubMode == 4) {
-    Fire2012();
-  } else if (_mainLightsSubMode == 5) {
-    confetti();
-  } else if (_mainLightsSubMode == 6) {
-    sinelon();
-  } else if (_mainLightsSubMode == 7) {
-    bpm();
-  } else if (_mainLightsSubMode == 8) {
-    juggle();
   }
 }
 
+/* Emergency flash (upside-down) */
 void loopEmergencyFlash() {
-  //emergency flash (upside-down)
-  fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::Orange, ledSegment[2].last, CRGB::Orange );
-  //_leds( ledSegment[1].first, (ledSegment[2].last + 1) ) = CRGB::Orange;
+  _leds( ledSegment[1].first, ledSegment[2].last).fill_gradient_RGB(CRGB::Orange, CRGB::Orange );
   FastLED.show();
 }
 
+/* Emergency light (stood on a side) */
 void loopSideLight() {
-  //emergency light (stood on a side)
-  if (_orientation == 4) {
-    //left
-    fill_gradient_RGB(_leds, ledSegment[2].first, CRGB::White, ledSegment[2].last, CRGB::White );
-    //_leds( ledSegment[2].first, (ledSegment[2].total) ) = CRGB::White;
-  } else if (_orientation == 5) {
-    //right
-    fill_gradient_RGB(_leds, ledSegment[1].first, CRGB::White, ledSegment[1].last, CRGB::White );
-    //_leds( ledSegment[1].first, (ledSegment[1].total) ) = CRGB::White;
-  }
+  if (_orientation == 4) {  _leds(ledSegment[1].first, ledSegment[1].last) = CRGB::White; /* left */ } 
+  else if (_orientation == 5) { _leds(ledSegment[2].first, ledSegment[2].last) = CRGB::White; /* right */ }
 }
 
+/* Indicator flash (turn left/right) */
 void loopIndicatorFlash() {
-  //indicator flash (turn left/right)
   if (_indicatorsEnabled == true) { 
-    if (_indicatorLeftActive == true) {
-      //
-    } else if (_indicatorRightActive == true) {
-      // 
-    }
+    if (_indicatorLeftActive == true) { } 
+    else if (_indicatorRightActive == true) { }
   }
 }
 
-void loopTrackLights() {
-  //wheel tracked lights
-  //position from wheel data combined with direction from MPU6050
-
-  //fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);   //make any unused pixels fade out
-  _leds.fadeToBlackBy(_trackLightsFadeAmount);            //..or do it like this cos we are using a CRGBArray
+/* Wheel tracked running lights (position from wheel data combined with direction from MPU6050) */
+void loopTrackLights() {  
+  _leds.fadeToBlackBy(_trackLightsFadeAmount);            //_trackLightsFadeAmount
   
   //wrap-around for segments 1 and 2  
-  if (_ledMovePos > ledSegment[1].total) {
-    _ledMovePos = _ledMovePos - ledSegment[1].total;
-  } else if (_ledMovePos < 1) {
-    _ledMovePos = _ledMovePos + ledSegment[1].total;
-  }
+  if (_ledMovePos > ledSegment[1].total) { _ledMovePos = _ledMovePos - ledSegment[1].total; } 
+  else if (_ledMovePos < 1) { _ledMovePos = _ledMovePos + ledSegment[1].total; }
+  
   _leds[ledSegment[1].last - _ledMovePos + 1] = CRGB::White;
   _leds[ledSegment[2].last - _ledMovePos + 1] = CRGB::White;
   
@@ -137,7 +106,7 @@ const int _breathMaxBrightness = 16;  //32
 const unsigned long _breathRiseFallHoldIntervalMillis = 1;    //breath rise/fall hold interval in milliseconds
 unsigned long _breathRiseFallPrevMillis = 0;                  //previous time for reference
 int _breathRiseFallCounter = 0;                               //eg. 0-17
-boolean _breathRiseFallDirection = true;                     //direction true-rise, false-fall
+boolean _breathRiseFallDirection = true;                      //direction true-rise, false-fall
 CRGB c;
 
 void loopBreathing() {
@@ -148,27 +117,24 @@ void loopBreathing() {
 }
 
 void breathRiseFall() {
-  unsigned long breathRiseFallCurrentMillis = millis();  //get current time
-  if ((unsigned long)(breathRiseFallCurrentMillis - _breathRiseFallPrevMillis) >= _breathRiseFallStepIntervalMillis) {
-    //fadeToBlackBy( _leds, _ledNum, 64);   //make any unused pixels fade out
-    _leds.fadeToBlackBy(64);
+//  unsigned long breathRiseFallCurrentMillis = millis();  //get current time
+//  if ((unsigned long)(breathRiseFallCurrentMillis - _breathRiseFallPrevMillis) >= _breathRiseFallStepIntervalMillis) {
+  EVERY_N_MILLISECONDS(_breathRiseFallStepIntervalMillis) {                     //FastLED based non-blocking delay to update/display the sequence.
+    _leds.fadeToBlackBy(32); //64   //make any unused pixels fade out
     //ignore first/last 4 (or so) so we get a pause at the bottom and top
-    if (_breathRiseFallCounter >= _breathRiseFallSpacer) { //&& _breathRiseFallCounter <= (_breathMaxBrightness + _breathRiseFallSpacer) ) {
+    if (_breathRiseFallCounter >= _breathRiseFallSpacer) {
       c.r = _breathRiseFallCounter-_breathRiseFallSpacer;
       c.g = _breathRiseFallCounter-_breathRiseFallSpacer;
       c.b = _breathRiseFallCounter-_breathRiseFallSpacer;
-      //fill_gradient_RGB(_leds, ledSegment[0].first, CRGB::Black, ledSegment[3].last, CRGB::Black );
-      //fadeToBlackBy( _leds, _ledNum, 64);   //make any unused pixels fade out
-      //_leds.fadeToBlackBy(_trackLightsFadeAmount);            //..or do it like this cos we are using a CRGBArray
       if (_orientation == 2) {
-        fill_gradient_RGB(_leds, ledSegment[1].first, c, ledSegment[1].last - (ledSegment[1].total / 3), CRGB::Black );
-        fill_gradient_RGB(_leds, ledSegment[2].first, c, ledSegment[2].last - (ledSegment[2].total / 3), CRGB::Black );
+        _leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv3).fill_gradient_RGB(c, CRGB::Black );
+        _leds(ledSegment[2].first, ledSegment[2].last - _2totalDiv3) = _leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv3);
       } else if (_orientation == 3) {
-        fill_gradient_RGB(_leds, ledSegment[1].first + (ledSegment[1].total / 3), CRGB::Black, ledSegment[1].last, c );
-        fill_gradient_RGB(_leds, ledSegment[2].first + (ledSegment[2].total / 3), CRGB::Black, ledSegment[2].last, c );
+        _leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last).fill_gradient_RGB(CRGB::Black, c );
+        _leds(ledSegment[2].first + _2totalDiv3, ledSegment[2].last) = _leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last);
       } else {
-        fill_gradient_RGB(_leds, ledSegment[1].first, c, ledSegment[1].last, c );
-        fill_gradient_RGB(_leds, ledSegment[2].first, c, ledSegment[2].last, c );
+        _leds(ledSegment[1].first, ledSegment[1].last).fill_gradient_RGB(c, c );
+        _leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
       }
     }
     FastLED.show();
@@ -177,7 +143,7 @@ void breathRiseFall() {
     } else if (_breathRiseFallDirection == false) {
       _breathRiseFallCounter--;       //we are falling, decrease the counter
     }
-    _breathRiseFallPrevMillis = breathRiseFallCurrentMillis;      //save time - code timing dependant - intervals will be late if code elsewhere gets backed up
+//    _breathRiseFallPrevMillis = breathRiseFallCurrentMillis;      //save time - code timing dependant - intervals will be late if code elsewhere gets backed up
     //_breathRiseFallPrevMillis += breathRiseFallCurrentMillis;   //save time - NOT code timing dependant - intervals will try and catch up
 
   } //END timed loop

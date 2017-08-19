@@ -2,13 +2,10 @@
 
 void setupSensors() {
   setupWheel();                      //setup wheel tracking
-  setupMPU6050();
 }
 
 /* Sensor input loop (called from Main loop) */
 void loopSensors() {
-  readMPU6050filtered();
-  orientation();
   loopWheel();
 }
 
@@ -23,14 +20,12 @@ void setupWheel() {
 /* Wheel tracking */
 void loopWheel() {
   //increment/decrement of led pos is done straight from interrupt
-#ifdef DATA_LOGGING 
   //timed-loop
-//  unsigned long wheelSensorReadCurMillis = millis();    //get current time
+  unsigned long wheelSensorReadCurMillis = millis();    //get current time
   //this has the potential to be innacurate, but should be good enough, plus we can correct a bit using other sensors
   //if((unsigned long) (wheelSensorReadCurMillis - _wheelSensorReadPrevMillis) >= _wheelSensorReadInterval) {
   //'_wheelSensorReadInterval' needs to be hardcoded to 1 sec, otherwise we don't get 'revolutions per SECOND'
-//  if((unsigned long) (wheelSensorReadCurMillis - _wheelSensorReadPrevMillis) >= 1000) {
-  EVERY_N_MILLISECONDS(1000) {                     //FastLED based non-blocking delay to update/display the sequence.
+  if((unsigned long) (wheelSensorReadCurMillis - _wheelSensorReadPrevMillis) >= 1000) {
     //get direction
     detachInterrupt(0);     //no interrupts whilst we process !!!
     _wheelSpeedRps = _wheelCounter / _wheelMagnetTotal;
@@ -44,24 +39,23 @@ void loopWheel() {
     
     _wheelCounter = 0;                                  //reset counter to 0 (why did i put 1? ..was it just 3 in the morning?)
     attachInterrupt(digitalPinToInterrupt(_wheelSensorPin[0]), wheelInterrupt0, CHANGE);  //re-attach the interrupt !!!
- //   _wheelSensorReadPrevMillis = millis();              //store the current time
+    _wheelSensorReadPrevMillis = millis();              //store the current time
     
-    #ifdef DEBUG_WHEEL
-      Serial.print(F("RPS="));
-      Serial.print(_wheelSpeedRps);
-      Serial.print(F(", MPS="));
-      Serial.print(_wheelSpeedMps);
-      Serial.print(F(", Total forward="));
-      Serial.print(_distTraveledForward);
-      Serial.print(F(", Total backward="));
-      Serial.print(_distTraveledBackward);
-      Serial.print(F(", Orientation="));
-      Serial.print(_orientation); 
-      Serial.print(F(", Current direction="));
-      Serial.print(_directionCur);
-      Serial.println();
-    #endif
+//      Serial.print(F("RPS="));
+//      Serial.print(_wheelSpeedRps);
+//      Serial.print(F(", MPS="));
+//      Serial.print(_wheelSpeedMps);
+//      Serial.print(F(", Total forward="));
+//      Serial.print(_distTraveledForward);
+//      Serial.print(F(", Total backward="));
+//      Serial.print(_distTraveledBackward);
+//      Serial.print(F(", Orientation="));
+//      Serial.print(_orientation); 
+//      Serial.print(F(", Current direction="));
+//      Serial.print(_directionCur);
+//      Serial.println();
+
   } //END timed-loop
-#endif  //END if DATA_LOGGING
+
 } //END loopWheel
 
