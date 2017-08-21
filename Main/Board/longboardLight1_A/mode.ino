@@ -1,4 +1,5 @@
 /*----------------------------mode----------------------------*/
+bool _fadeOut = false;
 
 /* Modes loop (called from Main loop) 
  *  _orientation: 
@@ -13,14 +14,12 @@ void loopModes() {
   if (_orientationTest == true) { showOrientation(); } 
   else {
     if (_sleepActive == false) {
-      //NOTICE: fadeToBlackBy is annoying the customers down the street. implement only when needed
-      //..oops, this will have bust a few things, like breathing
-      //fadeToBlackBy( _leds, _ledNum, 64);   //anything not used gets set to fade off
-//      _leds.fadeToBlackBy(64); //haven't tried this yet !!!
       if (_orientation == 0) { loopMainLights(); }
       if (_orientation == 1) { /* fadeToBlackBy( _leds, _ledNum, 64); loopEmergencyFlash(); */ }  //upside-down is not working yet
       if (_orientation == 2) { loopBreathing(); _headLightsActive = false; } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
-      else { _headLightsActive = true; }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
+      else { _fadeOut == false; _headLightsActive = true; }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
+      if (_orientation == 3) { }  //down is not working yet
+      else { }
       if (_orientation == 4 || _orientation == 5) { _leds.fadeToBlackBy(32); loopSideLight(); }
       loopHeadLights(); //..overlay AFTER the main bits
       loopRearLights(); //..
@@ -34,14 +33,22 @@ void loopModes() {
 }
 
 void loopHeadLights() {
-  if (_headLightsEnabled == true && _headLightsActive == true) {
-    _leds(ledSegment[3].first, ledSegment[3].last) = _headLightsColHSV;
+  if (_headLightsEnabled == true) {
+    if (_headLightsActive == true) {
+      _leds(ledSegment[3].first, ledSegment[3].last) = _headLightsColHSV;
+    } else {
+      _leds(ledSegment[3].first, ledSegment[3].last).fadeToBlackBy(32);
+    }
   }
 }
 
 void loopRearLights() {
-  if (_rearLightsEnabled == true && _rearLightsActive == true) { 
-    _leds(ledSegment[0].first, ledSegment[0].last) = _rearLightsColHSV;
+  if (_rearLightsEnabled == true) { 
+    if (_rearLightsActive == true) { 
+      _leds(ledSegment[0].first, ledSegment[0].last) = _rearLightsColHSV;
+    } else {
+      _leds(ledSegment[0].first, ledSegment[0].last).fadeToBlackBy(32);
+    }
   }
 }
 
@@ -86,7 +93,7 @@ void loopIndicatorFlash() {
 
 /* Wheel tracked running lights (position from wheel data combined with direction from MPU6050) */
 void loopTrackLights() {  
-  _leds.fadeToBlackBy(_trackLightsFadeAmount);            //_trackLightsFadeAmount
+  _leds(ledSegment[1].first, ledSegment[2].last).fadeToBlackBy(_trackLightsFadeAmount);            //_trackLightsFadeAmount
   
   //wrap-around for segments 1 and 2  
   if (_ledMovePos > ledSegment[1].total) { _ledMovePos = _ledMovePos - ledSegment[1].total; } 
@@ -111,16 +118,23 @@ CRGB c;
 
 void loopBreathing() {
   //'breathing'
-  if (_breathingEnabled == true) { 
+  if (_breathingEnabled == true) {
     breathRiseFall();
   }
 }
 
 void breathRiseFall() {
-//  unsigned long breathRiseFallCurrentMillis = millis();  //get current time
-//  if ((unsigned long)(breathRiseFallCurrentMillis - _breathRiseFallPrevMillis) >= _breathRiseFallStepIntervalMillis) {
+  //make any unused pixels fade out
+  if (_orientation == 2) {
+    _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last).fadeToBlackBy(32);
+    _leds(ledSegment[2].last - _2totalDiv3+1, ledSegment[2].last) = _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last);
+  } else if (_orientation == 3) {
+    _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1).fadeToBlackBy(32);
+    _leds(ledSegment[2].first, (ledSegment[2].first + _2totalDiv3)-1) = _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1);
+  }
+  
+  //timed loop
   EVERY_N_MILLISECONDS(_breathRiseFallStepIntervalMillis) {                     //FastLED based non-blocking delay to update/display the sequence.
-    _leds.fadeToBlackBy(32); //64   //make any unused pixels fade out
     //ignore first/last 4 (or so) so we get a pause at the bottom and top
     if (_breathRiseFallCounter >= _breathRiseFallSpacer) {
       c.r = _breathRiseFallCounter-_breathRiseFallSpacer;
@@ -143,9 +157,6 @@ void breathRiseFall() {
     } else if (_breathRiseFallDirection == false) {
       _breathRiseFallCounter--;       //we are falling, decrease the counter
     }
-//    _breathRiseFallPrevMillis = breathRiseFallCurrentMillis;      //save time - code timing dependant - intervals will be late if code elsewhere gets backed up
-    //_breathRiseFallPrevMillis += breathRiseFallCurrentMillis;   //save time - NOT code timing dependant - intervals will try and catch up
-
   } //END timed loop
 
   if ( _breathRiseFallCounter >= (_breathMaxBrightness + _breathRiseFallSpacer ) ) {

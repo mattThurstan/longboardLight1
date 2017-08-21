@@ -39,10 +39,10 @@
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.3";                   //pre-re-build. moved over to using CRGBArray. only 4 modes
+const String _progVers = "0.301";                   //pre-re-build. moved over to using CRGBArray. only 4 modes. WORKING
 const boolean _batteryPowered = true; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
-const int _mainLoopDelay = 0;                     //just in case  -- NOT using FastLED.delay instead.. --
-//#define UPDATES_PER_SECOND 120                    //main loop FastLED show delay - 1000/120
+//const int _mainLoopDelay = 0;                     //just in case  - using FastLED.delay instead..
+#define UPDATES_PER_SECOND 0           //120      //main loop FastLED show delay - 1000/120
 boolean _firstTimeSetupDone = false;              //starts false
 
 #ifdef DEBUG
@@ -89,7 +89,7 @@ const byte _mainLightsSubModeTotal = 4;           //9 (0-8)       //4 (0-3)     
 /*----------------------------buttons----------------------------*/
 const unsigned long _buttonDebounceTime = 5;//5;  //5 milli-seconds debounce time
 Bounce *_button = new Bounce[_buttonTotal];       //pointer to new array of N buttons
-const unsigned long _loopButtonsInterval = 750;   //read loop interval in milliseconds   500= press button, count '1 (mabye 2',  then let go.
+const unsigned long _loopButtonsInterval = 250; //750;   //read loop interval in milliseconds   500= press button, count '1 (mabye 2',  then let go.
 unsigned long _loopButtonsPrevMillis = 0;         //previous time for reference
 boolean _buttonToggled[_buttonTotal] = { false }; //array of button toggle states
 
@@ -285,7 +285,8 @@ void loop() {
   #ifdef DEBUG
     //sendMovementDataStream();               //send readings to PC/app
   #endif
-  //FastLED.delay(1000 / UPDATES_PER_SECOND); //doesn't handle the power management stuff yet
-  delay(_mainLoopDelay);
+  //delay(_mainLoopDelay);
+  //FastLED.delay(1000 / UPDATES_PER_SECOND); //handles power management stuff from v3.1.1
+  FastLED.delay(UPDATES_PER_SECOND);  //currently '0'
 }
 
