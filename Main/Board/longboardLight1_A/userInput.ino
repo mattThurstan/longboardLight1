@@ -47,8 +47,8 @@ void loopButtons() {
         _buttonToggled[i] = true;
         if (i == 0) { 
           //_doQuickCalibration = true;
-          _headLightsEnabled = !_headLightsEnabled;
-          _rearLightsEnabled = !_rearLightsEnabled;
+          mE.head = !mE.head;
+          mE.rear = !mE.rear;
         }  //use same bt at startup eg. if held when power on, do full calibration
         if (i == 1) { 
           incrementMainLightsSubMode(); 

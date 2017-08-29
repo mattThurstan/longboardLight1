@@ -21,9 +21,6 @@
 
 //#define DEBUG 1                                   //comment/un-comment
 #ifdef DEBUG
-  //#define DEBUG_MPU6050 1                           //..
-  //#define DEBUG_ORIENTATION 1                       //
-  //#define DEBUG_WHEEL 1                             //DEUBUG wheel sensor(s)
   //#define DEBUG_INTERRUPT 1
 #endif
 #define DATA_LOGGING 1                            //turn data logging on or off eg. rps/mps, dist travelled, etc.
@@ -33,16 +30,13 @@
 #include <EEPROM.h>                               //Arduino Pro Mini ATmega328 5V 16MHz - 1kBs EEPROM
 #include <Bounce2.h>                              //buttons with de-bounce
 #include <FastLED.h>                              //WS2812B LED strip control and effects
-#include <I2Cdev.h>                               //I2C devices
-#include <MPU6050.h>                              //MPU6050 6-axis motion sensor
-#include <Wire.h>
 #include <MT_BlinkStatusLED.h>                    //my basic status LED blink library
 #include <MT_BoardWheels.h>                       //attempt to move all board wheel related items to a single library
 #include <MT_BoardOrientation.h>                  //attempt to move all board mpu6050 sensor related items to a single library
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.303";                   //re-build. moved most of PMU6050 workings to a library. (calibration next)
+const String _progVers = "0.304";                   //re-build - WORKING
 const boolean _batteryPowered = true; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
 //const int _mainLoopDelay = 0;                     //just in case  - using FastLED.delay instead..
 #define UPDATES_PER_SECOND 0           //120      //main loop FastLED show delay - 1000/120
@@ -71,37 +65,28 @@ const byte _buttonPin[_buttonTotal] = { 11, 12 }; //array of user input buttons 
 MT_BlinkStatusLED statusLED(13);                  //setup status LED on pin 13
 
 /*----------------------------modes----------------------------*/
-boolean _sleepActive = false;                     //init false at power-up
-/*memory\void setDefaultSettings*/boolean _breathingEnabled = true;                 //the board 'breathes' (glows gently) at 12 times a minute (average breathing rate of sleeping adult)
-/*memory\void setDefaultSettings*/boolean _headLightsEnabled = false;               //have we switched on the headlights?
-boolean _headLightsActive = true;                 //start true
-/*memory\void setDefaultSettings*/boolean _rearLightsEnabled = false;               //have we switched on the rearlights?
-boolean _rearLightsActive = true;                 //start true
-boolean _brakeActive = false;                     //give the brake lights a slight brightness boost when decelerating
-/*memory\void setDefaultSettings*/boolean _indicatorsEnabled = false;               //indicators for turning left/right
-boolean _indicatorsActive = false;
-//boolean _indicatorLeftActive = false; //use sensors to determine leaning left or right, then apply result directly to lights
-//boolean _indicatorRightActive = false;
-//main lights on/off is controlled using the blank sub-mode
-const byte _mainLightsSubModeTotal = 4;           //9 (0-8)       //4 (0-3)     //never gonna have more than 256 lighting modes..
-/*memory\void setDefaultSettings*/byte _mainLightsSubMode = 3;                      //sub-mode for main lights loop: 0=none/blank, 1= , 2= , 3=
-
+/* In standby the board 'breathes' (glows gently) at 12 times a minute (average breathing rate of sleeping adult).
+ * Main lights on/off is controlled using the blank sub-mode.
+ */
 typedef struct {
   boolean sleep;    //doesn't use Enabled
   boolean breathe;  //doesn't use Active
   boolean head;
   boolean rear;
-  boolean brake;
+  boolean brake;    //give the brake lights a slight brightness boost when decelerating
   boolean indicate;
 } MODES_ENABLED_ACTIVE;
 
-MODES_ENABLED_ACTIVE modesE = { true, true, true, true, true, false };    // Enabled
-MODES_ENABLED_ACTIVE modesA = { false, false, true, true, false, false }; // Active
+MODES_ENABLED_ACTIVE mE = { true, true, true, true, true, false };    // Enabled
+MODES_ENABLED_ACTIVE mA = { false, false, true, true, false, false }; // Active
+
+const byte _mainLightsSubModeTotal = 4;             //never gonna have more than 256 lighting modes..
+/*memory\void setDefaultSettings*/byte _mainLightsSubMode = 3;  //sub-mode for main lights loop: 0=none/blank, 1= , 2= , 3=
 
 /*----------------------------buttons----------------------------*/
-const unsigned long _buttonDebounceTime = 5;//5;  //5 milli-seconds debounce time
+const unsigned long _buttonDebounceTime = 5;      //5 milli-seconds debounce time
 Bounce *_button = new Bounce[_buttonTotal];       //pointer to new array of N buttons
-const unsigned long _loopButtonsInterval = 250; //750;   //read loop interval in milliseconds   500= press button, count '1 (mabye 2',  then let go.
+const unsigned long _loopButtonsInterval = 250;   //read loop interval in milliseconds. press button, count '1 (mabye 2)',  then let go.
 unsigned long _loopButtonsPrevMillis = 0;         //previous time for reference
 boolean _buttonToggled[_buttonTotal] = { false }; //array of button toggle states
 
@@ -110,19 +95,17 @@ boolean _buttonToggled[_buttonTotal] = { false }; //array of button toggle state
 MT_BoardWheels w(_wheelSensorTotal);
 
 /*----------------------------sensors - MPU6050 6-axis----------------------------*/
-////X=Right/Left, Y=Forward/Backward, Z=Up/Down
-const unsigned long _mpu6050ReadInterval = 20; //40 //read loop interval in milliseconds   1000
-//byte _directionCur = 0;                           // -1 = stationary, 0 = forward, 1=back, 2=up, 3=down, 4=left, 5=right
-
-/*----------------------------orientation----------------------------*/
-//byte _orientation = 0;                            //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
-const unsigned long _orientationInterval = 100; //200 //100   //main orientation read loop interval in milliseconds   1000
+/* MPU6050:             X=Right/Left, Y=Forward/Backward, Z=Up/Down
+ * orientation (byte):  0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
+ * direction (byte):    -1=stationary, 0=forward, 1=back, 2=up, 3=down, 4=left, 5=right
+ */
+const unsigned long _mpu6050ReadInterval = 20;    //read loop interval in milliseconds
+const unsigned long _orientationInterval = 100;   //main orientation read loop interval in milliseconds
 byte _orientationTestSideMidpoint = 0;            //side LED strip midpoint, calculated in startup
-
 MT_BoardOrientation o;
 
 /*----------------------------LED----------------------------*/
-//..see up top.. #define UPDATES_PER_SECOND 120                    //main loop FastLED show delay - 1000/120
+//..see up top.. #define UPDATES_PER_SECOND 120   //main loop FastLED show delay - 1000/120
 //mabye struct should contain int16_t instead of byte. eg. fill_gradient asks for it..
 typedef struct {
   byte first;
@@ -142,10 +125,10 @@ const uint16_t _2totalDiv3 = (ledSegment[2].total / 3); //used in 'mode/void bre
 CRGBArray<_ledNum> _leds;                         //CRGBArray means can do multiple '_leds(0, 2).fadeToBlackBy(40);' as well as single '_leds[0].fadeToBlackBy(40);'
 
 /*memory\void setDefaultSettings*/byte _ledGlobalBrightnessCur = 255;               //current global brightness - adjust this
-byte _ledBrightnessIncDecAmount = 10;             //the brightness amount to increase or decrease
 /*memory\void setDefaultSettings*/byte _headLightsBrightness = 200;                 //use function to set
 /*memory\void setDefaultSettings*/byte _rearLightsBrightness = 200;                 //use function to set
 /*memory\void setDefaultSettings*/byte _trackLightsFadeAmount = 16;          //64   //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
+byte _ledBrightnessIncDecAmount = 10;             //the brightness amount to increase or decrease
 volatile byte _ledMovePos = 0;                    //center point for tracking LEDs to wheels
 
 //CRGB _headLightsCol;                              //colour of the head lights. restricted by 'headLightsBrightness', use functions to set. 
@@ -160,27 +143,21 @@ void setup() {
   
   statusLED.Blink1();
   
-//  // join I2C bus (I2Cdev library doesn't do this automatically)
-//  #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
-//      Wire.begin();
-//  #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
-//      Fastwire::setup(400, true);
-//  #endif
-  setupSerial();                          //..see 'util'
-  loadAllSettings();                         //load any saved settings eg. save state when turn board power off. - not fully implemented yet !!!
-  setupInterrupts();                      //set any interrupts..
-  delay(3000);                            //..after setting interrupts, give the power, LED strip, etc. a couple of secs to stabilise
-  setupLEDs();                            //setup LEDs first and then use as setup indicator lights
+  setupSerial();                                  //..see 'util'
+  loadAllSettings();                              //load any saved settings eg. save state when turn board power off. - not fully implemented yet !!!
+  setupInterrupts();                              //set any interrupts..
+  delay(3000);                                    //..after setting interrupts, give the power, LED strip, etc. a couple of secs to stabilise
+  setupLEDs();                                    //setup LEDs first and then use as setup indicator lights
   delay(400);
   _leds[ledSegment[1].first] = CRGB::Yellow;
   _leds[ledSegment[2].first] = CRGB::Yellow;
   FastLED.show();
-  setupSensors();                         //setup all sensor inputs (note: sensors on wheels use interrupt pins)
+  setupSensors();                                 //setup all sensor inputs (note: sensors on wheels use interrupt pins)
   delay(400);
   _leds[ledSegment[1].first+2] = CRGB::Fuchsia;
   _leds[ledSegment[2].first+2] = CRGB::Fuchsia;
   FastLED.show();
-  setupUserInputs();                      //setup any user inputs - buttons, WIFI, bluetooth etc.
+  setupUserInputs();                              //setup any user inputs - buttons, WIFI, bluetooth etc.
   delay(400);
   _leds[ledSegment[1].first+4] = CRGB::Green;
   _leds[ledSegment[2].first+4] = CRGB::Green;
@@ -198,16 +175,6 @@ void setup() {
   _leds[ledSegment[1].first+6] = CRGB::MediumTurquoise;
   _leds[ledSegment[2].first+6] = CRGB::MediumTurquoise;
   FastLED.show();
-
-  //TEMP for testing. these will get saved as settings later
-//  _sleepActive = false;
-//  _headLightsEnabled = true;
-//  _headLightsActive = true;
-//  _rearLightsEnabled = true;
-//  _rearLightsActive = true;
-//  _indicatorsEnabled = true;
-//  _mainLightsSubMode = 3;
-
   delay(400);
   FastLED.clear();
 }
@@ -234,12 +201,9 @@ void loop() {
     loopModes();
   }
   
-  FastLED.show();                           //send all the data to the strips
-  #ifdef DEBUG
-    //sendMovementDataStream();               //send readings to PC/app
-  #endif
+  FastLED.show();
   //delay(_mainLoopDelay);
-  //FastLED.delay(1000 / UPDATES_PER_SECOND); //handles power management stuff from v3.1.1
+  //FastLED.delay(1000 / UPDATES_PER_SECOND);
   FastLED.delay(UPDATES_PER_SECOND);  //currently '0'
 }
 

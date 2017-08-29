@@ -45,8 +45,6 @@ void wheelInterrupt0() {
   #endif
   
   #ifdef DATA_LOGGING 
-    //_wheelCounter++;
-    //w.SetCounter(0, 1); // NEEDS increment and decrement in library !!!
     w.IncrementCounter(0);
     //w.DecrementCounter(0);
   #endif

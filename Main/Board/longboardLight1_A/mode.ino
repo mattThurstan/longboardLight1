@@ -1,24 +1,17 @@
 /*----------------------------mode----------------------------*/
-bool _fadeOut = false;
+bool _fadeOut = false;  //this is a hack!!!
 
 /* Modes loop (called from Main loop) 
- *  _orientation: 
- *  0=flat, 
- *  1=upside-down, 
- *  2=up, 
- *  3=down, 
- *  4=left-side, 
- *  5=right-side
+ * orientation (byte):  0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
  */
 void loopModes() {
   if (_orientationTest == true) { showOrientation(); } 
   else {
-    //if (modesA.sleep == false) {
-    if (_sleepActive == false) {
+    if (mA.sleep == false) {
       if (o.GetOrientation() == 0) { loopMainLights(); }
       if (o.GetOrientation() == 1) { /* fadeToBlackBy( _leds, _ledNum, 64); loopEmergencyFlash(); */ }  //upside-down is not working yet
-      if (o.GetOrientation() == 2) { loopBreathing(); _headLightsActive = false; /* modesA.head = false; */ } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
-      else { _fadeOut == false; _headLightsActive = true; /* modesA.head = true; */ }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
+      if (o.GetOrientation() == 2) { loopBreathing(); mA.head = false; /* modesA.head = false; */ mA.rear = false;/*TEMP*/ } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
+      else { _fadeOut == false; mA.head = true; /* modesA.head = true; */ mA.rear = true;/*TEMP*/ }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
       if (o.GetOrientation() == 3) { }  //down is not working yet
       else { }
       if (o.GetOrientation() == 4 || o.GetOrientation() == 5) { _leds.fadeToBlackBy(32); loopSideLight(); }
@@ -34,10 +27,8 @@ void loopModes() {
 }
 
 void loopHeadLights() {
-  //if (modesE.head == true) {  //modes Enabled - head lights
-  if (_headLightsEnabled == true) {
-    //if (modesA.head == true) {  //modes Active - head lights
-    if (_headLightsActive == true) {
+  if (mE.head == true) {
+    if (mA.head == true) {
       _leds(ledSegment[3].first, ledSegment[3].last) = _headLightsColHSV;
     } else {
       _leds(ledSegment[3].first, ledSegment[3].last).fadeToBlackBy(32);
@@ -46,8 +37,8 @@ void loopHeadLights() {
 }
 
 void loopRearLights() {
-  if (_rearLightsEnabled == true) { 
-    if (_rearLightsActive == true) { 
+  if (mE.rear == true) { 
+    if (mA.rear == true) { 
       _leds(ledSegment[0].first, ledSegment[0].last) = _rearLightsColHSV;
     } else {
       _leds(ledSegment[0].first, ledSegment[0].last).fadeToBlackBy(32);
@@ -88,7 +79,7 @@ void loopSideLight() {
 
 /* Indicator flash (turn left/right) */
 void loopIndicatorFlash() {
-  if (_indicatorsEnabled == true) { 
+  if (mE.indicate == true) { 
     //
   }
 }
@@ -109,7 +100,6 @@ void loopTrackLights() {
 
 void showOrientation() {
   fadeToBlackBy( _leds, _ledNum, 16);
-  //if (_orientation == 0) {
   if (o.GetOrientation() == 0) {
     //flat
     _leds(ledSegment[0].first, ledSegment[0].last) = CRGB::White;             //(midpoint) back
@@ -153,7 +143,7 @@ CRGB c;
 
 void loopBreathing() {
   //'breathing'
-  if (_breathingEnabled == true) {
+  if (mE.breathe == true) {
     breathRiseFall();
   }
 }

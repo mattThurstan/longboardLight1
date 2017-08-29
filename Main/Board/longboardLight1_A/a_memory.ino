@@ -26,23 +26,16 @@ void setDefaultSettings() {
     Serial.print(F("Setting default settings"));
     Serial.println();
   #endif
-  //modes[1].breathe = true;
-  //modes[1] = { true, true, true, true, true, false };    //'Enabled'
-  modesE = { true, true, true, true, true, false };    //'Enabled'
-  _breathingEnabled = true;    //true
-  _headLightsEnabled = true;   //true
-  _rearLightsEnabled = true;   //true
-  _indicatorsEnabled = true;   //true - not done yet
+  
+  mE = { true, true, true, true, true, false };       // Enabled 
+  mA = { false, false, true, true, false, false };    // Active
 
   _mainLightsSubMode = 3;
   _ledGlobalBrightnessCur = 255;
-  //_headLightsBrightness = 200;
   setHeadLightsBrightness(200);
-  //_rearLightsBrightness = 200;
   setRearLightsBrightness(200);
   _trackLightsFadeAmount = 16;
 
-  //_headLightsColHSV( 0, 0, 200);
   setHeadLightsHSV(0, 0, 200);      //white
   setRearLightsHSV(0, 255, 200);    //red
 
@@ -61,20 +54,18 @@ void loadAllSettings() {
       Serial.println();
     #endif
     //redo these later into 1 bit mask
-    if (EEPROM.read(1) == 255) { _breathingEnabled = true; }  //modes[1].breathe = true;
-    else { _breathingEnabled = false; }
-    if (EEPROM.read(2) == 255) { _headLightsEnabled = true; }
-    else { _headLightsEnabled = false; }
-    if (EEPROM.read(3) == 255) { _rearLightsEnabled = true; }
-    else { _rearLightsEnabled = false; }
-    if (EEPROM.read(4) == 255) { _indicatorsEnabled = true; }
-    else { _indicatorsEnabled = false; }
+    if (EEPROM.read(1) == 255) { mE.breathe = true; }  //modes[1].breathe = true;
+    else { mE.breathe = false; }
+    if (EEPROM.read(2) == 255) { mE.head = true; }
+    else { mE.head = false; }
+    if (EEPROM.read(3) == 255) { mE.rear = true; }
+    else { mE.rear = false; }
+    if (EEPROM.read(4) == 255) { mE.indicate = true; }
+    else { mE.indicate = false; }
     
     _mainLightsSubMode = EEPROM.read(8);  
     _ledGlobalBrightnessCur = EEPROM.read(9);
-    //_headLightsBrightness = EEPROM.read(10);
     setHeadLightsBrightness( EEPROM.read(10) );
-    //_rearLightsBrightness = EEPROM.read(11);
     setRearLightsBrightness( EEPROM.read(11) );
     _trackLightsFadeAmount = EEPROM.read(12);
   } else {
@@ -91,13 +82,13 @@ void saveAllSettings() {
   #endif
     
   //redo these later into 1 bit mask
-  if (_breathingEnabled == true) { EEPROM.write(1, 255); }
+  if (mE.breathe == true) { EEPROM.write(1, 255); }
   else { EEPROM.write(1, 0); }
-  if (_headLightsEnabled == true) { EEPROM.write(2, 255); }
+  if (mE.head == true) { EEPROM.write(2, 255); }
   else { EEPROM.write(2, 0); }
-  if (_rearLightsEnabled == true) { EEPROM.write(3, 255); }
+  if (mE.rear == true) { EEPROM.write(3, 255); }
   else { EEPROM.write(3, 0); }
-  if (_indicatorsEnabled == true) { EEPROM.write(4, 255); }
+  if (mE.indicate == true) { EEPROM.write(4, 255); }
   else { EEPROM.write(4, 0); }
     
   EEPROM.write(7, 1); //write a 1 to pos 7 to indicate that system data has been saved and is available for use.

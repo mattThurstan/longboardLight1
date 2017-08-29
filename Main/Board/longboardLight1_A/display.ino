@@ -19,6 +19,6 @@ FastLED.setMaxPowerInVoltsAndMilliamps(5, 900);   //450 //..for testing, just in
   FastLED.setBrightness(_ledGlobalBrightnessCur);       //set global brightness
   FastLED.setTemperature(UncorrectedTemperature);       //set first temperature
 
-  //calculateBreathRiseFallRates();                       //recalculate if user changes max breath brightness
+  //calculateBreathRiseFallRates();                       //re-calculate if user changes max breath brightness
   _ledMovePos = ledSegment[1].total/2;                  //set LED tracking start point in the middle of the board.
 }

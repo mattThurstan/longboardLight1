@@ -24,7 +24,6 @@ void loopOrientation() {
 }
 
 /*----------------------------wheel sensors----------------------------*/
-
 /* Wheel tracking */
 void loopWheel() {
   #ifdef DATA_LOGGING 
