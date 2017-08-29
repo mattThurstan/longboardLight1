@@ -46,14 +46,14 @@ void wheelInterrupt0() {
   
   #ifdef DATA_LOGGING 
     //_wheelCounter++;
-    //wheels.SetCounter(0, 1); // NEEDS increment and decrement in library !!!
-    wheels.IncrementCounter(0);
-    //wheels.DecrementCounter(0);
+    //w.SetCounter(0, 1); // NEEDS increment and decrement in library !!!
+    w.IncrementCounter(0);
+    //w.DecrementCounter(0);
   #endif
   
   //not sure if arduino pro mini 328 5V 16MHz is fast enough to do this ???
-  if (_directionCur == 0) { _ledMovePos++; /*forward*/ }
-  else if (_directionCur == 1) { _ledMovePos--; /*backward*/ }
+  if (o.GetDirection() == 0) { _ledMovePos++; /*forward*/ }
+  else if (o.GetDirection() == 1) { _ledMovePos--; /*backward*/ }
 }
 
 

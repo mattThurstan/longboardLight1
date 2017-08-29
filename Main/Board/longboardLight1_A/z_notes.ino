@@ -77,3 +77,12 @@
  * total power per colour/mA = 800  ( 75% duty cycle/mA = 600 )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
  */
 
+/* Calibration
+ * 
+ * place flat
+ * get motion data
+ * get offsets
+ * nudge offsets towards motion data
+ * set offsets
+ * repeat x times, for a time period, or until within tolerance
+ */

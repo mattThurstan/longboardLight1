@@ -42,7 +42,7 @@
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.302";                   //re-build. moving sections into to libraries.
+const String _progVers = "0.303";                   //re-build. moved most of PMU6050 workings to a library. (calibration next)
 const boolean _batteryPowered = true; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
 //const int _mainLoopDelay = 0;                     //just in case  - using FastLED.delay instead..
 #define UPDATES_PER_SECOND 0           //120      //main loop FastLED show delay - 1000/120
@@ -60,9 +60,7 @@ boolean _doQuickCalibration = false;              //set to true to run quick cal
 boolean _orientationTest = false;                 //used as a test override. not during normal operation. will prob remove later
 
 const byte _buttonTotal = 2;                      //how many butons are there? - cannot set Bounce using this unfortunately!
-//const float _wheelRadius = 0.0345;                //half of diameter, my wheels are (worn to) 69mm diameter (70mm from the factory, give or take a bit) 
 const byte _wheelSensorTotal = 1;                 //how many wheels have we mounted sensors on?
-//const byte _wheelMagnetTotal = 8; //4;            //how many magnets are mounted on each wheel?
 
 /*----------------------------arduino pins----------------------------*/
 const byte _wheelSensorPin[_wheelSensorTotal] = { 2 };     //array of wheel sensor inputs (!!all interrupt pins!!!) - uses _wheelSensorTotal
@@ -109,61 +107,19 @@ boolean _buttonToggled[_buttonTotal] = { false }; //array of button toggle state
 
 /*----------------------------sensors - wheels----------------------------*/
 //latching bipolar hall effect sensor mounted on chassis, with 4/8 magents mounted on wheel
-MT_BoardWheels wheels(_wheelSensorTotal);
+MT_BoardWheels w(_wheelSensorTotal);
 
 /*----------------------------sensors - MPU6050 6-axis----------------------------*/
-//X=Right/Left, Y=Forward/Backward, Z=Up/Down
-#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
-  // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation is used in I2Cdev.h - ???
-  #include "Wire.h"
-#endif
-MPU6050 _mpu6050;  //accel gyro;
-int16_t _mpu6050AccelOffset[3] = {436, 1956, 1318};       //XYZ accel offsets to write to the MPU6050 - get from full calibration and save to memory
-int16_t _mpu6050GyroOffset[3] = {9, -32, 69};             //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
-const int _mpu6050CalibrateSampleTotal = 100; //100;      //how many samples to take at once when calibrating
-const int _mpu6050CalibrateAccelThreshold = 10;           //threshold tolerance for 'dead zone' at center of readings
-const int _mpu6050CalibrateGyroThreshold = 3;     //..for gyro
-long _mpu6050CalibratePrevMillis = 0;             //previous time for reference
-const long _mpu6050CalibrateInterval = 1000;      //sampling interval in milliseconds
-const long _mpu6050CalibrateTimeout = 30000;      //sampling interval in milliseconds
-
-//stuff for filtering
+////X=Right/Left, Y=Forward/Backward, Z=Up/Down
 const unsigned long _mpu6050ReadInterval = 20; //40 //read loop interval in milliseconds   1000
-unsigned long _mpu6050ReadPrevMillis = 0;         //previous time for reference
-float _mpu6050AccelZero[3] = {0, 0, 0};           //XYZ quick calibration zero average save for accel - quick offsets to use whilst running
-float _mpu6050GyroZero[3] = {0, 0, 0};            //XYZ quick calibration zero average save for gyro
-int16_t _mpu6050AccelRead[3];                     //XYZ Current accel reading
-int16_t _mpu6050GyroRead[3];                      //XYZ Current gyro reading
-int16_t _mpu6050AccelReadAverage[3];              //XYZ averaged current accel reading. see calibration
-int16_t _mpu6050GyroReadAverage[3];               //XYZ averaged current gyro reading. see calibration
-float _mpu6050FilteredPrev[3];  //XYZ previous filtered reading. why have i not go this already ???
-float _mpu6050GyroPrev[3];                        //XYZ last_gyro_x_angle;
-float _mpu6050Accel_yPrev = 0;                    //Y previous raw accleration y value
-
-//FINAL calculated numbers
-float _mpu6050FilteredCur[3];                     //XYZ FINAL filtered combined gyro/accel readings for use in calculating orientation
-
-//prob won't use 'stationary' cos the calculations will need something to get started, otherwise they will be a frame behind. better to have wrong direction for a split second, than have more complicated code
-//also might try this as the average of a rolling buffer cos for 10 samples we wait 200 or 400ms..
-const byte _directionSampleTotal = 10;            //how many times to sample direction before making a decision on whether it is true or not
-unsigned int _diAccelSave = 0;
-byte _diDirectionCounter = 0;                     //restricted by '_directionSampleTotal'
-byte _directionCur = 0;                           // -1 = stationary, 0 = forward, 1=back, 2=up, 3=down, 4=left, 5=right
-
+//byte _directionCur = 0;                           // -1 = stationary, 0 = forward, 1=back, 2=up, 3=down, 4=left, 5=right
 
 /*----------------------------orientation----------------------------*/
-byte _orientation = 0;                            //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
-byte orMatrix[3] = { 0, 0, 0 };                   //TEMP x =  0(low) / 1(mid) / 2(hi)       - wanted to use -1, 0, 1 but too convoluted    -- XYZ timed
-byte _orOrientationSave = 0;                      //used to hold the orientation during comparison
-byte _orOrientationTemp = 0;                      //used to hold the orientation (then convert to _orientation)
-boolean orFlag = false;                           //flag 0 x
-unsigned long orCounter = 0;                      //TEMP time
+//byte _orientation = 0;                            //0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
 const unsigned long _orientationInterval = 100; //200 //100   //main orientation read loop interval in milliseconds   1000
-const unsigned long orInterval = 450; //250 //450 //400 //interval at which to check whether flags have changed - are we still in the same orientation - how long to trigger
-unsigned long _orientationPrevMillis = 0;         //previous time for reference
 byte _orientationTestSideMidpoint = 0;            //side LED strip midpoint, calculated in startup
 
-MT_BoardOrientation orient;
+MT_BoardOrientation o;
 
 /*----------------------------LED----------------------------*/
 //..see up top.. #define UPDATES_PER_SECOND 120                    //main loop FastLED show delay - 1000/120
@@ -204,12 +160,12 @@ void setup() {
   
   statusLED.Blink1();
   
-  // join I2C bus (I2Cdev library doesn't do this automatically)
-  #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
-      Wire.begin();
-  #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
-      Fastwire::setup(400, true);
-  #endif
+//  // join I2C bus (I2Cdev library doesn't do this automatically)
+//  #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+//      Wire.begin();
+//  #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
+//      Fastwire::setup(400, true);
+//  #endif
   setupSerial();                          //..see 'util'
   loadAllSettings();                         //load any saved settings eg. save state when turn board power off. - not fully implemented yet !!!
   setupInterrupts();                      //set any interrupts..

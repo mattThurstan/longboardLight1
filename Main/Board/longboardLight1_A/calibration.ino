@@ -41,11 +41,11 @@ void quickCalibrateMPU6050Gyro() {
    * ..could loop a few times and average that aswell.. 
    * still wouldn't notice the time
    */
-  doMPU6050ReadAverage();         //..see 'MPU6050' tab..
-  for (int i = 0; i < 3; i++) {
-     _mpu6050AccelZero[i] = _mpu6050AccelReadAverage[i];  //used in orientation
-     _mpu6050GyroZero[i] = _mpu6050GyroReadAverage[i];    //used at start of MPU6050 filtering loop
-  }
+//  doMPU6050ReadAverage();         //..see 'MPU6050' tab..
+//  for (int i = 0; i < 3; i++) {
+//     _mpu6050AccelZero[i] = _mpu6050AccelReadAverage[i];  //used in orientation
+//     _mpu6050GyroZero[i] = _mpu6050GyroReadAverage[i];    //used at start of MPU6050 filtering loop
+//  }
   //these then feed back to the start of the MPU6050 filtering stack to correct the initial readings.
 }
 
@@ -53,7 +53,7 @@ void quickCalibrateMPU6050Gyro() {
 
 void doMPU6050ReadAverage() {
   //this does not get used for the main filtered loop, only for calibration porpoises
-  
+/*  
   _mpu6050.getMotion6(&_mpu6050AccelRead[0], &_mpu6050AccelRead[1], &_mpu6050AccelRead[2], &_mpu6050GyroRead[0], &_mpu6050GyroRead[1], &_mpu6050GyroRead[2]);
   delay(100);  //trying to iron out instability at the beginning
   
@@ -89,11 +89,13 @@ void doMPU6050ReadAverage() {
     Serial.print(_mpu6050AccelReadAverage[1]);
     Serial.println();
   #endif
+
+*/
 }
 
 void calibrateMPU6050() {
   //called from full calibration - place flat
-  
+/*  
   boolean thresholdVers = 1;  //which version of trying to nudge the offsets so everything zeros out do we want to use right now..?
   
   #ifdef DEBUG_MPU6050
@@ -220,7 +222,8 @@ void calibrateMPU6050() {
     Serial.print("MPU6050 calibration complete: ");
     Serial.println();
   #endif
-  
+
+*/
 } //END calibrateMPU6050
 
 

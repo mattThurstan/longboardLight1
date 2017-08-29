@@ -15,13 +15,13 @@ void loopModes() {
   else {
     //if (modesA.sleep == false) {
     if (_sleepActive == false) {
-      if (_orientation == 0) { loopMainLights(); }
-      if (_orientation == 1) { /* fadeToBlackBy( _leds, _ledNum, 64); loopEmergencyFlash(); */ }  //upside-down is not working yet
-      if (_orientation == 2) { loopBreathing(); _headLightsActive = false; /* modesA.head = false; */ } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
+      if (o.GetOrientation() == 0) { loopMainLights(); }
+      if (o.GetOrientation() == 1) { /* fadeToBlackBy( _leds, _ledNum, 64); loopEmergencyFlash(); */ }  //upside-down is not working yet
+      if (o.GetOrientation() == 2) { loopBreathing(); _headLightsActive = false; /* modesA.head = false; */ } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
       else { _fadeOut == false; _headLightsActive = true; /* modesA.head = true; */ }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
-      if (_orientation == 3) { }  //down is not working yet
+      if (o.GetOrientation() == 3) { }  //down is not working yet
       else { }
-      if (_orientation == 4 || _orientation == 5) { _leds.fadeToBlackBy(32); loopSideLight(); }
+      if (o.GetOrientation() == 4 || o.GetOrientation() == 5) { _leds.fadeToBlackBy(32); loopSideLight(); }
       loopHeadLights(); //..overlay AFTER the main bits ..these come last in the stack for safety reasons.
       loopRearLights(); //..
       loopIndicatorFlash();
@@ -82,8 +82,8 @@ void loopEmergencyFlash() {
 
 /* Emergency light (stood on a side) */
 void loopSideLight() {
-  if (_orientation == 4) {  _leds(ledSegment[1].first, ledSegment[1].last) = CRGB::White; /* left */ } 
-  else if (_orientation == 5) { _leds(ledSegment[2].first, ledSegment[2].last) = CRGB::White; /* right */ }
+  if (o.GetOrientation() == 4) {  _leds(ledSegment[1].first, ledSegment[1].last) = CRGB::White; /* left */ } 
+  else if (o.GetOrientation() == 5) { _leds(ledSegment[2].first, ledSegment[2].last) = CRGB::White; /* right */ }
 }
 
 /* Indicator flash (turn left/right) */
@@ -107,6 +107,39 @@ void loopTrackLights() {
   FastLED.show();
 }
 
+void showOrientation() {
+  fadeToBlackBy( _leds, _ledNum, 16);
+  //if (_orientation == 0) {
+  if (o.GetOrientation() == 0) {
+    //flat
+    _leds(ledSegment[0].first, ledSegment[0].last) = CRGB::White;             //(midpoint) back
+    _leds[ledSegment[1].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint left
+    _leds[ledSegment[2].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint right
+    _leds(ledSegment[3].first, ledSegment[3].last) = CRGB::White;             //(midpoint) front
+  }
+  if (o.GetOrientation() == 1) {
+    //upside-down
+    //_leds[ledSegment[2].first+1] = CRGB::White;
+  }
+  if (o.GetOrientation() == 2) {
+    //up
+    _leds(ledSegment[3].first, ledSegment[3].last) = CRGB::White;             //(midpoint) front
+  }
+  if (o.GetOrientation() == 3) {
+    //down
+    _leds(ledSegment[0].first, ledSegment[0].last) = CRGB::White;             //(midpoint) back
+  }
+  if (o.GetOrientation() == 4) {
+    //on its left-side
+    _leds[ledSegment[1].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint left
+  }
+  if (o.GetOrientation() == 5) {
+    //on its right-side
+    _leds[ledSegment[2].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint right
+  }
+
+} //END showOrientation
+
 /*----------------------------Breathing----------------------------*/
 //would eventually like a simple timeline screen on an app where you can draw curves in and see the results in realtime
 const unsigned long _breathRiseFallStepIntervalMillis = 250;  //156  62  139  2 //breath rise/fall step interval in milliseconds
@@ -126,10 +159,10 @@ void loopBreathing() {
 }
 
 void breathRiseFall() {
-  if (_orientation == 2) {
+  if (o.GetOrientation() == 2) {
     _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last).fadeToBlackBy(32);
     _leds(ledSegment[2].last - _2totalDiv3+1, ledSegment[2].last) = _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last);
-  } else if (_orientation == 3) {
+  } else if (o.GetOrientation() == 3) {
     _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1).fadeToBlackBy(32);
     _leds(ledSegment[2].first, (ledSegment[2].first + _2totalDiv3)-1) = _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1);
   }
@@ -140,10 +173,10 @@ void breathRiseFall() {
       c.r = _breathRiseFallCounter-_breathRiseFallSpacer;
       c.g = _breathRiseFallCounter-_breathRiseFallSpacer;
       c.b = _breathRiseFallCounter-_breathRiseFallSpacer;
-      if (_orientation == 2) {
+      if (o.GetOrientation() == 2) {
         _leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv3).fill_gradient_RGB(c, CRGB::Black );
         _leds(ledSegment[2].first, ledSegment[2].last - _2totalDiv3) = _leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv3);
-      } else if (_orientation == 3) {
+      } else if (o.GetOrientation() == 3) {
         _leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last).fill_gradient_RGB(CRGB::Black, c );
         _leds(ledSegment[2].first + _2totalDiv3, ledSegment[2].last) = _leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last);
       } else {
