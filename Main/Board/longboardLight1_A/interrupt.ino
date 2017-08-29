@@ -45,7 +45,10 @@ void wheelInterrupt0() {
   #endif
   
   #ifdef DATA_LOGGING 
-    _wheelCounter++;
+    //_wheelCounter++;
+    //wheels.SetCounter(0, 1); // NEEDS increment and decrement in library !!!
+    wheels.IncrementCounter(0);
+    //wheels.DecrementCounter(0);
   #endif
   
   //not sure if arduino pro mini 328 5V 16MHz is fast enough to do this ???

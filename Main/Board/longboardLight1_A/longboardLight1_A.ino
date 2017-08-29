@@ -1,6 +1,6 @@
 /*
     'longboardLight1_A' by Thurstan. LED longboard lights with motion tracking.
-    Copyright (C) 2016  MTS Standish (Thurstan|mattKsp)
+    Copyright (C) 2016  MTS Standish (mattThurstan)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,10 +36,13 @@
 #include <I2Cdev.h>                               //I2C devices
 #include <MPU6050.h>                              //MPU6050 6-axis motion sensor
 #include <Wire.h>
+#include <MT_BlinkStatusLED.h>                    //my basic status LED blink library
+#include <MT_BoardWheels.h>                       //attempt to move all board wheel related items to a single library
+#include <MT_BoardOrientation.h>                  //attempt to move all board mpu6050 sensor related items to a single library
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.301";                   //pre-re-build. moved over to using CRGBArray. only 4 modes. WORKING
+const String _progVers = "0.302";                   //re-build. moving sections into to libraries.
 const boolean _batteryPowered = true; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
 //const int _mainLoopDelay = 0;                     //just in case  - using FastLED.delay instead..
 #define UPDATES_PER_SECOND 0           //120      //main loop FastLED show delay - 1000/120
@@ -49,8 +52,6 @@ boolean _firstTimeSetupDone = false;              //starts false
 String _inputString = "";                         //a string to hold incoming data
 boolean _stringComplete = false;                  //whether the string is complete
 #endif
-//const unsigned long _sendMovementDataStreamInterval = 1000;//100   //send loop interval in milliseconds   1000
-//unsigned long _sendMovementDataStreamPrevMillis = 0;         //previous time for reference
 
 //3-axis accelerometer  calibration (these will be moved and integrated later when have communications)
 boolean _doFullCalibration = false;               //set to true to run full calibration. it will reset itself to false when finished.
@@ -59,9 +60,9 @@ boolean _doQuickCalibration = false;              //set to true to run quick cal
 boolean _orientationTest = false;                 //used as a test override. not during normal operation. will prob remove later
 
 const byte _buttonTotal = 2;                      //how many butons are there? - cannot set Bounce using this unfortunately!
-const float _wheelRadius = 0.0345;                //half of diameter, my wheels are (worn to) 69mm diameter (70mm from the factory, give or take a bit) 
+//const float _wheelRadius = 0.0345;                //half of diameter, my wheels are (worn to) 69mm diameter (70mm from the factory, give or take a bit) 
 const byte _wheelSensorTotal = 1;                 //how many wheels have we mounted sensors on?
-const byte _wheelMagnetTotal = 8; //4;            //how many magnets are mounted on each wheel?
+//const byte _wheelMagnetTotal = 8; //4;            //how many magnets are mounted on each wheel?
 
 /*----------------------------arduino pins----------------------------*/
 const byte _wheelSensorPin[_wheelSensorTotal] = { 2 };     //array of wheel sensor inputs (!!all interrupt pins!!!) - uses _wheelSensorTotal
@@ -69,7 +70,7 @@ const byte _ledDOutPin0 = 9;                      //rear lights
 const byte _ledDOutPin1 = 5;                      //left
 const byte _ledDOutPin2 = 6;                      //right and head lights
 const byte _buttonPin[_buttonTotal] = { 11, 12 }; //array of user input buttons - uses _buttonTotal - opps.. think I burned out pin 10 by mistake - nope, just wired button 90deg wrong way
-const byte _ledPin = 13;                          //built-in LED
+MT_BlinkStatusLED statusLED(13);                  //setup status LED on pin 13
 
 /*----------------------------modes----------------------------*/
 boolean _sleepActive = false;                     //init false at power-up
@@ -80,11 +81,24 @@ boolean _headLightsActive = true;                 //start true
 boolean _rearLightsActive = true;                 //start true
 boolean _brakeActive = false;                     //give the brake lights a slight brightness boost when decelerating
 /*memory\void setDefaultSettings*/boolean _indicatorsEnabled = false;               //indicators for turning left/right
-boolean _indicatorLeftActive = false;
-boolean _indicatorRightActive = false;
+boolean _indicatorsActive = false;
+//boolean _indicatorLeftActive = false; //use sensors to determine leaning left or right, then apply result directly to lights
+//boolean _indicatorRightActive = false;
 //main lights on/off is controlled using the blank sub-mode
 const byte _mainLightsSubModeTotal = 4;           //9 (0-8)       //4 (0-3)     //never gonna have more than 256 lighting modes..
 /*memory\void setDefaultSettings*/byte _mainLightsSubMode = 3;                      //sub-mode for main lights loop: 0=none/blank, 1= , 2= , 3=
+
+typedef struct {
+  boolean sleep;    //doesn't use Enabled
+  boolean breathe;  //doesn't use Active
+  boolean head;
+  boolean rear;
+  boolean brake;
+  boolean indicate;
+} MODES_ENABLED_ACTIVE;
+
+MODES_ENABLED_ACTIVE modesE = { true, true, true, true, true, false };    // Enabled
+MODES_ENABLED_ACTIVE modesA = { false, false, true, true, false, false }; // Active
 
 /*----------------------------buttons----------------------------*/
 const unsigned long _buttonDebounceTime = 5;//5;  //5 milli-seconds debounce time
@@ -95,21 +109,7 @@ boolean _buttonToggled[_buttonTotal] = { false }; //array of button toggle state
 
 /*----------------------------sensors - wheels----------------------------*/
 //latching bipolar hall effect sensor mounted on chassis, with 4/8 magents mounted on wheel
-volatile byte _wheelCounter = 0;                  //byte may not be large enough (0-255), might have to use an int
-//'_wheelSensorReadInterval' needs to be hardcoded to 1 sec, otherwise we don't get 'revolutions per SECOND' - see 'sensors/void loopWheel'
-//const unsigned long _wheelSensorReadInterval = 1000;      //read loop interval in milliseconds   1000
-unsigned long _wheelSensorReadPrevMillis = 0;     //previous time for reference
-double _wheelSpeedRps = 0;                        //wheel revolutions per second
-double _wheelSpeedMps = 0;                        //wheel speed in Meters Per Second
-unsigned long _distTraveledForward = 0;           //total distance traveled forward in meters
-unsigned long _distTraveledBackward = 0;          //total distance traveled backward in meters
-//_distanceTraveledLeft                           //gotta get these in later..
-//_distanceTraveledRight
-//_distanceTraveledUp
-//_distanceTraveledDown
-//_distanceTraveledOtherWays
-const float _wheelCircumference = 2 * PI * _wheelRadius;
-
+MT_BoardWheels wheels(_wheelSensorTotal);
 
 /*----------------------------sensors - MPU6050 6-axis----------------------------*/
 //X=Right/Left, Y=Forward/Backward, Z=Up/Down
@@ -136,12 +136,12 @@ int16_t _mpu6050AccelRead[3];                     //XYZ Current accel reading
 int16_t _mpu6050GyroRead[3];                      //XYZ Current gyro reading
 int16_t _mpu6050AccelReadAverage[3];              //XYZ averaged current accel reading. see calibration
 int16_t _mpu6050GyroReadAverage[3];               //XYZ averaged current gyro reading. see calibration
+float _mpu6050FilteredPrev[3];  //XYZ previous filtered reading. why have i not go this already ???
 float _mpu6050GyroPrev[3];                        //XYZ last_gyro_x_angle;
 float _mpu6050Accel_yPrev = 0;                    //Y previous raw accleration y value
 
 //FINAL calculated numbers
 float _mpu6050FilteredCur[3];                     //XYZ FINAL filtered combined gyro/accel readings for use in calculating orientation
-float _mpu6050FilteredPrev[3];                    //XYZ Previous FINAL readings..
 
 //prob won't use 'stationary' cos the calculations will need something to get started, otherwise they will be a frame behind. better to have wrong direction for a split second, than have more complicated code
 //also might try this as the average of a rolling buffer cos for 10 samples we wait 200 or 400ms..
@@ -163,6 +163,7 @@ const unsigned long orInterval = 450; //250 //450 //400 //interval at which to c
 unsigned long _orientationPrevMillis = 0;         //previous time for reference
 byte _orientationTestSideMidpoint = 0;            //side LED strip midpoint, calculated in startup
 
+MT_BoardOrientation orient;
 
 /*----------------------------LED----------------------------*/
 //..see up top.. #define UPDATES_PER_SECOND 120                    //main loop FastLED show delay - 1000/120
@@ -182,17 +183,13 @@ LED_SEGMENT ledSegment[_segmentTotal] = {
 };
 const uint16_t _1totalDiv3 = (ledSegment[1].total / 3); //used in 'mode/void breathRiseFall'
 const uint16_t _2totalDiv3 = (ledSegment[2].total / 3); //used in 'mode/void breathRiseFall'
-//CRGB _leds[_ledNum];                              //global RGB array
-//CRGBSet _ledsSideSet(_leds, 36);                  //set made from segements 1 and 2 combined
 CRGBArray<_ledNum> _leds;                         //CRGBArray means can do multiple '_leds(0, 2).fadeToBlackBy(40);' as well as single '_leds[0].fadeToBlackBy(40);'
 
-//const byte _ledGlobalBrightness = 255;            //global brightness - used to cap - might remove..
 /*memory\void setDefaultSettings*/byte _ledGlobalBrightnessCur = 255;               //current global brightness - adjust this
 byte _ledBrightnessIncDecAmount = 10;             //the brightness amount to increase or decrease
 /*memory\void setDefaultSettings*/byte _headLightsBrightness = 200;                 //use function to set
 /*memory\void setDefaultSettings*/byte _rearLightsBrightness = 200;                 //use function to set
 /*memory\void setDefaultSettings*/byte _trackLightsFadeAmount = 16;          //64   //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
-int _ledState = LOW;                              //use to toggle LOW/HIGH (ledState = !ledState)
 volatile byte _ledMovePos = 0;                    //center point for tracking LEDs to wheels
 
 //CRGB _headLightsCol;                              //colour of the head lights. restricted by 'headLightsBrightness', use functions to set. 
@@ -205,7 +202,7 @@ void setup() {
 
   //clearAllSettings();   // TEMP
   
-  blinkStatusLED1();
+  statusLED.Blink1();
   
   // join I2C bus (I2Cdev library doesn't do this automatically)
   #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
@@ -218,9 +215,9 @@ void setup() {
   setupInterrupts();                      //set any interrupts..
   delay(3000);                            //..after setting interrupts, give the power, LED strip, etc. a couple of secs to stabilise
   setupLEDs();                            //setup LEDs first and then use as setup indicator lights
+  delay(400);
   _leds[ledSegment[1].first] = CRGB::Yellow;
   _leds[ledSegment[2].first] = CRGB::Yellow;
-  delay(400);
   FastLED.show();
   setupSensors();                         //setup all sensor inputs (note: sensors on wheels use interrupt pins)
   delay(400);
@@ -239,8 +236,8 @@ void setup() {
   //everything done? ok then..
     Serial.print(F("Setup done"));
     Serial.println();
-    blinkStatusLED();
   #endif
+  statusLED.Blink1();
   delay(400);
   _leds[ledSegment[1].first+6] = CRGB::MediumTurquoise;
   _leds[ledSegment[2].first+6] = CRGB::MediumTurquoise;

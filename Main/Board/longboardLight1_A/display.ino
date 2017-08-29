@@ -2,10 +2,6 @@
 
 void setupLEDs() {
   
-  //system _leds
-  pinMode(_ledPin, OUTPUT);                 //Setup the internal LED on pin 13
-  digitalWrite(_ledPin, _ledState);
-
   //FastLED
   if (_batteryPowered == true) {
 FastLED.setMaxPowerInVoltsAndMilliamps(5, 900);   //450 //..for testing, just in case. change when sure..
@@ -26,28 +22,3 @@ FastLED.setMaxPowerInVoltsAndMilliamps(5, 900);   //450 //..for testing, just in
   //calculateBreathRiseFallRates();                       //recalculate if user changes max breath brightness
   _ledMovePos = ledSegment[1].total/2;                  //set LED tracking start point in the middle of the board.
 }
-
-/*-----------display - status------------*/
-
-/* 1 LED blink (this delays the whole script. use sparingly) */
-void blinkStatusLED1() {
-  digitalWrite(_ledPin, HIGH);
-  delay(250);
-  digitalWrite(_ledPin, LOW);
-  delay(250);
-}
-
-/* 2 LED blinks (this delays the whole script. use sparingly) */
-void blinkStatusLED2() {
-  blinkStatusLED1();
-  blinkStatusLED1();
-}
-
-/* 3 LED blinks (this delays the whole script. use sparingly) */
-void blinkStatusLED() {
-  blinkStatusLED1();
-  blinkStatusLED1();
-  blinkStatusLED1();
-}
-
-

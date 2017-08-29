@@ -1,4 +1,4 @@
-/*----------------------------sensors - MPU6050 on GY-521 breakout board----------------------------*/
+ /*----------------------------sensors - MPU6050 on GY-521 breakout board----------------------------*/
 
 /*
  * Code contained within this arduino sketch 'tab', 'MPU6050', references code from the following sources:
@@ -52,7 +52,7 @@ void setupMPU6050() {
     Serial.println("Initializing MPU6050 on I2C...");
   #endif
   _mpu6050.initialize();    //this gets stuck sometimes on the mini pro
-  blinkStatusLED2();        //so.. we know
+  statusLED.Blink2();
   
   //verify connection
   #ifdef DEBUG_MPU6050
@@ -67,8 +67,8 @@ void setupMPU6050() {
   _mpu6050.setYAccelOffset(_mpu6050AccelOffset[1]);
   _mpu6050.setZAccelOffset(_mpu6050AccelOffset[2]);
   _mpu6050.setXGyroOffset(_mpu6050GyroOffset[0]);
-  _mpu6050.setYGyroOffset(_mpu6050GyroOffset[0]);
-  _mpu6050.setZGyroOffset(_mpu6050GyroOffset[0]);      
+  _mpu6050.setYGyroOffset(_mpu6050GyroOffset[1]);
+  _mpu6050.setZGyroOffset(_mpu6050GyroOffset[2]);      
 
 } //END setupMPU6050
 

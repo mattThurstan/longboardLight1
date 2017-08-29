@@ -26,7 +26,9 @@ void setDefaultSettings() {
     Serial.print(F("Setting default settings"));
     Serial.println();
   #endif
-  
+  //modes[1].breathe = true;
+  //modes[1] = { true, true, true, true, true, false };    //'Enabled'
+  modesE = { true, true, true, true, true, false };    //'Enabled'
   _breathingEnabled = true;    //true
   _headLightsEnabled = true;   //true
   _rearLightsEnabled = true;   //true
@@ -59,7 +61,7 @@ void loadAllSettings() {
       Serial.println();
     #endif
     //redo these later into 1 bit mask
-    if (EEPROM.read(1) == 255) { _breathingEnabled = true; }
+    if (EEPROM.read(1) == 255) { _breathingEnabled = true; }  //modes[1].breathe = true;
     else { _breathingEnabled = false; }
     if (EEPROM.read(2) == 255) { _headLightsEnabled = true; }
     else { _headLightsEnabled = false; }

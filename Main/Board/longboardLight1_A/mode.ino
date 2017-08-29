@@ -13,15 +13,16 @@ bool _fadeOut = false;
 void loopModes() {
   if (_orientationTest == true) { showOrientation(); } 
   else {
+    //if (modesA.sleep == false) {
     if (_sleepActive == false) {
       if (_orientation == 0) { loopMainLights(); }
       if (_orientation == 1) { /* fadeToBlackBy( _leds, _ledNum, 64); loopEmergencyFlash(); */ }  //upside-down is not working yet
-      if (_orientation == 2) { loopBreathing(); _headLightsActive = false; } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
-      else { _fadeOut == false; _headLightsActive = true; }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
+      if (_orientation == 2) { loopBreathing(); _headLightsActive = false; /* modesA.head = false; */ } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
+      else { _fadeOut == false; _headLightsActive = true; /* modesA.head = true; */ }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
       if (_orientation == 3) { }  //down is not working yet
       else { }
       if (_orientation == 4 || _orientation == 5) { _leds.fadeToBlackBy(32); loopSideLight(); }
-      loopHeadLights(); //..overlay AFTER the main bits
+      loopHeadLights(); //..overlay AFTER the main bits ..these come last in the stack for safety reasons.
       loopRearLights(); //..
       loopIndicatorFlash();
     } else {
@@ -33,7 +34,9 @@ void loopModes() {
 }
 
 void loopHeadLights() {
+  //if (modesE.head == true) {  //modes Enabled - head lights
   if (_headLightsEnabled == true) {
+    //if (modesA.head == true) {  //modes Active - head lights
     if (_headLightsActive == true) {
       _leds(ledSegment[3].first, ledSegment[3].last) = _headLightsColHSV;
     } else {
@@ -86,8 +89,7 @@ void loopSideLight() {
 /* Indicator flash (turn left/right) */
 void loopIndicatorFlash() {
   if (_indicatorsEnabled == true) { 
-    if (_indicatorLeftActive == true) { } 
-    else if (_indicatorRightActive == true) { }
+    //
   }
 }
 
@@ -124,7 +126,6 @@ void loopBreathing() {
 }
 
 void breathRiseFall() {
-  //make any unused pixels fade out
   if (_orientation == 2) {
     _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last).fadeToBlackBy(32);
     _leds(ledSegment[2].last - _2totalDiv3+1, ledSegment[2].last) = _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last);
@@ -133,7 +134,6 @@ void breathRiseFall() {
     _leds(ledSegment[2].first, (ledSegment[2].first + _2totalDiv3)-1) = _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1);
   }
   
-  //timed loop
   EVERY_N_MILLISECONDS(_breathRiseFallStepIntervalMillis) {                     //FastLED based non-blocking delay to update/display the sequence.
     //ignore first/last 4 (or so) so we get a pause at the bottom and top
     if (_breathRiseFallCounter >= _breathRiseFallSpacer) {
