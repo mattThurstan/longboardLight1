@@ -36,7 +36,7 @@
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.304";                   //re-build - WORKING
+const String _progVers = "0.305";                   //re-build. moved calibration to library.
 const boolean _batteryPowered = true; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
 //const int _mainLoopDelay = 0;                     //just in case  - using FastLED.delay instead..
 #define UPDATES_PER_SECOND 0           //120      //main loop FastLED show delay - 1000/120
