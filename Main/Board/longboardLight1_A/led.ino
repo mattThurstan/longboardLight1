@@ -1,13 +1,12 @@
-/*----------------------------display----------------------------*/
-
+/*----------------------------led display----------------------------*/
 void setupLEDs() {
   
   //FastLED
-  if (_batteryPowered == true) {
-FastLED.setMaxPowerInVoltsAndMilliamps(5, 900);   //450 //..for testing, just in case. change when sure..
-    //FastLED.setMaxPowerInVoltsAndMilliamps(5, 1800);  //limit power draw to 1.8A at 5v (with 7.4V 2700mAhour power supply this gives us a bit of head room for board, lights etc.)
+  if (_batteryPowered == 0) {
+    FastLED.setMaxPowerInVoltsAndMilliamps(5, 450);  //USB powered
   } else {
     FastLED.setMaxPowerInVoltsAndMilliamps(5, 450);  //plugged into the computer //board TEST
+    //FastLED.setMaxPowerInVoltsAndMilliamps(5, 1800);  //limit power draw to 1.8A at 5v (with 7.4V 2700mAhour power supply this gives us a bit of head room for board, lights etc.)
   } 
   
   //FastLED doesn't like an array being used for the pins eg. _ledDOutPin[0]
@@ -22,3 +21,4 @@ FastLED.setMaxPowerInVoltsAndMilliamps(5, 900);   //450 //..for testing, just in
   //calculateBreathRiseFallRates();                       //re-calculate if user changes max breath brightness
   _ledMovePos = ledSegment[1].total/2;                  //set LED tracking start point in the middle of the board.
 }
+

@@ -16,6 +16,17 @@
  * http://theboredengineers.com/2012/09/the-quadcopter-get-its-orientation-from-sensors/
  * https://forum.arduino.cc/index.php?topic=383064.0
  * 
+ * JSON and WebSockets = headache
+ * https://github.com/douglascrockford/JSON-js/blob/master/json2.js
+ * http://api.jquery.com/jQuery.extend/
+ * http://api.jquery.com/jQuery.param/
+ * http://api.jquery.com/Types/#PlainObject
+ * https://github.com/Coopdis/easyMesh/blob/master/examples/demoToy/data/main.js
+ * https://github.com/Coopdis/easyMesh/blob/master/examples/demoToy/demoToy.ino
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+ * 
+ * 
+ * 
  * byte   = unsigned 8-bit value, 0-255
  * uint8_t   = same as byte
  * 
@@ -34,10 +45,10 @@
 /* Wheels
  *  
  * black marked side of magents are North)
- * my wheels 1 - shark wheels 70mm diameter / 78A (about 69mm dues to wear etc.)
+ * my wheels 1 - shark wheels 70mm diameter / 78A (about 69mm due to wear etc.)
  * - 2 * 3.14 (PI) * half diameter (radius) = 219.8
- * - 2 * 3.14 * 34.5 = 216.66
- * LED spacing on strips - 33.3mm (3 LEDs in 100mm)
+ * - 2 * 3.14 * 34.5 = 216.66 (with 8 magnets this gives 27.08mm spacing between each)
+ * LED spacing on strips = 33.3mm (3 LEDs in 100mm, 30 per meter)
  * circumference = 2 * PI * radius
  */
 
@@ -55,6 +66,12 @@
  * ArduinoMiniPro A5 -> GY-521 (MPU6050) SCL
  * GY-521 (MPU6050) INT (interrupt) pin optional - needs interrupt pin to check its fancy onboard calculations such as no-motion status
  */
+
+ /*
+  * ESP8266
+  * 
+  * ESP.restart() tells the SDK to reboot
+  */
 
  /* Sleep mode
   *  

@@ -23,35 +23,47 @@
  */
     
 void setupInterrupts() {
-  pinMode(_wheelSensorPin[0], INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(_wheelSensorPin[0]), wheelInterrupt0, CHANGE);  //on digital pin 2
+  pinMode(_wheelSensorPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(_wheelSensorPin), wheelInterrupt0, CHANGE);  //on digital pin 2
 }
 
 void wheelInterrupt0() {
   //if..
+  //..this is arduino
   //get port read index for D
   //bitshift to pin 2
   //check if HIGH
   //(this should be fast)
   //might have to use a faster processor to do stuff like check North/South to tell if we have skipped one etc.
-  #if DEBUG_INTERRUPT
-    if ( PIND & ( 1<<PD2 ) ) {
+//  if (DEBUG_INTERRUPT == true) { 
+//    if ( PIND & ( 1<<PD2 ) ) {
+//      Serial.print("HIGH");
+//      Serial.println();
+//    } else {
+//      Serial.print("LOW");
+//      Serial.println();
+//    }
+//  }
+
+  //for the ESP8266
+  if (DEBUG_INTERRUPT == true) {
+    if ( digitalRead(_wheelSensorPin) ) {
       Serial.print("HIGH");
       Serial.println();
     } else {
       Serial.print("LOW");
       Serial.println();
     }
-  #endif
+  }
   
-  #ifdef DATA_LOGGING 
-    w.IncrementCounter(0);
+  if (DATA_LOGGING == true) { 
+    w.IncrementCounter();  //this is clocking up the wheel counter, which is then used to calculate speed etc.
     //w.DecrementCounter(0);
-  #endif
-  
-  //not sure if arduino pro mini 328 5V 16MHz is fast enough to do this ???
+  }
+
+  //not sure if arduino pro mini 328 5V 16MHz is fast enough to do this ??? - seems ok so far..
   if (o.GetDirection() == 0) { _ledMovePos++; /*forward*/ }
   else if (o.GetDirection() == 1) { _ledMovePos--; /*backward*/ }
+  
 }
-
 

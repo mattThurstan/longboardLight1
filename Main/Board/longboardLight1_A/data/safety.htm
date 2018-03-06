@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Longboard light Control</title>
+
+  <!-- request CSS from the ESP8266 web server -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/simple.css">
+  <link rel="icon" href="images/mattThurstan32.png">
+  
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-static-top" id="top" role="banner">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="https://hackaday.io/thurstan" target="_blank"><img src="/images/mattThurstan32.png" style="width: 24px; height: 24px;" /></a>
+        <a class="navbar-brand" href="https://hackaday.io/thurstan" target="_blank">LlC</a>
+      </div>
+      <div class="collapse navbar-collapse" id="navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="/index.htm" target="_self" title="Modes">Modes</a></li>
+          <li class="active"><a href="/safety.htm">Safety <span class="sr-only">(current)</span></a></li>
+          <li><a href="/calibration.htm" target="_self" title="Calibration">Calibration</a></li>
+          <li><a href="/stats.htm" target="_self" title="Stats">Stats</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="https://github.com/mattThurstan/longboardLight1">
+              <img style="height: 16px;" src="/images/github.ico" />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <div id="container" class="container">
+
+    <form class="form-horizontal" id="form">
+    </form>
+
+  </div>
+
+  <div id="templates" style="display: none">
+
+    <div id="numberTemplate" class="form-group">
+      <label class="col-sm-2 control-label"></label>
+      <div class="col-sm-2">
+        <input class="form-control input" type="number" step="1" min="0" max="255" />
+      </div>
+      <div class="col-sm-8">
+        <input class="form-control slider" type="range" step="1" min="0" max="255" />
+      </div>
+    </div>
+
+    <div id="booleanTemplate" class="form-group">
+      <label class="col-sm-2 control-label"></label>
+      <div class="col-sm-10">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-default" id="btnOn">On</button>
+          <button type="button" class="btn btn-default" id="btnOff">Off</button>
+        </div>
+      </div>
+    </div>
+  
+    <div id="sectionTemplate" class="form-group">
+	  <div class="col-sm-10">
+		<hr style="margin-bottom: 5px;margin-top: 5px;" />
+      </div>
+	  <label class="col-sm-2 control-label"></label>	 <!-- was 2 -->
+    </div>
+
+  </div>
+	
+  <nav class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-2" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="navbar-collapse-2">
+        <ul class="nav navbar-nav">
+          <li>
+            <a href="/safety.htm" aria-label="Refresh" title="Refresh">
+              <span class="glyphicon glyphicon-refresh" id="btnRefresh"></span>
+            </a>
+          </li>
+          <li><p class="navbar-text" id="status">Loading, please wait...</p></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  
+  <!-- Placed at the end of the document so the pages load faster -->
+  <!-- request js from the ESP8266 web server  -->
+  <script src="js/jquery-3.1.1.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/r-websocket.min.js"></script>
+
+  <script src="js/safety.js"></script>
+
+</body>
+
+</html>

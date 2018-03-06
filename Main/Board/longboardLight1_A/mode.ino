@@ -5,14 +5,14 @@ bool _fadeOut = false;  //this is a hack!!!
  * orientation (byte):  0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
  */
 void loopModes() {
-  if (_orientationTest == true) { showOrientation(); } 
+  if (_testMode == 1) { testModes(); } 
   else {
-    if (mA.sleep == false) {
+    if (mA.sleep == 0) {
       if (o.GetOrientation() == 0) { loopMainLights(); }
       if (o.GetOrientation() == 1) { /* fadeToBlackBy( _leds, _ledNum, 64); loopEmergencyFlash(); */ }  //upside-down is not working yet
-      if (o.GetOrientation() == 2) { loopBreathing(); mA.head = false; /* modesA.head = false; */ mA.rear = false;/*TEMP*/ } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
-      else { _fadeOut == false; mA.head = true; /* modesA.head = true; */ mA.rear = true;/*TEMP*/ }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
-      if (o.GetOrientation() == 3) { }  //down is not working yet
+      if (o.GetOrientation() == 2) { loopBreathing(); mA.head = 0; /* modesA.head = false; */ mA.rear = 0;/*TEMP*/ } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
+      else { _fadeOut == false; mA.head = 1; /* modesA.head = true; */ mA.rear = 1;/*TEMP*/ }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
+      if (o.GetOrientation() == 3) { }  //down is not working yet (should be opposite of 2)
       else { }
       if (o.GetOrientation() == 4 || o.GetOrientation() == 5) { _leds.fadeToBlackBy(32); loopSideLight(); }
       loopHeadLights(); //..overlay AFTER the main bits ..these come last in the stack for safety reasons.
@@ -21,47 +21,57 @@ void loopModes() {
     } else {
 //TODO
       //sleep - can be defined by a period of no movement, a switch, or a wireless command.
+      //after a set period of time it will power down (completely - eventually).
+      //can be woken from sleep bye movement. (can also go to sleep from lack of movement)
+      _leds.fadeToBlackBy(32);
       loopBreathing(); //breathing here is not overlaid by rear lights
     } //END if _sleepActive
   } //END if orientationTest
 }
 
-void loopHeadLights() {
-  if (mE.head == true) {
-    if (mA.head == true) {
-      _leds(ledSegment[3].first, ledSegment[3].last) = _headLightsColHSV;
-    } else {
-      _leds(ledSegment[3].first, ledSegment[3].last).fadeToBlackBy(32);
-    }
-  }
-}
+/*----------------------------mode(s)----------------------------*/
 
-void loopRearLights() {
-  if (mE.rear == true) { 
-    if (mA.rear == true) { 
-      _leds(ledSegment[0].first, ledSegment[0].last) = _rearLightsColHSV;
-    } else {
-      _leds(ledSegment[0].first, ledSegment[0].last).fadeToBlackBy(32);
-    }
-  }
-}
-
-/* Normal running (flat) - with 4 sub-modes:
+/* Main Lights. Normal running (flat) - with (4) sub-modes:
  * 0= none (black), 
  * 1= glow, 
  * 2= gradient (end to end), 
  * 3= wheel tracking
  */
 void loopMainLights() {
-  if (_mainLightsSubMode == 0) {
-    _leds.fadeToBlackBy(32);  //do nothing - make sure everything is 'off' at this point in the proceedings
-  } else if (_mainLightsSubMode == 1) {
-    _leds(ledSegment[1].first, ledSegment[2].last) = CRGB(16, 16, 16);
-  } else if (_mainLightsSubMode == 2) {
-    _leds(ledSegment[1].first, ledSegment[1].last).fill_gradient(_rearLightsColHSV, _headLightsColHSV);
-    _leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
-  } else if (_mainLightsSubMode == 3) {
-    loopTrackLights();
+  // Call the current pattern function once, updating the 'leds' array
+  patterns[_mainLightsSubMode].pattern();
+  
+//  if (_mainLightsSubMode == 0) {
+//    _leds.fadeToBlackBy(32);  //do nothing - make sure everything is 'off' at this point in the proceedings
+//  } else if (_mainLightsSubMode == 1) {
+//    _leds(ledSegment[1].first, ledSegment[2].last) = CRGB(16, 16, 16);
+//  } else if (_mainLightsSubMode == 2) {
+//    _leds(ledSegment[1].first, ledSegment[1].last).fill_gradient(_rearLightsColHSV, _headLightsColHSV);
+//    _leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
+//  } else if (_mainLightsSubMode == 3) {
+//    loopTrackLights();
+//  }
+}
+
+void loopHeadLights() {
+  if (mE.head == 1) {
+    if (mA.head == 1) {
+      _leds(ledSegment[3].first, ledSegment[3].last) = _headLightsColHSV;
+    } else {
+      //_leds(ledSegment[3].first, ledSegment[3].last).fadeToBlackBy(32);
+      //if we do nothing, then the sub-modes can run all around the board
+    }
+  }
+}
+
+void loopRearLights() {
+  if (mE.rear == 1) { 
+    if (mA.rear == 1) { 
+      _leds(ledSegment[0].first, ledSegment[0].last) = _rearLightsColHSV;
+    } else {
+      //_leds(ledSegment[0].first, ledSegment[0].last).fadeToBlackBy(32);
+      //if we do nothing, then the sub-modes can run all around the board
+    }
   }
 }
 
@@ -79,56 +89,10 @@ void loopSideLight() {
 
 /* Indicator flash (turn left/right) */
 void loopIndicatorFlash() {
-  if (mE.indicate == true) { 
+  if (mE.indicate == 1) { 
     //
   }
 }
-
-/* Wheel tracked running lights (position from wheel data combined with direction from MPU6050) */
-void loopTrackLights() {  
-  _leds(ledSegment[1].first, ledSegment[2].last).fadeToBlackBy(_trackLightsFadeAmount);            //_trackLightsFadeAmount
-  
-  //wrap-around for segments 1 and 2  
-  if (_ledMovePos > ledSegment[1].total) { _ledMovePos = _ledMovePos - ledSegment[1].total; } 
-  else if (_ledMovePos < 1) { _ledMovePos = _ledMovePos + ledSegment[1].total; }
-  
-  _leds[ledSegment[1].last - _ledMovePos + 1] = CRGB::White;
-  _leds[ledSegment[2].last - _ledMovePos + 1] = CRGB::White;
-  
-  FastLED.show();
-}
-
-void showOrientation() {
-  fadeToBlackBy( _leds, _ledNum, 16);
-  if (o.GetOrientation() == 0) {
-    //flat
-    _leds(ledSegment[0].first, ledSegment[0].last) = CRGB::White;             //(midpoint) back
-    _leds[ledSegment[1].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint left
-    _leds[ledSegment[2].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint right
-    _leds(ledSegment[3].first, ledSegment[3].last) = CRGB::White;             //(midpoint) front
-  }
-  if (o.GetOrientation() == 1) {
-    //upside-down
-    //_leds[ledSegment[2].first+1] = CRGB::White;
-  }
-  if (o.GetOrientation() == 2) {
-    //up
-    _leds(ledSegment[3].first, ledSegment[3].last) = CRGB::White;             //(midpoint) front
-  }
-  if (o.GetOrientation() == 3) {
-    //down
-    _leds(ledSegment[0].first, ledSegment[0].last) = CRGB::White;             //(midpoint) back
-  }
-  if (o.GetOrientation() == 4) {
-    //on its left-side
-    _leds[ledSegment[1].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint left
-  }
-  if (o.GetOrientation() == 5) {
-    //on its right-side
-    _leds[ledSegment[2].first + _orientationTestSideMidpoint] = CRGB::White;  //midpoint right
-  }
-
-} //END showOrientation
 
 /*----------------------------Breathing----------------------------*/
 //would eventually like a simple timeline screen on an app where you can draw curves in and see the results in realtime
@@ -143,7 +107,7 @@ CRGB c;
 
 void loopBreathing() {
   //'breathing'
-  if (mE.breathe == true) {
+  if (mE.breathe == 1) {
     breathRiseFall();
   }
 }

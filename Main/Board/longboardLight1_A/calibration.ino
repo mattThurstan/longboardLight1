@@ -1,21 +1,21 @@
 /*----------------------------calibration----------------------------*/
 
 void quickCalibration() {
-  #ifdef DEBUG
+  if (DEBUG) { 
     Serial.print(F("Quick calibration started"));
     Serial.println();
-  #endif
+  }
   delay(3000);      //..it's all ok, we really do want to halt the thread!
   o.QuickCalibration();
-  _doQuickCalibration = false;
-  #ifdef DEBUG
+  _doQuickCalibration = 0;
+  if (DEBUG) { 
     Serial.print(F("Quick calibration done"));
     Serial.println();
-  #endif
+  }
 }
 
 void fullCalibration() {
-  #ifdef DEBUG
+  if (DEBUG) { 
     Serial.print(F("Full calibration started"));
     Serial.println();
 
@@ -37,15 +37,15 @@ void fullCalibration() {
     Serial.print(F(", "));
     Serial.print(o.GetMPU6050GyroOffsetZ());
     Serial.println();
-  #endif
+  }
   delay(9000);
   o.FullCalibration();
 
   //here we need to handle saving results to memory
   //..but there isn't enough memory on the Arduino Pro Mini board we are using
   
-  _doFullCalibration = false;
-  #ifdef DEBUG
+  _doFullCalibration = 0;
+  if (DEBUG) { 
     Serial.print(F("Results.."));
     Serial.println();
     
@@ -67,6 +67,6 @@ void fullCalibration() {
     
     Serial.print(F("Full calibration done"));
     Serial.println();
-  #endif
+  }
 }
 
