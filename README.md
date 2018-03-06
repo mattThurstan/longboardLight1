@@ -13,6 +13,9 @@ Lighting system for a longboard. Using sensors to control brake lights, indicato
   * ATmega328
   * 16 MHz clock speed
   * 1K EEPROM
+- D1 Mini board
+  * 3.3v
+  * ESP8266
 - WS2812B addressable LED strips
   * pixel order = GRB
 - Movement sensors
@@ -36,11 +39,13 @@ Lighting system for a longboard. Using sensors to control brake lights, indicato
 This software is provided on an "AS-IS-BASIS"
 
 #### Contains code based on:
-- I2CdevLib by Jeff Rowberg Copyright (c) 2011
+- I2CdevLib by Jeff Rowberg, Copyright (c) 2011
  * https://github.com/jrowberg/i2cdevlib/blob/master/Arduino/MPU6050/examples/MPU6050_raw/MPU6050_raw.ino
-- Arduino MPU6050 auto-calibration script by Luis Ródenas  <luisrodenaslorda@gmail.com>
+- Arduino MPU6050 auto-calibration script by Luis Ródenas <luisrodenaslorda@gmail.com>
  * http://42bots.com/tutorials/arduino-script-for-mpu-6050-auto-calibration/ 
  * (also) Based on the I2Cdev library and previous work by Jeff Rowberg <jeff@rowberg.net>
+- Fields array selection method and Web interface example from ESP8266 + FastLED webserver by Jason Coon, Copyright (C) 2015-2016, GNU GPL-3.0
+ * https://github.com/jasoncoon/esp8266-fastled-webserver
 
 ### Reference
 https://github.com/FastLED/FastLED/wiki/Pixel-reference <br> 

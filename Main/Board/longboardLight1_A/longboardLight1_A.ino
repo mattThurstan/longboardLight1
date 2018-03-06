@@ -20,7 +20,7 @@
 
     https://github.com/mattThurstan/
 
-    Implements fields array selection method by Jason Coon, from his ESP8266 + FastLED webserver (Copyright (C) 2015-2016 GNU GPL-3.0)
+    Implements fields array selection method and web interface by Jason Coon, from his ESP8266 + FastLED webserver (Copyright (C) 2015-2016 GNU GPL-3.0)
     https://github.com/jasoncoon/esp8266-fastled-webserver
 */
 
