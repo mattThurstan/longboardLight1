@@ -44,7 +44,7 @@ extern "C" {
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.335";                 //moved to CRGBsets (and NOT const byte arrays) - trade off between clean arrays and clean wiring for LED strips
+const String _progVers = "0.341";                 //fix small errors
 const uint8_t _batteryPowered = 1; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
 //ADC_MODE(ADC_VCC);                                //think this is need to be able to use ESP.getVcc() later.. ??? hmm.. problems
 //const int _mainLoopDelay = 0;                     //just in case  - using FastLED.delay instead..
@@ -60,7 +60,7 @@ boolean _firstTimeSetupDone = false;              //starts false
 
 boolean DEBUG = true;                             //realtime serial debugging output - general
 boolean DEBUG_INTERRUPT = false;                  //realtime serial debugging output - interrupts
-boolean DEBUG_COMMS = true;                  //realtime serial debugging output - comms
+boolean DEBUG_COMMS = true;                       //realtime serial debugging output - comms
 boolean DATA_LOGGING = true;                      //turn data logging on or off eg. rps/mps, dist travelled, etc.
 
 uint8_t _testMode = 0;                            //used as an override to test all the modes
@@ -76,7 +76,7 @@ uint8_t _doFullCalibration = 0;                   //set to true to run full cali
 
 /*----------------------------arduino pins----------------------------*/
 const byte _wheelSensorPin = 0;   //D3            //wheel sensor input (!!interrupt pin!!!) Using built-in pullup
-const byte _ledDOutPin0 = 14;     //D5            //rear lights
+const byte _ledDOutPin0 = 14;     //D5            //rear/all lights
 //const byte _ledDOutPin1 = 12;     //D6            //left
 //const byte _ledDOutPin2 = 13;     //D7            //right and head lights
 const byte _buttonTotal = 1; //2                  //total buttons in use

@@ -53,14 +53,16 @@ void initializeWiFisoftAP()
 {
   WiFi.mode(WIFI_AP);
 
-/*
   String AP_NameString = String(HOSTNAME);              // 'LlC-'
   AP_NameString += String(ESP.getChipId(), HEX);
 
+/*
  * Everyone else will get the above,
- * but as this is my board..
+ * but as this is my board..           ...later
  */
-  String AP_NameString = "LlC_Thurstan";
+  //String AP_NameString = "LlC_Thurstan";
+  //String AP_NameString = "LlC_sama";
+  //String AP_NameString = "LlC_drop";
  
   char AP_NameChar[AP_NameString.length() + 1];
   memset(AP_NameChar, 0, AP_NameString.length() + 1);
@@ -90,7 +92,7 @@ void initializeWiFisoftAP()
   Serial.println("Connect to Wi-Fi access point: ");
   Serial.println(AP_NameChar);
 
-  delay(500); // Without delay I've seen the IP address blank
+  delay(500); //without delay the IP address can sometimes be blank
   Serial.println("AP IP address: ");
   Serial.println(WiFi.softAPIP());
   }

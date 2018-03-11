@@ -179,7 +179,7 @@ String getStatsFieldsJson()
   //totalHrsAsleep
   
   json += "{\"name\":\"extras\",\"label\":\"Extras\",\"type\":\"Section\"},";
-  json += "{\"name\":\"wifiOff\",\"label\":\"Turn the WIFI off)\",\"type\":\"Button\",\"value\":" + String(0) + "},";
+  json += "{\"name\":\"wifiOff\",\"label\":\"Turn the WIFI off\",\"type\":\"Button\",\"value\":" + String(0) + "},";
   json += "{\"name\":\"sleep\",\"label\":\"Put the board to sleep (turns WIFI off)\",\"type\":\"Button\",\"value\":" + String(0) + "},";
   //json += "{\"name\":\"sleep\",\"label\":\"..only press when it all goes wrong!\",\"type\":\"Section\"},";
   json += "{\"name\":\"resetDefaults\",\"label\":\"Reset to default settings\",\"type\":\"Button\",\"value\":" + String(0) + "}";
