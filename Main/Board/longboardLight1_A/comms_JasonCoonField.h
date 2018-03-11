@@ -157,7 +157,7 @@ String getStatsFieldsJson()
 {
   String smaxMps = String(w.GetMaxMps());
   String sdistTraveledForward = String(w.GetDistTraveledForward());
-  String sdistTraveledBackward = String(w.GetDistTraveledBackard());
+  String sdistTraveledBackward = String(w.GetDistTraveledBackward());
   String vcc = String(ESP.getVcc());
   
   String json = "[";

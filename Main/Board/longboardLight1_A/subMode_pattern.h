@@ -9,27 +9,33 @@ void blank() {
 
 /* sub-mode 1 - glow */
 void glow() {
-  _leds(ledSegment[1].first, ledSegment[2].last) = CRGB(16, 16, 16);
+  //_leds(ledSegment[1].first, ledSegment[2].last) = CRGB(16, 16, 16);
+//  for (byte i = 0; i < 26; i++) {
+//    _leds[_ledLeftFullOrder[i]] = CRGB(16, 16, 16);
+//  }
+  _ledsLeft = CRGB(16, 16, 16);
+  _ledsRight = _ledsLeft;
 }
 
 /* sub-mode 2 - gradient  from end to end */
 void gradient() {
-  _leds(ledSegment[1].first, ledSegment[1].last).fill_gradient(_rearLightsColHSV, _headLightsColHSV);
-  _leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
+  _ledsLeft.fill_gradient(_rearLightsColHSV, _headLightsColHSV);
+  _ledsRight = _ledsLeft;
 }
 
 /* sub-mode 3 - wheel tracked running lights (position from wheel data combined with direction from MPU6050)
- * always 3 cos of sensors loopOrientation()
+ * always 3 cos of sensors loopOrientation() dependancy (might change later)
  */
 void loopTrackLights() {  
-  _leds(ledSegment[1].first, ledSegment[2].last).fadeToBlackBy(_trackLightsFadeAmount);            //_trackLightsFadeAmount
+  _ledsLeft.fadeToBlackBy(_trackLightsFadeAmount);            //_trackLightsFadeAmount
+  _ledsRight.fadeToBlackBy(_trackLightsFadeAmount);
   
   //wrap-around for segments 1 and 2  
   if (_ledMovePos > ledSegment[1].total) { _ledMovePos = _ledMovePos - ledSegment[1].total; } 
   else if (_ledMovePos < 1) { _ledMovePos = _ledMovePos + ledSegment[1].total; }
   
-  _leds[ledSegment[1].last - _ledMovePos + 1] = CRGB::White;
-  _leds[ledSegment[2].last - _ledMovePos + 1] = CRGB::White;
+  _ledsLeft[ ledSegment[1].total - _ledMovePos ] = CRGB::White;      //[ (ledSegment[1].total - 1) - _ledMovePos + 1]
+  _ledsRight[ ledSegment[2].total - _ledMovePos ] = CRGB::White;
   
   //FastLED.show(); //not here.. this would show before the headlights and rearlights
 }
@@ -38,33 +44,33 @@ void mattKspTest()
 {
   //eg. equivalant to 'mode X'
   //fill_solid(leds, _ledNum, solidColor2);
-  _leds(ledSegment[1].first, ledSegment[1].last) = solidColor2;
-  _leds(ledSegment[2].first, ledSegment[2].last) = solidColor2;
+  _ledsLeft = solidColor2;
+  _ledsRight = solidColor2;
 }
 
 void showSolidColor()
 {
   //fill_solid(leds, _ledNum, solidColor);
-  _leds(ledSegment[1].first, ledSegment[1].last) = solidColor;
-  _leds(ledSegment[2].first, ledSegment[2].last) = solidColor;
+  _ledsLeft = solidColor;
+  _ledsRight = solidColor;
 }
 
 /* gradient (end to end) with adjustable colours */
 void gradientCol() {
-  _leds(ledSegment[1].first, ledSegment[1].last).fill_gradient_RGB(solidColor2, solidColor);
-  _leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
+  _ledsLeft.fill_gradient_RGB(solidColor2, solidColor);
+  _ledsRight = _ledsLeft;
 }
 
 /* wheel tracking (basic) with adjustable colour */
 void loopTrackLightsCol() {  
-  _leds(ledSegment[1].first, ledSegment[2].last).fadeToBlackBy(_trackLightsFadeAmount);            //_trackLightsFadeAmount
-  
+  _ledsLeft.fadeToBlackBy(_trackLightsFadeAmount);            //_trackLightsFadeAmount
+  _ledsRight.fadeToBlackBy(_trackLightsFadeAmount);
   //wrap-around for segments 1 and 2  
   if (_ledMovePos > ledSegment[1].total) { _ledMovePos = _ledMovePos - ledSegment[1].total; } 
   else if (_ledMovePos < 1) { _ledMovePos = _ledMovePos + ledSegment[1].total; }
   
-  _leds[ledSegment[1].last - _ledMovePos + 1] = solidColor;
-  _leds[ledSegment[2].last - _ledMovePos + 1] = solidColor2;
+  _ledsLeft[ ledSegment[1].total - _ledMovePos ] = solidColor;
+  _ledsRight[ ledSegment[2].total - _ledMovePos ] = solidColor2;
   
   //FastLED.show(); //not here.. this would show before the headlights and rearlights
 }
@@ -102,21 +108,23 @@ void confetti()
 
 void sinelon()
 {
-  // a colored dot sweeping back and forth, with fading trails
+  // a colored dot sweeping back and forth, with fading trails - mirrored left/right
   fadeToBlackBy( _leds, _ledNum, 20);
-  int pos = beatsin16( 13, 0, _ledNum-1 );
-  _leds[pos] += CHSV( gHue, 255, 192);
+  int pos = beatsin16( 13, 0, ledSegment[1].total-1 );
+  _ledsLeft[pos] += CHSV( gHue, 255, 192);
+  _ledsRight = _ledsLeft;
 }
 
 void bpm()
 {
-  // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
+  // colored stripes pulsing at a defined Beats-Per-Minute (BPM) - mirrored left/right
   uint8_t BeatsPerMinute = 62;
   CRGBPalette16 palette = PartyColors_p;
   uint8_t beat = beatsin8( BeatsPerMinute, 64, 255);
-  for( int i = 0; i < _ledNum; i++) { //9948
-    _leds[i] = ColorFromPalette(palette, gHue+(i*2), beat-gHue+(i*10));
+  for( int i = 0; i < ledSegment[1].total; i++) { //9948
+    _ledsLeft[i] = ColorFromPalette(palette, gHue+(i*2), beat-gHue+(i*10));
   }
+  _ledsRight = _ledsLeft;
 }
 
 void juggle() {
@@ -134,8 +142,8 @@ void rainbowCol()
 {
   // FastLED's built-in rainbow generator
   //fill_rainbow( _leds, _ledNum, gHue, 7);
-  _leds(ledSegment[1].first, ledSegment[1].last).fill_rainbow(solidColor, 7);
-  _leds(ledSegment[2].first, ledSegment[2].last).fill_rainbow(solidColor2, 7);
+  _ledsLeft.fill_rainbow(solidColor, 7);
+  _ledsRight.fill_rainbow(solidColor2, 7);
 }
 
 void rainbowWithGlitterCol() 
@@ -161,9 +169,9 @@ void sinelonCol()
   int pos = beatsin16( 13, 0, ledSegment[1].total-1 );  //_ledNum-1 );
   int pos2 = beatsin16( 13, 0, ledSegment[2].total-1 );
   //_leds[pos] += CHSV( gHue, 255, 192);
-  _leds[ledSegment[1].first + pos] += solidColor;
+  _ledsLeft[pos] += solidColor;
   //_leds[pos] += CHSV( gHue, 255, 192);
-  _leds[ledSegment[1].total + pos2] += solidColor2;
+  _ledsRight[pos2] += solidColor2;
 }
 
 /* https://github.com/FastLED/FastLED/blob/master/examples/Cylon/Cylon.ino */
@@ -177,8 +185,8 @@ void cylon()
   // First slide the led in one direction
   for(int i = 0; i < ledSegment[1].total; i++) {
     // Set the i'th led to red 
-    _leds[ledSegment[1].first + i] = CHSV(cHue++, 255, 255);
-    _leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
+    _ledsLeft[i] = CHSV(cHue++, 255, 255);
+    _ledsRight = _ledsLeft;
     // Show the leds
     FastLED.show();  //special case, cos its cylons
     // now that we've shown the leds, reset the i'th led to black
@@ -190,10 +198,10 @@ void cylon()
   }
 
   // Now go in the other direction.  
-  for(int i = (ledSegment[1].total)-1; i >= 0; i--) {
+  for(int i = (ledSegment[1].total-1); i >= 0; i--) {
     // Set the i'th led to red 
-    _leds[ledSegment[1].first + i] = CHSV(cHue++, 255, 255);
-    _leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
+    _ledsLeft[i] = CHSV(cHue++, 255, 255);
+    _ledsRight = _ledsLeft;
     // Show the leds
     FastLED.show(); //special case, cos its cylons
     // now that we've shown the leds, reset the i'th led to black
@@ -216,9 +224,10 @@ void cylonCol()
   // First slide the led in one direction
   for(int i = 0; i < ledSegment[1].total; i++) {
     // Set the i'th led to red 
-    _leds[ledSegment[1].first + i] = solidColor; //CHSV(cHue++, 255, 255);
+    _ledsLeft[i] = solidColor; //CHSV(cHue++, 255, 255);
     //_leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
-    _leds[ledSegment[2].first + i] = solidColor2; //CHSV(cHue++, 255, 255);
+    _ledsRight[i] = solidColor2; //CHSV(cHue++, 255, 255);
+    
     // Show the leds
     FastLED.show();  //special case, cos its cylons
     // now that we've shown the leds, reset the i'th led to black
@@ -232,9 +241,9 @@ void cylonCol()
   // Now go in the other direction.  
   for(int i = (ledSegment[1].total)-1; i >= 0; i--) {
     // Set the i'th led to red 
-    _leds[ledSegment[1].first + i] = solidColor; //CHSV(cHue++, 255, 255);
+    _ledsLeft[i] = solidColor; //CHSV(cHue++, 255, 255);
     //_leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
-    _leds[ledSegment[2].first + i] = solidColor2; //CHSV(cHue++, 255, 255);
+    _ledsRight[i] = solidColor2; //CHSV(cHue++, 255, 255);
     // Show the leds
     FastLED.show(); //special case, cos its cylons
     // now that we've shown the leds, reset the i'th led to black

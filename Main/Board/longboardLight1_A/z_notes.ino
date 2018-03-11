@@ -103,3 +103,39 @@
  * set offsets
  * repeat x times, for a time period, or until within tolerance
  */
+
+ /*
+// 4-segment led array orders
+const byte _ledActualOrder[40]       = {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 };
+const byte _ledLoopOrder[40]         = {  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20,  0 };
+const byte _ledLeftFullOrder[20]     = {  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 39 };
+const byte _ledRightFullOrder[20]    = {  0, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38 };
+const byte _ledLeftOverlayOrder[18]  = {  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+const byte _ledRightOverlayOrder[18] = { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37 };
+
+void ledLoopTest() {
+  for (byte i = 0; i < 40; i++) {
+    _leds[ _ledLoopOrder[i] ] = CRGB::Red;
+  }
+  for (byte i = 0; i < getLedSideTotal; i++) {
+    _leds[ getLed[i] ] = CRGB::Red;
+  }  
+}
+
+byte getLedSideTotal() {
+  byte u;
+  if (mE.head == 0 || mE.rear == 0) {
+    u = 20;
+  } else {
+    u = 18;
+  }
+  return u;
+}
+byte getLed(i) {
+  if (mE.head == 0 || mE.rear == 0) {
+    y = _ledLeftFullOrder[i];
+  } else {
+    y = _ledLeftOverlayOrder[i];
+  }
+}
+*/

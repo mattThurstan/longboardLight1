@@ -56,7 +56,8 @@ void loopMainLights() {
 void loopHeadLights() {
   if (mE.head == 1) {
     if (mA.head == 1) {
-      _leds(ledSegment[3].first, ledSegment[3].last) = _headLightsColHSV;
+      //_leds(ledSegment[3].first, ledSegment[3].last) = _headLightsColHSV;
+      _ledsFront = _headLightsColHSV;
     } else {
       //_leds(ledSegment[3].first, ledSegment[3].last).fadeToBlackBy(32);
       //if we do nothing, then the sub-modes can run all around the board
@@ -67,7 +68,8 @@ void loopHeadLights() {
 void loopRearLights() {
   if (mE.rear == 1) { 
     if (mA.rear == 1) { 
-      _leds(ledSegment[0].first, ledSegment[0].last) = _rearLightsColHSV;
+      //_leds(ledSegment[0].first, ledSegment[0].last) = _rearLightsColHSV;
+      _ledsRear = _rearLightsColHSV;
     } else {
       //_leds(ledSegment[0].first, ledSegment[0].last).fadeToBlackBy(32);
       //if we do nothing, then the sub-modes can run all around the board
@@ -77,14 +79,32 @@ void loopRearLights() {
 
 /* Emergency flash (upside-down) */
 void loopEmergencyFlash() {
-  _leds( ledSegment[1].first, ledSegment[2].last).fill_gradient_RGB(CRGB::Orange, CRGB::Orange );
+  //_leds( ledSegment[1].first, ledSegment[2].last).fill_gradient_RGB(CRGB::Orange, CRGB::Orange );
+//  for (byte i = 0; i < 26; i++) {
+//    _leds[_ledLeftFullOrder[i]] = CRGB::Orange
+//    _leds[_ledRightFullOrder[i]] = CRGB::Orange
+//  }
+  _ledsLeft.fill_gradient_RGB(CRGB::Orange, CRGB::Orange);
+  _ledsRight = _ledsLeft;
   FastLED.show();
 }
 
 /* Emergency light (stood on a side) */
 void loopSideLight() {
-  if (o.GetOrientation() == 4) {  _leds(ledSegment[1].first, ledSegment[1].last) = CRGB::White; /* left */ } 
-  else if (o.GetOrientation() == 5) { _leds(ledSegment[2].first, ledSegment[2].last) = CRGB::White; /* right */ }
+  if (o.GetOrientation() == 4) {  
+    //_leds(ledSegment[1].first, ledSegment[1].last) = CRGB::White; /* left */ 
+//    for (byte i = 0; i < 26; i++) {
+//      _leds[_ledLeftFullOrder[i]] = CRGB::White;
+//    }
+    _ledsLeft = CRGB::White;
+  } 
+  else if (o.GetOrientation() == 5) { 
+    //_leds(ledSegment[2].first, ledSegment[2].last) = CRGB::White; /* right */   
+//    for (byte i = 0; i < 26; i++) {
+//      _leds[_ledRightFullOrder[i]] = CRGB::White;
+//    }
+    _ledsRight = CRGB::White;
+  }
 }
 
 /* Indicator flash (turn left/right) */

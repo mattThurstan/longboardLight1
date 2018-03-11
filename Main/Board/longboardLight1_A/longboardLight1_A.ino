@@ -1,7 +1,7 @@
 /*
     'longboardLight1_A' by Thurstan. LED longboard lights with motion tracking.
 
-    -- longboardLight1_A MOVED AT V0.305 TO D1 MINI (ESP8266) --
+    -- longboardLight1_A MOVED AT V0.305 TO D1 MINI (ESP8266 (ESP12E)) --
     
     Copyright (C) 2018  MTS Standish (mattThurstan)
 
@@ -34,20 +34,17 @@ extern "C" {
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPUpdateServer.h>
-//#include <DNSServer.h>
-//#include <ESP8266mDNS.h>
 #include <WebSocketsServer.h>
 #include <FS.h>                                   //file server
 #include <ArduinoJson.h>
 #include <Bounce2.h>                              //buttons with de-bounce
 #include <FastLED.h>                              //WS2812B LED strip control and effects
-//#include <MT_BlinkStatusLED.h>                    //my basic status LED blink library
 #include <MT_BoardWheel.h>                        //(single version) attempt to move all board wheel related items to a single library
 #include <MT_BoardOrientation.h>                  //attempt to move all board mpu6050 sensor related items to a single library
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.321";                 //v0.305 moved to D1 Mini board
+const String _progVers = "0.335";                 //moved to CRGBsets (and NOT const byte arrays) - trade off between clean arrays and clean wiring for LED strips
 const uint8_t _batteryPowered = 1; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
 //ADC_MODE(ADC_VCC);                                //think this is need to be able to use ESP.getVcc() later.. ??? hmm.. problems
 //const int _mainLoopDelay = 0;                     //just in case  - using FastLED.delay instead..
@@ -78,19 +75,17 @@ uint8_t _doFullCalibration = 0;                   //set to true to run full cali
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 
 /*----------------------------arduino pins----------------------------*/
-//const byte _wheelSensorPin[_wheelSensorTotal] = { 0 };  //array of wheel sensor inputs (!!all interrupt pins!!!) - uses _wheelSensorTotal
 const byte _wheelSensorPin = 0;   //D3            //wheel sensor input (!!interrupt pin!!!) Using built-in pullup
 const byte _ledDOutPin0 = 14;     //D5            //rear lights
-const byte _ledDOutPin1 = 12;     //D6            //left
-const byte _ledDOutPin2 = 13;     //D7            //right and head lights
+//const byte _ledDOutPin1 = 12;     //D6            //left
+//const byte _ledDOutPin2 = 13;     //D7            //right and head lights
 const byte _buttonTotal = 1; //2                  //total buttons in use
 const byte _buttonPin[_buttonTotal] = { 2 }; //{ 2, 16 } //array of user input buttons - uses _buttonTotal   ..ran out of internal pullups on ESP8266. next button has to have external pullup. see user input setup
-//MT_BlinkStatusLED statusLED(2);                   //setup status LED on pin 13 ..need the pin
 /*
  * Pinout Wemos D1 Mini (ESP-8266)
  * RX  3
  * TX  1
- * A0  Analog input, max 3.3V input  A0
+ * A0  Analog input, max 3.2V input  A0
  * D0  16  IO  GPIO16   - no PWM or I2C or interrupt
  * D1  5  IO, SCL GPIO5  I2C
  * D2  4  IO, SDA GPIO4  I2C
@@ -145,17 +140,90 @@ typedef struct {
   byte last;
   byte total;                                     //byte ok as haven't got more than 256 LEDs in a segment
 } LED_SEGMENT;
-const byte _ledNum = 40;                          //18 LED strip each side and 2 each end = 40 LEDs (2280mA max)
+const byte _ledNum = 52; //40;                    //18 LED strip each side and 2 each end = 40 LEDs (2280mA max)
 const byte _segmentTotal = 4;                     //2 sides, 2 ends
-LED_SEGMENT ledSegment[_segmentTotal] = { 
+LED_SEGMENT ledSegment[_segmentTotal] = {         /* drop-board - 1 loop */
   { 0, 1, 2 },      //rear brake lights
-  { 2, 19, 18 },    //left side
-  { 20, 37, 18 },   //right side
-  { 38, 39, 2 },     //front head lights
+  { 2, 28, 24 },    //left side
+  { 31, 51, 24 },   //right side - needs reversing for CRGBset
+  { 29, 30, 2 },    //front head lights
 };
+//LED_SEGMENT ledSegment[_segmentTotal] = {         /* Loaded board */
+//  { 0, 1, 2 },      //rear brake lights
+//  { 2, 19, 18 },    //left side
+//  { 20, 37, 18 },   //right side
+//  { 38, 39, 2 },     //front head lights
+//};
+
 const uint16_t _1totalDiv3 = (ledSegment[1].total / 3); //used in 'mode/void breathRiseFall'
 const uint16_t _2totalDiv3 = (ledSegment[2].total / 3); //used in 'mode/void breathRiseFall'
-CRGBArray<_ledNum> _leds;                         //CRGBArray means can do multiple '_leds(0, 2).fadeToBlackBy(40);' as well as single '_leds[0].fadeToBlackBy(40);'
+//const uint16_t _1totalDiv3 = 9;
+//const uint16_t _2totalDiv3 = 9;
+
+CRGBArray<_ledNum> _leds;                         //master array - CRGBArray means can do multiple '_leds(0, 2).fadeToBlackBy(40);' as well as single '_leds[0].fadeToBlackBy(40);'
+
+CRGBSet _ledsRear( _leds(ledSegment[0].first, ledSegment[0].last) );  //first, last
+CRGBSet _ledsLeft( _leds(ledSegment[1].first, ledSegment[1].last) );
+CRGBSet _ledsRight( _leds(ledSegment[2].last, ledSegment[2].first) ); //reversed - last, first - this will let us access _ledsRight the correct way
+CRGBSet _ledsFront( _leds(ledSegment[3].first, ledSegment[3].last) );
+
+// 8-segments array, wired in 2 groups from same start point - not gonna use this, going to use CRGBset(s) - maybe just one loop
+/*
+ * pin 0 =   0- 2,  3- 4,  5- 7,  8-25
+ * pin 1 =  26-43, 44-46, 47-48, 49-51
+ * 
+ * const byte _ledNum = 52;
+ * 
+ * FastLED.addLeds<WS2812B, _ledDOutPin0, GRB>(_leds, 0, 26).setCorrection( TypicalSMD5050 );
+ * FastLED.addLeds<WS2812B, _ledDOutPin1, GRB>(_leds, 26, 26).setCorrection( TypicalSMD5050 );
+ * 
+ */
+/*
+const byte _ledLoopOrderL[52]       = {    4,
+                                           5,  6,  7,  
+                                           8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+                                          51, 50, 49,
+                                          48, 47,
+                                          46, 45, 44,
+                                          43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26,
+                                           0,  1,  2,
+                                           3  };
+const byte _ledLoopOrderR[52]       = {    3,
+                                           2,  1,  0,
+                                          26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
+                                          44, 45, 46,
+                                          47, 48,
+                                          49, 50, 51,
+                                          25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10,  9,  8,
+                                           7,  6,  5,
+                                           4  };                                     
+const byte _ledLeftFullOrder[26]     = {   4,
+                                           5,  6,  7,  
+                                           8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+                                          51, 50, 49,
+                                          48  };
+const byte _ledRightFullOrder[26]    = {   3,
+                                           2,  1,  0,
+                                          26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
+                                          44, 45, 46,
+                                          47  };
+const byte _ledLeftOverlayOrder[24]  = {   5,  6,  7,  
+                                           8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+                                          51, 50, 49  };
+const byte _ledRightOverlayOrder[24] = {   2,  1,  0,
+                                          26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
+                                          44, 45, 46  };
+const byte _ledRearOrder[2]          = {   3,  4  };
+const byte _ledFrontOrder[2]         = {  47, 48  };
+const byte _ledRearWideOrder[8]      = {   0,  1,  2,
+                                           3,  4,
+                                           5,  6,  7  };
+const byte _ledFrontWideOrder[8]     = {  44, 45, 46,
+                                          47, 48,
+                                          49, 50, 51  };
+const byte _ledLeftWideOrder[18]     = {   8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25  };
+const byte _ledRightWideOrder[18]    = {  26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43  };
+*/
 
 /*memory\void setDefaultSettings*/byte _ledGlobalBrightnessCur = 255;               //current global brightness
 /*memory\void setDefaultSettings*/byte _headLightsBrightness = 200;                 //use function to set
@@ -324,8 +392,6 @@ void setup() {
 
   //clearAllSettings();   // TEMP
   
-  //statusLED.Blink1();
-  
   EEPROM.begin(512);                              //tell it we are using an EEPROM area of 512 bytes
   setupSerial();                                  //..see 'util'
   loadAllSettings();                              //load any saved settings eg. save state when turn board power off. - not fully implemented yet !!!
@@ -365,18 +431,20 @@ void setup() {
   
   setupLEDs();                                    //setup LEDs first and then use as setup indicator lights
   delay(400);
-    _leds[ledSegment[1].first] = CRGB::Yellow;
-    _leds[ledSegment[2].first] = CRGB::Yellow;
+    //_leds[ledSegment[1].first] = CRGB::Yellow;
+    //_leds[ledSegment[2].first] = CRGB::Yellow;
+    _ledsLeft[0] = CRGB::Yellow;
+    _ledsRight[0] = CRGB::Yellow;
     FastLED.show();
   setupSensors();                                 //setup all sensor inputs (note: sensors on wheels use interrupt pins)
   delay(400);
-    _leds[ledSegment[1].first+2] = CRGB::Fuchsia;
-    _leds[ledSegment[2].first+2] = CRGB::Fuchsia;
+    _ledsLeft[2] = CRGB::Fuchsia;
+    _ledsRight[2] = CRGB::Fuchsia;
     FastLED.show();
   setupUserInputs();                              //setup any user inputs - buttons etc. well, just buttons for now
   delay(400);
-    _leds[ledSegment[1].first+4] = CRGB::Green;
-    _leds[ledSegment[2].first+4] = CRGB::Green;
+    _ledsLeft[4] = CRGB::Green;
+    _ledsRight[4] = CRGB::Green;
     FastLED.show();
   _orientationTestSideMidpoint = ledSegment[1].total / 2; //change it later, easier for 2 segments
   //checkStartupButtons();  //check to see if any button has been held down during startup eg. full calibration
@@ -388,8 +456,8 @@ void setup() {
   }
   //statusLED.Blink1();
   delay(400);
-    _leds[ledSegment[1].first+6] = CRGB::MediumTurquoise;
-    _leds[ledSegment[2].first+6] = CRGB::MediumTurquoise;
+    _ledsLeft[6] = CRGB::MediumTurquoise;
+    _ledsRight[6] = CRGB::MediumTurquoise;
     FastLED.show();
   delay(400);
   FastLED.clear();
