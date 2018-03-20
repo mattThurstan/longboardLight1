@@ -13,14 +13,18 @@ void glow() {
 //  for (byte i = 0; i < 26; i++) {
 //    _leds[_ledLeftFullOrder[i]] = CRGB(16, 16, 16);
 //  }
+  _ledsRear = CRGB(16, 16, 16);
   _ledsLeft = CRGB(16, 16, 16);
   _ledsRight = _ledsLeft;
+  _ledsFront = CRGB(16, 16, 16);
 }
 
 /* sub-mode 2 - gradient  from end to end */
 void gradient() {
+  _ledsRear = _rearLightsColHSV;
   _ledsLeft.fill_gradient(_rearLightsColHSV, _headLightsColHSV);
   _ledsRight = _ledsLeft;
+  _ledsFront = _headLightsColHSV;
 }
 
 /* sub-mode 3 - wheel tracked running lights (position from wheel data combined with direction from MPU6050)
@@ -44,21 +48,33 @@ void mattKspTest()
 {
   //eg. equivalant to 'mode X'
   //fill_solid(leds, _ledNum, solidColor2);
-  _ledsLeft = solidColor2;
-  _ledsRight = solidColor2;
+  //_ledsRear = solidColor2;
+  //_ledsLeft = solidColor2;
+  //_ledsRight = solidColor2;
+  //_ledsFront = solidColor2;
+
+  for (byte i = 0; i < ledSegment[1].total; i++) {
+    _leds[i] = solidColor;
+    FastLED.show();
+    FastLED.delay(2);
+    _leds[i] = CRGB::Black;
+  }
 }
 
 void showSolidColor()
 {
-  //fill_solid(leds, _ledNum, solidColor);
+  _ledsRear = solidColor;
   _ledsLeft = solidColor;
   _ledsRight = solidColor;
+  _ledsFront = solidColor;
 }
 
 /* gradient (end to end) with adjustable colours */
 void gradientCol() {
+  _ledsRear = solidColor2;
   _ledsLeft.fill_gradient_RGB(solidColor2, solidColor);
   _ledsRight = _ledsLeft;
+  _ledsFront = solidColor;
 }
 
 /* wheel tracking (basic) with adjustable colour */
@@ -117,6 +133,7 @@ void sinelon()
 
 void bpm()
 {
+  _leds.fadeToBlackBy(32);
   // colored stripes pulsing at a defined Beats-Per-Minute (BPM) - mirrored left/right
   uint8_t BeatsPerMinute = 62;
   CRGBPalette16 palette = PartyColors_p;

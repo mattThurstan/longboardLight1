@@ -44,7 +44,7 @@ extern "C" {
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.341";                 //fix small errors
+const String _progVers = "0.350";                 //Working hardware prototype v2
 const uint8_t _batteryPowered = 1; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
 //ADC_MODE(ADC_VCC);                                //think this is need to be able to use ESP.getVcc() later.. ??? hmm.. problems
 //const int _mainLoopDelay = 0;                     //just in case  - using FastLED.delay instead..
@@ -59,7 +59,7 @@ boolean _firstTimeSetupDone = false;              //starts false
 #define SERIAL_SPEED 115200                       //Serial coms baud speed
 
 boolean DEBUG = true;                             //realtime serial debugging output - general
-boolean DEBUG_INTERRUPT = false;                  //realtime serial debugging output - interrupts
+boolean DEBUG_INTERRUPT = false;                   //realtime serial debugging output - interrupts
 boolean DEBUG_COMMS = true;                       //realtime serial debugging output - comms
 boolean DATA_LOGGING = true;                      //turn data logging on or off eg. rps/mps, dist travelled, etc.
 
@@ -75,12 +75,15 @@ uint8_t _doFullCalibration = 0;                   //set to true to run full cali
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 
 /*----------------------------arduino pins----------------------------*/
-const byte _wheelSensorPin = 0;   //D3            //wheel sensor input (!!interrupt pin!!!) Using built-in pullup
+//MPU6050 on I2C. Power with 5v, data connect to board with either 3.3v or 5v.
+//I2C SDA = A4 (Pro Mini) or  4(D2) (D1 Mini)
+//I2C SCL = A5 (Pro Mini) or  5(D1) (D1 Mini) 
+const byte _wheelSensorPin = 0; //0  //D3            //wheel sensor input (!!interrupt pin!!!) Using built-in pullup
 const byte _ledDOutPin0 = 14;     //D5            //rear/all lights
 //const byte _ledDOutPin1 = 12;     //D6            //left
 //const byte _ledDOutPin2 = 13;     //D7            //right and head lights
 const byte _buttonTotal = 1; //2                  //total buttons in use
-const byte _buttonPin[_buttonTotal] = { 2 }; //{ 2, 16 } //array of user input buttons - uses _buttonTotal   ..ran out of internal pullups on ESP8266. next button has to have external pullup. see user input setup
+const byte _buttonPin[_buttonTotal] = { 2 }; //2 //D4, { 2, 16 } //array of user input buttons - uses _buttonTotal   ..ran out of internal pullups on ESP8266. next button has to have external pullup. see user input setup
 /*
  * Pinout Wemos D1 Mini (ESP-8266)
  * RX  3
@@ -140,20 +143,20 @@ typedef struct {
   byte last;
   byte total;                                     //byte ok as haven't got more than 256 LEDs in a segment
 } LED_SEGMENT;
-const byte _ledNum = 52; //40;                    //18 LED strip each side and 2 each end = 40 LEDs (2280mA max)
+const byte _ledNum = 64;//52; //40;                    //18 LED strip each side and 2 each end = 40 LEDs (2280mA max)
 const byte _segmentTotal = 4;                     //2 sides, 2 ends
-LED_SEGMENT ledSegment[_segmentTotal] = {         /* drop-board - 1 loop */
-  { 0, 1, 2 },      //rear brake lights
-  { 2, 28, 24 },    //left side
-  { 31, 51, 24 },   //right side - needs reversing for CRGBset
-  { 29, 30, 2 },    //front head lights
-};
-//LED_SEGMENT ledSegment[_segmentTotal] = {         /* Loaded board */
+//LED_SEGMENT ledSegment[_segmentTotal] = {         /* drop-board - 1 loop */
 //  { 0, 1, 2 },      //rear brake lights
-//  { 2, 19, 18 },    //left side
-//  { 20, 37, 18 },   //right side
-//  { 38, 39, 2 },     //front head lights
+//  { 2, 28, 24 },    //left side
+//  { 31, 51, 24 },   //right side - gets reversed when creating CRGBset
+//  { 29, 30, 2 },    //front head lights
 //};
+LED_SEGMENT ledSegment[_segmentTotal] = {         /* Loaded board */
+  { 62, 63, 2 },    //rear brake lights
+  { 0, 29, 30 },    //left side
+  { 32, 61, 30 },   //right side - gets reversed when creating CRGBset
+  { 30, 31, 2 },    //front head lights
+};
 
 const uint16_t _1totalDiv3 = (ledSegment[1].total / 3); //used in 'mode/void breathRiseFall'
 const uint16_t _2totalDiv3 = (ledSegment[2].total / 3); //used in 'mode/void breathRiseFall'
@@ -167,72 +170,14 @@ CRGBSet _ledsLeft( _leds(ledSegment[1].first, ledSegment[1].last) );
 CRGBSet _ledsRight( _leds(ledSegment[2].last, ledSegment[2].first) ); //reversed - last, first - this will let us access _ledsRight the correct way
 CRGBSet _ledsFront( _leds(ledSegment[3].first, ledSegment[3].last) );
 
-// 8-segments array, wired in 2 groups from same start point - not gonna use this, going to use CRGBset(s) - maybe just one loop
-/*
- * pin 0 =   0- 2,  3- 4,  5- 7,  8-25
- * pin 1 =  26-43, 44-46, 47-48, 49-51
- * 
- * const byte _ledNum = 52;
- * 
- * FastLED.addLeds<WS2812B, _ledDOutPin0, GRB>(_leds, 0, 26).setCorrection( TypicalSMD5050 );
- * FastLED.addLeds<WS2812B, _ledDOutPin1, GRB>(_leds, 26, 26).setCorrection( TypicalSMD5050 );
- * 
- */
-/*
-const byte _ledLoopOrderL[52]       = {    4,
-                                           5,  6,  7,  
-                                           8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-                                          51, 50, 49,
-                                          48, 47,
-                                          46, 45, 44,
-                                          43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26,
-                                           0,  1,  2,
-                                           3  };
-const byte _ledLoopOrderR[52]       = {    3,
-                                           2,  1,  0,
-                                          26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
-                                          44, 45, 46,
-                                          47, 48,
-                                          49, 50, 51,
-                                          25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10,  9,  8,
-                                           7,  6,  5,
-                                           4  };                                     
-const byte _ledLeftFullOrder[26]     = {   4,
-                                           5,  6,  7,  
-                                           8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-                                          51, 50, 49,
-                                          48  };
-const byte _ledRightFullOrder[26]    = {   3,
-                                           2,  1,  0,
-                                          26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
-                                          44, 45, 46,
-                                          47  };
-const byte _ledLeftOverlayOrder[24]  = {   5,  6,  7,  
-                                           8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-                                          51, 50, 49  };
-const byte _ledRightOverlayOrder[24] = {   2,  1,  0,
-                                          26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
-                                          44, 45, 46  };
-const byte _ledRearOrder[2]          = {   3,  4  };
-const byte _ledFrontOrder[2]         = {  47, 48  };
-const byte _ledRearWideOrder[8]      = {   0,  1,  2,
-                                           3,  4,
-                                           5,  6,  7  };
-const byte _ledFrontWideOrder[8]     = {  44, 45, 46,
-                                          47, 48,
-                                          49, 50, 51  };
-const byte _ledLeftWideOrder[18]     = {   8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25  };
-const byte _ledRightWideOrder[18]    = {  26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43  };
-*/
-
 /*memory\void setDefaultSettings*/byte _ledGlobalBrightnessCur = 255;               //current global brightness
-/*memory\void setDefaultSettings*/byte _headLightsBrightness = 200;                 //use function to set
-/*memory\void setDefaultSettings*/byte _rearLightsBrightness = 200;                 //use function to set
+/*memory\void setDefaultSettings*/byte _headLightsBrightness = 255;                 //use function to set
+/*memory\void setDefaultSettings*/byte _rearLightsBrightness = 255;                 //use function to set
 /*memory\void setDefaultSettings*/byte _trackLightsFadeAmount = 16;          //64   //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
 volatile byte _ledMovePos = 0;                    //center point for tracking LEDs to wheels
 
-CHSV _headLightsColHSV( 0, 0, 200);               //fixed - white @ 200
-CHSV _rearLightsColHSV( 0, 255, 200);             //fixed - red @ 200
+CHSV _headLightsColHSV( 0, 0, 255);               //fixed - white @ 255
+CHSV _rearLightsColHSV( 0, 255, 255);             //fixed - red @ 255
 
 CRGB solidColor = CRGB::White;   //TEMP
 CRGB solidColor2 = CRGB::Red;  //TEMP
@@ -368,7 +313,19 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
           } else if  (nn == "resetDefaults") {
             resetDefaults(vv);
           } else if  (nn == "wifiOff") {
-            if (vv == 1) { stopComms(); }
+            //if (vv == 1) { stopComms(); } //needs a button first
+          } else if  (nn == "head") {
+            setHead(vv);
+          } else if  (nn == "headBrightness") {
+            setHeadBrightness(vv);
+          } else if  (nn == "rear") {
+            setRear(vv);
+          } else if  (nn == "rearBrightness") {
+            setRearBrightness(vv);
+          } else if  (nn == "brake") {
+            setBrake(vv);
+          } else if  (nn == "indicate") {
+            setIndicate(vv);
           }
           if (DEBUG_COMMS) { Serial.print("WStype_TEXT received - "); Serial.print(nn); Serial.print(", "); Serial.println(vv); }
         }
@@ -430,6 +387,8 @@ void setup() {
   if (_wifiActive) { startComms(); }              //WIFI gets turned on by a physical button. WIFI gets turned off via webpage or by the board going to sleep.
   
   setupLEDs();                                    //setup LEDs first and then use as setup indicator lights
+  _ledsFront = _headLightsColHSV;   //TEMP
+  _ledsRear  = _rearLightsColHSV;   //TEMP
   delay(400);
     //_leds[ledSegment[1].first] = CRGB::Yellow;
     //_leds[ledSegment[2].first] = CRGB::Yellow;

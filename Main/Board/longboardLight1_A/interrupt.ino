@@ -24,7 +24,8 @@
     
 void setupInterrupts() {
   pinMode(_wheelSensorPin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(_wheelSensorPin), wheelInterrupt0, CHANGE);  //on digital pin 2
+  //pinMode(_wheelSensorPin, INPUT);
+  attachInterrupt(digitalPinToInterrupt(_wheelSensorPin), wheelInterrupt0, CHANGE);  //
 }
 
 void wheelInterrupt0() {

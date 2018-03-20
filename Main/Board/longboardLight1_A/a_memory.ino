@@ -44,11 +44,11 @@ void setDefaultSettings() {
   _mainLightsSubMode = 2;  //3
   _ledGlobalBrightnessCur = 255;
   //setHeadLightsBrightness(200);
-  _headLightsBrightness = 200;
-  _headLightsColHSV.val = 200;
+  _headLightsBrightness = 255;
+  _headLightsColHSV.val = 255;
   //setRearLightsBrightness(200);
-  _rearLightsBrightness = 200;
-  _rearLightsColHSV.val = 200;
+  _rearLightsBrightness = 255;
+  _rearLightsColHSV.val = 255;
   _trackLightsFadeAmount = 16;
 
   //offsets not done yet, requires splitting numbers, or just wait till get replacement board with WIFI/Bluetooth and more memory

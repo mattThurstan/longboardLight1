@@ -52,16 +52,15 @@ void stopComms() {
 void initializeWiFisoftAP() 
 {
   WiFi.mode(WIFI_AP);
-
+/*
   String AP_NameString = String(HOSTNAME);              // 'LlC-'
   AP_NameString += String(ESP.getChipId(), HEX);
 
-/*
  * Everyone else will get the above,
  * but as this is my board..           ...later
  */
   //String AP_NameString = "LlC_Thurstan";
-  //String AP_NameString = "LlC_sama";
+  String AP_NameString = "LlC_sama";
   //String AP_NameString = "LlC_drop";
  
   char AP_NameChar[AP_NameString.length() + 1];

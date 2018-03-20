@@ -56,10 +56,8 @@ void loopMainLights() {
 void loopHeadLights() {
   if (mE.head == 1) {
     if (mA.head == 1) {
-      //_leds(ledSegment[3].first, ledSegment[3].last) = _headLightsColHSV;
       _ledsFront = _headLightsColHSV;
     } else {
-      //_leds(ledSegment[3].first, ledSegment[3].last).fadeToBlackBy(32);
       //if we do nothing, then the sub-modes can run all around the board
     }
   }
@@ -68,41 +66,39 @@ void loopHeadLights() {
 void loopRearLights() {
   if (mE.rear == 1) { 
     if (mA.rear == 1) { 
-      //_leds(ledSegment[0].first, ledSegment[0].last) = _rearLightsColHSV;
       _ledsRear = _rearLightsColHSV;
     } else {
-      //_leds(ledSegment[0].first, ledSegment[0].last).fadeToBlackBy(32);
       //if we do nothing, then the sub-modes can run all around the board
     }
   }
 }
-
+const unsigned long _pirHoldInterval = 1000; //150000;  //15000=15 sec. 30000=30 sec. 150000=2.5 mins.
+unsigned long _pirHoldPrevMillis = 0;
+boolean _emergencyFlashFlip = false;
 /* Emergency flash (upside-down) */
 void loopEmergencyFlash() {
-  //_leds( ledSegment[1].first, ledSegment[2].last).fill_gradient_RGB(CRGB::Orange, CRGB::Orange );
-//  for (byte i = 0; i < 26; i++) {
-//    _leds[_ledLeftFullOrder[i]] = CRGB::Orange
-//    _leds[_ledRightFullOrder[i]] = CRGB::Orange
-//  }
-  _ledsLeft.fill_gradient_RGB(CRGB::Orange, CRGB::Orange);
-  _ledsRight = _ledsLeft;
+  unsigned long pirHoldCurMillis = millis();    //get current time
+  if( (unsigned long)(pirHoldCurMillis - _pirHoldPrevMillis) >= _pirHoldInterval ) {
+    //when the time has expired, do this..
+    _emergencyFlashFlip = !_emergencyFlashFlip;
+    _pirHoldPrevMillis = millis();              //store the current time (reset the timer)
+  }
+  if (_emergencyFlashFlip) {
+    _ledsLeft.fill_gradient_RGB(CRGB::Orange, CRGB::Orange);
+    _ledsRight = _ledsLeft;
+  } else {
+    _ledsLeft = CRGB::Black;
+    _ledsRight = CRGB::Black;
+  }
   FastLED.show();
 }
 
 /* Emergency light (stood on a side) */
 void loopSideLight() {
   if (o.GetOrientation() == 4) {  
-    //_leds(ledSegment[1].first, ledSegment[1].last) = CRGB::White; /* left */ 
-//    for (byte i = 0; i < 26; i++) {
-//      _leds[_ledLeftFullOrder[i]] = CRGB::White;
-//    }
     _ledsLeft = CRGB::White;
   } 
   else if (o.GetOrientation() == 5) { 
-    //_leds(ledSegment[2].first, ledSegment[2].last) = CRGB::White; /* right */   
-//    for (byte i = 0; i < 26; i++) {
-//      _leds[_ledRightFullOrder[i]] = CRGB::White;
-//    }
     _ledsRight = CRGB::White;
   }
 }
@@ -134,11 +130,15 @@ void loopBreathing() {
 
 void breathRiseFall() {
   if (o.GetOrientation() == 2) {
-    _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last).fadeToBlackBy(32);
-    _leds(ledSegment[2].last - _2totalDiv3+1, ledSegment[2].last) = _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last);
+    //_leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last).fadeToBlackBy(32);
+    //_leds(ledSegment[2].last - _2totalDiv3+1, ledSegment[2].last) = _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last);
+    _ledsLeft( (ledSegment[1].total - _1totalDiv3), (ledSegment[1].total - 1) ).fadeToBlackBy(32);
+    _ledsRight = _ledsLeft;
   } else if (o.GetOrientation() == 3) {
-    _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1).fadeToBlackBy(32);
-    _leds(ledSegment[2].first, (ledSegment[2].first + _2totalDiv3)-1) = _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1);
+    //_leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1).fadeToBlackBy(32);
+    //_leds(ledSegment[2].first, (ledSegment[2].first + _2totalDiv3)-1) = _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1);
+    _ledsLeft( 0, (_1totalDiv3 - 1) ).fadeToBlackBy(32);
+    _ledsRight = _ledsLeft;
   }
   
   EVERY_N_MILLISECONDS(_breathRiseFallStepIntervalMillis) {                     //FastLED based non-blocking delay to update/display the sequence.
@@ -148,14 +148,20 @@ void breathRiseFall() {
       c.g = _breathRiseFallCounter-_breathRiseFallSpacer;
       c.b = _breathRiseFallCounter-_breathRiseFallSpacer;
       if (o.GetOrientation() == 2) {
-        _leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv3).fill_gradient_RGB(c, CRGB::Black );
-        _leds(ledSegment[2].first, ledSegment[2].last - _2totalDiv3) = _leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv3);
+        //_leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv3).fill_gradient_RGB(c, CRGB::Black );
+        //_leds(ledSegment[2].first, ledSegment[2].last - _2totalDiv3) = _leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv3);
+        _ledsLeft( 0, ( (ledSegment[1].total - 1) - _1totalDiv3 ) ).fill_gradient_RGB(c, CRGB::Black );
+        _ledsRight = _ledsLeft;
       } else if (o.GetOrientation() == 3) {
-        _leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last).fill_gradient_RGB(CRGB::Black, c );
-        _leds(ledSegment[2].first + _2totalDiv3, ledSegment[2].last) = _leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last);
+        //_leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last).fill_gradient_RGB(CRGB::Black, c );
+        //_leds(ledSegment[2].first + _2totalDiv3, ledSegment[2].last) = _leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last);
+        _ledsLeft( _1totalDiv3, (ledSegment[1].total - 1)  ).fill_gradient_RGB(c, CRGB::Black );
+        _ledsRight = _ledsLeft;
       } else {
-        _leds(ledSegment[1].first, ledSegment[1].last).fill_gradient_RGB(c, c );
-        _leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
+        //_leds(ledSegment[1].first, ledSegment[1].last).fill_gradient_RGB(c, c );
+        //_leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
+        _ledsLeft( 0, (ledSegment[1].total - 1) ).fill_gradient_RGB(c, c );
+        _ledsRight = _ledsLeft;
       }
     }
     FastLED.show();

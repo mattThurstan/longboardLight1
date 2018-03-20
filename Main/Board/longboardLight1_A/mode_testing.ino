@@ -28,21 +28,19 @@ void testModes() {
   } else if (_curTestMode == 4) {
     loopBreathing();
   } else if (_curTestMode == 5) {
-   // _leds(ledSegment[1].first, ledSegment[1].last) = CRGB::White; /* left */
-//    for (byte i = 0; i < 26; i++) {
-//      _leds[_ledLeftFullOrder[i]] = CRGB::White;
-//    }
+    _leds = CRGB::Black;
     _ledsLeft = CRGB::White;
   } else if (_curTestMode == 6) {
-    //_leds(ledSegment[2].first, ledSegment[2].last) = CRGB::White; /* right */
-//    for (byte i = 0; i < 26; i++) {
-//      _leds[_ledRightFullOrder[i]] = CRGB::White;
-//    }
+    _leds = CRGB::Black;
     _ledsRight = CRGB::White;
   } else if (_curTestMode == 7) {
-    loopHeadLights();
+    //loopHeadLights();
+    _leds = CRGB::Black;
+    _ledsFront = _headLightsColHSV;
   } else if (_curTestMode == 8) {
-    loopRearLights();
+    //loopRearLights();
+    _leds = CRGB::Black;
+    _ledsRear = _rearLightsColHSV;
   } else if (_curTestMode == 9) {
     //loopIndicatorFlash(); //not implemented yet
   } else if (_curTestMode == 10) {
@@ -56,22 +54,32 @@ void showOrientation() {
   fadeToBlackBy( _leds, _ledNum, 16);
   if (o.GetOrientation() == 0) {
     //flat
-    _ledsRear = CRGB::White;             //(midpoint) back  (cannot actually have a midpoint here, as only 2 LEDS)
-    _ledsLeft[_orientationTestSideMidpoint] = CRGB::Orange;  //midpoint left
-    _ledsRight[_orientationTestSideMidpoint] = CRGB::Blue;  //midpoint right
+    _ledsRear = CRGB::White;              //(midpoint) back  (cannot actually have a midpoint here, as only 2 LEDS)
+    _ledsLeft[_orientationTestSideMidpoint] = CRGB::Red;  //midpoint left
+    _ledsRight[_orientationTestSideMidpoint] = CRGB::Green;  //midpoint right
     _ledsFront = CRGB::White;             //(midpoint) front
   }
   if (o.GetOrientation() == 1) {
     //upside-down
     //_leds[ledSegment[2].first+1] = CRGB::White;
+    _ledsRear = CRGB::Orange;
+    _ledsLeft[_orientationTestSideMidpoint] = CRGB::Green;  //midpoint left
+    _ledsRight[_orientationTestSideMidpoint] = CRGB::Red;  //midpoint right
+    _ledsFront = CRGB::Orange;
   }
   if (o.GetOrientation() == 2) {
     //up
+    _ledsRear = CRGB::Red;
+    _ledsLeft[_orientationTestSideMidpoint] = CRGB::Green;
+    _ledsRight[_orientationTestSideMidpoint] = CRGB::Red;
     _ledsFront = CRGB::White;             //(midpoint) front
   }
   if (o.GetOrientation() == 3) {
     //down
     _ledsRear = CRGB::White;             //(midpoint) back
+    _ledsLeft[_orientationTestSideMidpoint] = CRGB::Red;
+    _ledsRight[_orientationTestSideMidpoint] = CRGB::Green;
+    _ledsFront = CRGB::Red;
   }
   if (o.GetOrientation() == 4) {
     //on its left-side
