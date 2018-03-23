@@ -19,8 +19,16 @@ void loopSensors() {
 /*----------------------------MPU6050 sensor----------------------------*/
 void loopOrientation() {
   EVERY_N_MILLISECONDS(_mpu6050ReadInterval) { o.ReadFiltered(); }
-  if (o.GetOrientation() == 0 &&_mainLightsSubMode == 3) { o.ReadDirection(); }   /* main lights sub-mode 3 will always be kept 3 cos of this void */
-  EVERY_N_MILLISECONDS(_orientationInterval) { o.ReadOrientation(); }
+  //if (o.GetOrientation() == 0 &&_mainLightsSubMode == 3) { o.ReadDirection(); }   /* main lights sub-mode 3 will always be kept 3 cos of this void */
+  EVERY_N_MILLISECONDS(_orientationInterval) { 
+    o.ReadOrientation(); 
+    if (o.GetOrientation() == 0 &&_mainLightsSubMode == 3) { o.ReadDirection(); }   /* main lights sub-mode 3 will always be kept 3 cos of this void */
+    if (DEBUG) { 
+      Serial.print(F("Orientation = "));
+      Serial.print(o.GetOrientation());
+      Serial.println();
+    }
+  }
 }
 
 /*----------------------------wheel sensors----------------------------*/

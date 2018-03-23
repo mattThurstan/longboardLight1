@@ -60,8 +60,8 @@ void initializeWiFisoftAP()
  * but as this is my board..           ...later
  */
   //String AP_NameString = "LlC_Thurstan";
-  String AP_NameString = "LlC_sama";
-  //String AP_NameString = "LlC_drop";
+  String AP_NameString = "LlC_Sama";
+  //String AP_NameString = "LlC_Drop";
  
   char AP_NameChar[AP_NameString.length() + 1];
   memset(AP_NameChar, 0, AP_NameString.length() + 1);

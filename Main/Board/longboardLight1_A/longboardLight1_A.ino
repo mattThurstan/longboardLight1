@@ -44,7 +44,7 @@ extern "C" {
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.350";                 //Working hardware prototype v2
+const String _progVers = "0.352";                 //tweaks - working
 const uint8_t _batteryPowered = 1; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
 //ADC_MODE(ADC_VCC);                                //think this is need to be able to use ESP.getVcc() later.. ??? hmm.. problems
 //const int _mainLoopDelay = 0;                     //just in case  - using FastLED.delay instead..
@@ -61,7 +61,7 @@ boolean _firstTimeSetupDone = false;              //starts false
 boolean DEBUG = true;                             //realtime serial debugging output - general
 boolean DEBUG_INTERRUPT = false;                   //realtime serial debugging output - interrupts
 boolean DEBUG_COMMS = true;                       //realtime serial debugging output - comms
-boolean DATA_LOGGING = true;                      //turn data logging on or off eg. rps/mps, dist travelled, etc.
+boolean DATA_LOGGING = true;                      //turn data logging on or off eg. rps/mps, dist travelled, etc. ( Note: tracking led mode ticks up _ledsMovePos - NOT this )
 
 uint8_t _testMode = 0;                            //used as an override to test all the modes
 byte _curTestMode = 0;                            //the current mode being tested in isolation - sent from device

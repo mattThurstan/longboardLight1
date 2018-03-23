@@ -23,7 +23,6 @@ void loopModes() {
       //sleep - can be defined by a period of no movement, a switch, or a wireless command.
       //after a set period of time it will power down (completely - eventually).
       //can be woken from sleep bye movement. (can also go to sleep from lack of movement)
-      _leds.fadeToBlackBy(32);
       loopBreathing(); //breathing here is not overlaid by rear lights
     } //END if _sleepActive
   } //END if orientationTest
@@ -40,17 +39,6 @@ void loopModes() {
 void loopMainLights() {
   // Call the current pattern function once, updating the 'leds' array
   patterns[_mainLightsSubMode].pattern();
-  
-//  if (_mainLightsSubMode == 0) {
-//    _leds.fadeToBlackBy(32);  //do nothing - make sure everything is 'off' at this point in the proceedings
-//  } else if (_mainLightsSubMode == 1) {
-//    _leds(ledSegment[1].first, ledSegment[2].last) = CRGB(16, 16, 16);
-//  } else if (_mainLightsSubMode == 2) {
-//    _leds(ledSegment[1].first, ledSegment[1].last).fill_gradient(_rearLightsColHSV, _headLightsColHSV);
-//    _leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
-//  } else if (_mainLightsSubMode == 3) {
-//    loopTrackLights();
-//  }
 }
 
 void loopHeadLights() {
@@ -72,17 +60,22 @@ void loopRearLights() {
     }
   }
 }
+
 const unsigned long _pirHoldInterval = 1000; //150000;  //15000=15 sec. 30000=30 sec. 150000=2.5 mins.
-unsigned long _pirHoldPrevMillis = 0;
+//unsigned long _pirHoldPrevMillis = 0;
 boolean _emergencyFlashFlip = false;
 /* Emergency flash (upside-down) */
 void loopEmergencyFlash() {
-  unsigned long pirHoldCurMillis = millis();    //get current time
-  if( (unsigned long)(pirHoldCurMillis - _pirHoldPrevMillis) >= _pirHoldInterval ) {
-    //when the time has expired, do this..
-    _emergencyFlashFlip = !_emergencyFlashFlip;
-    _pirHoldPrevMillis = millis();              //store the current time (reset the timer)
+//  unsigned long pirHoldCurMillis = millis();    //get current time
+//  if( (unsigned long)(pirHoldCurMillis - _pirHoldPrevMillis) >= _pirHoldInterval ) {
+//    //when the time has expired, do this..
+//    _emergencyFlashFlip = !_emergencyFlashFlip;
+//    _pirHoldPrevMillis = millis();              //store the current time (reset the timer)
+//  }
+  EVERY_N_MILLISECONDS(_pirHoldInterval) {
+      _emergencyFlashFlip = !_emergencyFlashFlip;
   }
+  
   if (_emergencyFlashFlip) {
     _ledsLeft.fill_gradient_RGB(CRGB::Orange, CRGB::Orange);
     _ledsRight = _ledsLeft;
@@ -90,7 +83,7 @@ void loopEmergencyFlash() {
     _ledsLeft = CRGB::Black;
     _ledsRight = CRGB::Black;
   }
-  FastLED.show();
+  //FastLED.show();
 }
 
 /* Emergency light (stood on a side) */
@@ -123,25 +116,30 @@ CRGB c;
 
 void loopBreathing() {
   //'breathing'
-  if (mE.breathe == 1) {
-    breathRiseFall();
-  }
+  if (mE.breathe == 1) { breathRiseFall(); } 
+  else { _leds.fadeToBlackBy(32); }
 }
 
 void breathRiseFall() {
-  if (o.GetOrientation() == 2) {
-    //_leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last).fadeToBlackBy(32);
-    //_leds(ledSegment[2].last - _2totalDiv3+1, ledSegment[2].last) = _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last);
-    _ledsLeft( (ledSegment[1].total - _1totalDiv3), (ledSegment[1].total - 1) ).fadeToBlackBy(32);
-    _ledsRight = _ledsLeft;
-  } else if (o.GetOrientation() == 3) {
-    //_leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1).fadeToBlackBy(32);
-    //_leds(ledSegment[2].first, (ledSegment[2].first + _2totalDiv3)-1) = _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1);
-    _ledsLeft( 0, (_1totalDiv3 - 1) ).fadeToBlackBy(32);
-    _ledsRight = _ledsLeft;
-  }
-  
+  //_leds.fadeToBlackBy(32);
+  //_leds = CRGB::Black;
+//  _ledsRear.fadeToBlackBy(32);
+//  _ledsFront.fadeToBlackBy(32);
+//  if (o.GetOrientation() == 2) {
+//    //_leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last).fadeToBlackBy(32);
+//    //_leds(ledSegment[2].last - _2totalDiv3+1, ledSegment[2].last) = _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last);
+//    _ledsLeft( (ledSegment[1].total - _1totalDiv3), (ledSegment[1].total - 1) ).fadeToBlackBy(32);
+//    _ledsRight = _ledsLeft;
+//  } else if (o.GetOrientation() == 3) {
+//    //_leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1).fadeToBlackBy(32);
+//    //_leds(ledSegment[2].first, (ledSegment[2].first + _2totalDiv3)-1) = _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1);
+//    _ledsLeft( 0, (_1totalDiv3 - 1) ).fadeToBlackBy(32);
+//    _ledsRight = _ledsLeft;
+//  }
+  //this really needs a state machine. fade out all : bottom : rising : top : falling
+  //and a mathematical curve to fade up and down.
   EVERY_N_MILLISECONDS(_breathRiseFallStepIntervalMillis) {                     //FastLED based non-blocking delay to update/display the sequence.
+    _leds = CRGB::Black;
     //ignore first/last 4 (or so) so we get a pause at the bottom and top
     if (_breathRiseFallCounter >= _breathRiseFallSpacer) {
       c.r = _breathRiseFallCounter-_breathRiseFallSpacer;
@@ -152,19 +150,22 @@ void breathRiseFall() {
         //_leds(ledSegment[2].first, ledSegment[2].last - _2totalDiv3) = _leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv3);
         _ledsLeft( 0, ( (ledSegment[1].total - 1) - _1totalDiv3 ) ).fill_gradient_RGB(c, CRGB::Black );
         _ledsRight = _ledsLeft;
+        _ledsRear = _ledsLeft[0];
       } else if (o.GetOrientation() == 3) {
         //_leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last).fill_gradient_RGB(CRGB::Black, c );
         //_leds(ledSegment[2].first + _2totalDiv3, ledSegment[2].last) = _leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last);
         _ledsLeft( _1totalDiv3, (ledSegment[1].total - 1)  ).fill_gradient_RGB(c, CRGB::Black );
         _ledsRight = _ledsLeft;
+        _ledsRear = _ledsLeft[ledSegment[1].total - 1];
       } else {
         //_leds(ledSegment[1].first, ledSegment[1].last).fill_gradient_RGB(c, c );
         //_leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
         _ledsLeft( 0, (ledSegment[1].total - 1) ).fill_gradient_RGB(c, c );
         _ledsRight = _ledsLeft;
+        _ledsRear = _ledsLeft[0];
       }
     }
-    FastLED.show();
+    //FastLED.show();
     if (_breathRiseFallDirection == true) {
       _breathRiseFallCounter++;       //we are rising, increase the counter
     } else if (_breathRiseFallDirection == false) {

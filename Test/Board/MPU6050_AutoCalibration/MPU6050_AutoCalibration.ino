@@ -45,7 +45,7 @@
 
 ///////////////////////////////////   CONFIGURATION   /////////////////////////////
 //Change this 3 variables if you want to fine tune the skecth to your needs.
-int buffersize=1000;     //Amount of readings used to average, make it higher to get more precision but sketch will be slower  (default:1000)
+int buffersize=100;     //Amount of readings used to average, make it higher to get more precision but sketch will be slower  (default:1000)
 int acel_deadzone=8;     //Acelerometer error allowed, make it lower to get more precision, but sketch may not converge  (default:8)
 int giro_deadzone=1;     //Giro error allowed, make it lower to get more precision, but sketch may not converge  (default:1)
 
@@ -66,7 +66,7 @@ void setup() {
   // join I2C bus (I2Cdev library doesn't do this automatically)
   Wire.begin();
   // COMMENT NEXT LINE IF YOU ARE USING ARDUINO DUE
-  TWBR = 24; // 400kHz I2C clock (200kHz if CPU is 8MHz). Leonardo measured 250kHz.
+  //TWBR = 24; // 400kHz I2C clock (200kHz if CPU is 8MHz). Leonardo measured 250kHz.
 
   // initialize serial communication
   Serial.begin(115200);

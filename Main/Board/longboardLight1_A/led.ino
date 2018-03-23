@@ -5,8 +5,8 @@ void setupLEDs() {
   if (_batteryPowered == 0) {
     FastLED.setMaxPowerInVoltsAndMilliamps(5, 450);  //USB powered
   } else {
-    //FastLED.setMaxPowerInVoltsAndMilliamps(5, 450);  //plugged into the computer //board TEST
-    FastLED.setMaxPowerInVoltsAndMilliamps(5, 1800);  //limit power draw to 1.8A at 5v (with 7.4V 2700mAhour power supply this gives us a bit of head room for board, lights etc.)
+    FastLED.setMaxPowerInVoltsAndMilliamps(5, 450);  //plugged into the computer //board TEST
+    //FastLED.setMaxPowerInVoltsAndMilliamps(5, 1800);  //limit power draw to 1.8A at 5v (with 7.4V 2700mAhour power supply this gives us a bit of head room for board, lights etc.)
   } 
   
   //FastLED doesn't like an array being used for the pins eg. _ledDOutPin[0]

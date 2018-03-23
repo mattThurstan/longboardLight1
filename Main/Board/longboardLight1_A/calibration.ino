@@ -7,11 +7,12 @@ void quickCalibration() {
   }
   delay(3000);      //..it's all ok, we really do want to halt the thread!
   o.QuickCalibration();
-  _doQuickCalibration = 0;
   if (DEBUG) { 
     Serial.print(F("Quick calibration done"));
     Serial.println();
   }
+  _doQuickCalibration = 0;
+  broadcastInt("quickCalibration", _doQuickCalibration);
 }
 
 void fullCalibration() {
@@ -44,7 +45,6 @@ void fullCalibration() {
   //here we need to handle saving results to memory
   //..but there isn't enough memory on the Arduino Pro Mini board we are using
   
-  _doFullCalibration = 0;
   if (DEBUG) { 
     Serial.print(F("Results.."));
     Serial.println();
@@ -68,5 +68,7 @@ void fullCalibration() {
     Serial.print(F("Full calibration done"));
     Serial.println();
   }
+  _doFullCalibration = 0;
+  broadcastInt("fullCalibration", _doFullCalibration);
 }
 
