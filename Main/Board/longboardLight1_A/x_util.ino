@@ -11,19 +11,27 @@ String getBatteryLevel() {
 
 /*----------------------------util - serial----------------------------*/
 void setupSerial() {
-  Serial.begin(SERIAL_SPEED);
   
-  if (DEBUG) {
-    delay(100);
-    //Serial.setDebugOutput(true);    // ???
-    //_inputString.reserve(200);              // reserve 200 bytes for the inputString:
-    Serial.println();
-    Serial.print(_progName);
-    Serial.print(" ");
-    Serial.print(_progVers);
-    Serial.println();
-    Serial.print("..");
-    Serial.println();
+  if (_wifiActive || DEBUG || DEBUG_INTERRUPT || DEBUG_COMMS || DATA_LOGGING) { 
+    Serial.begin(SERIAL_SPEED);
+    if (DEBUG) {
+      delay(100);
+      //Serial.setDebugOutput(true);    // ???
+      //_inputString.reserve(200);              // reserve 200 bytes for the inputString:
+      Serial.println();
+      Serial.print(_progName);
+      Serial.print(" ");
+      Serial.print(_progVers);
+      Serial.println();
+      Serial.print("..");
+      Serial.println();
+    }
+  }
+}
+
+void stopSerial() {
+  if (!_wifiActive && !DEBUG && !DEBUG_INTERRUPT && !DEBUG_COMMS && !DATA_LOGGING) { 
+    Serial.end(); 
   }
 }
 

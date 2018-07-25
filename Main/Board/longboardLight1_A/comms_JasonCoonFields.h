@@ -31,11 +31,13 @@ String getGlobalBrightness() {
 }
 
 String getHeadBrightness() {
-  return String(_headLightsBrightness);
+  //return String(_headLightsBrightness);
+  return String(_headLightsColHSV.val);
 }
 
 String getRearBrightness() {
-  return String(_rearLightsBrightness);
+  //return String(_rearLightsBrightness);
+  return String(_rearLightsColHSV.val);
 }
 
 String getTrackLightsFadeAmount() {
@@ -65,6 +67,7 @@ String getSolidColor2() {
   return String(solidColor2.r) + "," + String(solidColor2.g) + "," + String(solidColor2.b);
 }
 
+//test modes
 String getTestMode() {
   return String(_testMode);
 }
@@ -102,6 +105,24 @@ String getFullCalibration() {
   return String(_doFullCalibration);
 }
 
+//board profiles - not done yet
+//String getBoardProfile() {
+//  return String(_boardProfile);
+//}
+ 
+String getCurBoardProfile() {
+  return String(_curBoardProfile);
+}
+String _curBoardProfilesListName[] = { "Blank", "Dervish Sama", "Drop-down" };
+String getCurBoardProfileList() {
+  String json = "";
+  
+  json += "\"Blank\",";
+  json += "\"Dervish Sama\",";
+  json += "\"Drop-down\",";
+  
+  return json;
+}
 
 /*----------------------------comms - fields list----------------------------*/
 FieldList fields = {
@@ -126,7 +147,7 @@ FieldList fields = {
   { "testMode", "Test Modes", BooleanFieldType, 0, 1, getTestMode },
   { "curTestMode", "Current Test Mode", SelectFieldType, 0, 11, getCurTestMode, getCurTestModeList },
 
-  //these shouldn't get shown..
+  //these shouldn't get shown on the main page..
   //{ "sleep", "Sleep", SectionFieldType },
   { "sleep", "Sleep", BooleanFieldType, 0, 1, getSleep },
   { "head", "Head Lights", BooleanFieldType, 0, 1, getHead },
@@ -137,6 +158,8 @@ FieldList fields = {
   { "indicate", "Indicator Lights", BooleanFieldType, 0, 1, getIndicate },
   { "quickCalibration", "Quick Calibration", BooleanFieldType, 0, 1, getQuickCalibration },
   { "fullCalibration", "Full Calibration", BooleanFieldType, 0, 1, getFullCalibration },
+  //{ "boardProfile", "Board Profiles", BooleanFieldType, 0, 1, getBoardProfile },
+  //{ "curBoardProfile", "Current Board Profile", SelectFieldType, 0, 11, getCurBoardProfile, getCurBoardProfileList },
 };
 
 uint8_t fieldCount = ARRAY_SIZE(fields);

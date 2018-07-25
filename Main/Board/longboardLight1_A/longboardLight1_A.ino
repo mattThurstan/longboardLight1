@@ -44,10 +44,10 @@ extern "C" {
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_A";
-const String _progVers = "0.352";                 //tweaks - working
+const String _progVers = "0.360";                 //breathing and calibration
 const uint8_t _batteryPowered = 1; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
 //ADC_MODE(ADC_VCC);                                //think this is need to be able to use ESP.getVcc() later.. ??? hmm.. problems
-//const int _mainLoopDelay = 0;                     //just in case  - using FastLED.delay instead..
+const int _mainLoopDelay = 8;                     //just in case  - using FastLED.delay instead..
 #define UPDATES_PER_SECOND 0           //120      //main loop FastLED show delay - 1000/120
 boolean _firstTimeSetupDone = false;              //starts false
 /*
@@ -59,8 +59,10 @@ boolean _firstTimeSetupDone = false;              //starts false
 #define SERIAL_SPEED 115200                       //Serial coms baud speed
 
 boolean DEBUG = true;                             //realtime serial debugging output - general
-boolean DEBUG_INTERRUPT = false;                   //realtime serial debugging output - interrupts
+boolean DEBUG_SENSORS = true;                     //realtime serial debugging output - sensors
+boolean DEBUG_INTERRUPT = false;                  //realtime serial debugging output - interrupts
 boolean DEBUG_COMMS = true;                       //realtime serial debugging output - comms
+
 boolean DATA_LOGGING = true;                      //turn data logging on or off eg. rps/mps, dist travelled, etc. ( Note: tracking led mode ticks up _ledsMovePos - NOT this )
 
 uint8_t _testMode = 0;                            //used as an override to test all the modes
@@ -70,6 +72,9 @@ byte _curTestMode = 0;                            //the current mode being teste
 uint8_t _doQuickCalibration = 0;                  //set to true to run quick calibration. it will reset itself to false when finished.
 //3-axis accelerometer  calibration (these will be moved and integrated later when have communications)
 uint8_t _doFullCalibration = 0;                   //set to true to run full calibration. it will reset itself to false when finished.
+
+//to do this justice i would really have to implement a way to swap between (or even enter info) the different led arrays aswell.. starts getting needlessly complicated. 
+byte _curBoardProfile = 1;                        //the current board profile - will be set from device - not fully implemented yet  (0="Blank"(set for default testing), 1="Dervish Sama", 2="Drop-down")
 
 //const byte _buttonTotal = 2;                      //how many butons are there? - cannot set Bounce using this unfortunately!
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
@@ -112,12 +117,12 @@ MT_BoardWheel w;
 const unsigned long _mpu6050ReadInterval = 20;    //read loop interval in milliseconds
 const unsigned long _orientationInterval = 100;   //main orientation read loop interval in milliseconds
 byte _orientationTestSideMidpoint = 0;            //side LED strip midpoint, calculated in startup
-MT_BoardOrientation o;
+MT_BoardOrientation o;							  //declaration - sets defaults
 
 /*----------------------------comms----------------------------*/
 
 const char WiFiAPPSK[] = "";                      // AP mode password
-#define HOSTNAME "LlC_"                           //< WIFI Hostname. The initializeWiFi function adds the Chip ID at the end.
+#define HOSTNAME "LlC_"                           //< WIFI Hostname. The initializeWiFi function adds a name or the Chip ID at the end.
 
 ESP8266WebServer webServer(80);
 WebSocketsServer webSocketsServer = WebSocketsServer(81);
@@ -158,10 +163,8 @@ LED_SEGMENT ledSegment[_segmentTotal] = {         /* Loaded board */
   { 30, 31, 2 },    //front head lights
 };
 
-const uint16_t _1totalDiv3 = (ledSegment[1].total / 3); //used in 'mode/void breathRiseFall'
-const uint16_t _2totalDiv3 = (ledSegment[2].total / 3); //used in 'mode/void breathRiseFall'
-//const uint16_t _1totalDiv3 = 9;
-//const uint16_t _2totalDiv3 = 9;
+const uint16_t _1totalDiv = (ledSegment[1].total / 4); //used in 'mode/void breathRiseFall'
+const uint16_t _2totalDiv = (ledSegment[2].total / 4); //used in 'mode/void breathRiseFall'
 
 CRGBArray<_ledNum> _leds;                         //master array - CRGBArray means can do multiple '_leds(0, 2).fadeToBlackBy(40);' as well as single '_leds[0].fadeToBlackBy(40);'
 
@@ -171,17 +174,19 @@ CRGBSet _ledsRight( _leds(ledSegment[2].last, ledSegment[2].first) ); //reversed
 CRGBSet _ledsFront( _leds(ledSegment[3].first, ledSegment[3].last) );
 
 /*memory\void setDefaultSettings*/byte _ledGlobalBrightnessCur = 255;               //current global brightness
-/*memory\void setDefaultSettings*/byte _headLightsBrightness = 255;                 //use function to set
-/*memory\void setDefaultSettings*/byte _rearLightsBrightness = 255;                 //use function to set
+/*memory\void setDefaultSettings*///byte _headLightsBrightness = 255;                 //use function to set - use '_headLightsColHSV.val' instead
+/*memory\void setDefaultSettings*///byte _rearLightsBrightness = 255;                 //use function to set - etc.
 /*memory\void setDefaultSettings*/byte _trackLightsFadeAmount = 16;          //64   //division of 256 eg. fadeToBlackBy( _leds, _ledNum, _trackLightsFadeAmount);
 volatile byte _ledMovePos = 0;                    //center point for tracking LEDs to wheels
 
-CHSV _headLightsColHSV( 0, 0, 255);               //fixed - white @ 255
-CHSV _rearLightsColHSV( 0, 255, 255);             //fixed - red @ 255
+/*memory\void setDefaultSettings*/CHSV _headLightsColHSV( 0, 0, 255);               //fixed - white @ 255
+/*memory\void setDefaultSettings*/CHSV _rearLightsColHSV( 0, 255, 255);             //fixed - red @ 255
 
 CRGB solidColor = CRGB::White;   //TEMP
 CRGB solidColor2 = CRGB::Red;  //TEMP
 uint8_t gHue = 0;                                 //rotating "base color" used by many of the patterns
+const unsigned long _emergencyFlashInterval = 1000; //150000;  //15000=15 sec. 30000=30 sec. 150000=2.5 mins.
+boolean _emergencyFlashFlip = false;
 
 /*----------------------------modes----------------------------*/
 /* In standby the board 'breathes' (glows gently) at 12 times a minute (average breathing rate of sleeping adult).
@@ -216,13 +221,13 @@ MODES_ENABLED_ACTIVE mA = { 0, 0, 1, 1, 0, 0 }; // Active
 void broadcastInt(String name, uint8_t value) {
   String json = "{\"name\":\"" + name + "\",\"value\":" + String(value) + "}";
   webSocketsServer.broadcastTXT(json);
-  if (DEBUG_COMMS) { Serial.print("WebSocket Broadcast Int "); Serial.println(json); }
+  if (DEBUG_COMMS) { Serial.print( F("WebSocket Broadcast Int ") ); Serial.println(json); }
 }
 
 void broadcastString(String name, String value) {
   String json = "{\"name\":\"" + name + "\",\"value\":\"" + String(value) + "\"}";
   webSocketsServer.broadcastTXT(json);
-  if (DEBUG_COMMS) { Serial.print("WebSocket Broadcast String "); Serial.println(json); }
+  if (DEBUG_COMMS) { Serial.print( F("WebSocket Broadcast String ") ); Serial.println(json); }
 }
 
 #include "comms_JasonCoonFields.h"  //comms - Jason Coon Field array selection init part 2 - AFTER patterns, hmm,.. and broadcastint, but before websocketevent
@@ -253,7 +258,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
         JsonObject& parsed = _jsonBuffer.parseObject(payload); //Parse message
         
         if (!parsed.success()) {   //Check for errors in parsing
-          if (DEBUG_COMMS) { Serial.println("Parsing failed"); }
+          if (DEBUG_COMMS) { Serial.println( F("Parsing failed") ); }
           //for (uint8_t i = 0; i <length; i++) {
           //  Serial.print(payload[i]);
           //}
@@ -285,7 +290,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
           } else {
             setSolidColor2(r, g, b);
           }
-          if (DEBUG_COMMS) { Serial.print("WStype_TEXT received - "); } //Serial.print(nn); 
+          if (DEBUG_COMMS) { Serial.print( F("WStype_TEXT received - ") ); } //Serial.print(nn); 
         } else {
           //String vv = parsed["value"];
           if (nn == "sleep") {
@@ -313,7 +318,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
           } else if  (nn == "resetDefaults") {
             resetDefaults(vv);
           } else if  (nn == "wifiOff") {
-            //if (vv == 1) { stopComms(); } //needs a button first
+            if (vv == 1) { 
+              stopComms(); //needs a button first
+              stopSerial();
+            }
           } else if  (nn == "head") {
             setHead(vv);
           } else if  (nn == "headBrightness") {
@@ -327,7 +335,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
           } else if  (nn == "indicate") {
             setIndicate(vv);
           }
-          if (DEBUG_COMMS) { Serial.print("WStype_TEXT received - "); Serial.print(nn); Serial.print(", "); Serial.println(vv); }
+          if (DEBUG_COMMS) { Serial.print( F("WStype_TEXT received - ") ); Serial.print(nn); Serial.print(", "); Serial.println(vv); }
         }
 
       }
@@ -384,14 +392,12 @@ void setup() {
     if (DEBUG) { Serial.printf("\n"); }
   }
   
-  if (_wifiActive) { startComms(); }              //WIFI gets turned on by a physical button. WIFI gets turned off via webpage or by the board going to sleep.
+  startComms();                                   //WIFI gets turned on by a physical button. WIFI gets turned off via webpage or by the board going to sleep.
   
   setupLEDs();                                    //setup LEDs first and then use as setup indicator lights
-  _ledsFront = _headLightsColHSV;   //TEMP
-  _ledsRear  = _rearLightsColHSV;   //TEMP
+  //_ledsFront = _headLightsColHSV;   //TEMP
+  //_ledsRear  = _rearLightsColHSV;   //TEMP
   delay(400);
-    //_leds[ledSegment[1].first] = CRGB::Yellow;
-    //_leds[ledSegment[2].first] = CRGB::Yellow;
     _ledsLeft[0] = CRGB::Yellow;
     _ledsRight[0] = CRGB::Yellow;
     FastLED.show();
@@ -410,10 +416,9 @@ void setup() {
   //
   if (DEBUG) { 
   //everything done? ok then..
-    Serial.print(F("Setup done"));
+    Serial.print( F("Setup done") );
     Serial.println();
   }
-  //statusLED.Blink1();
   delay(400);
     _ledsLeft[6] = CRGB::MediumTurquoise;
     _ledsRight[6] = CRGB::MediumTurquoise;
@@ -451,7 +456,7 @@ void loop() {
   FastLED.show();
   //delay(_mainLoopDelay);
   //FastLED.delay(1000 / UPDATES_PER_SECOND);
-  FastLED.delay(UPDATES_PER_SECOND);  //currently '0'
+  FastLED.delay(_mainLoopDelay);  //currently '0'
 
   EVERY_N_MILLISECONDS( 20 ) { gHue++; } // slowly cycle the "base color" through the rainbow
 }

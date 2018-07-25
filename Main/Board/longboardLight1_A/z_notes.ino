@@ -39,7 +39,7 @@
  * long    = 32 bits (4 bytes), from -2,147,483,648 to 2,147,483,647
  *     eg. long speedOfLight = 186000L;   //must declare the 'L'
  * unsigned long = 32 bits (4 bytes), from 0 to 4,294,967,295
- * 
+ * double   = float 4-byte value
  */
 
 /* Wheels

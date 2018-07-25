@@ -39,7 +39,7 @@ void setBreathe(uint8_t value)
   EEPROM.write(2, mE.breathe);
   EEPROM.commit();
   broadcastInt("breathe", mE.breathe);
-  if (DEBUG) { Serial.println("setBreathe(lights)"); }
+  if (DEBUG) { Serial.println(F("setBreathe(lights)")); }
 }
 
 void setHead(uint8_t value) 
@@ -48,7 +48,7 @@ void setHead(uint8_t value)
   EEPROM.write(3, mE.head);
   EEPROM.commit();
   broadcastInt("head", mE.head);
-  if (DEBUG) { Serial.println("setHead(lights)"); }
+  if (DEBUG) { Serial.println(F("setHead(lights)")); }
 }
 
 void setRear(uint8_t value) {
@@ -56,7 +56,7 @@ void setRear(uint8_t value) {
   EEPROM.write(4, mE.rear);
   EEPROM.commit();
   broadcastInt("rear", mE.rear);
-  if (DEBUG) { Serial.println("setRear(lights)"); }
+  if (DEBUG) { Serial.println(F("setRear(lights)")); }
 }
 
 void setBrake(uint8_t value) {
@@ -64,7 +64,7 @@ void setBrake(uint8_t value) {
   EEPROM.write(5, mE.brake);
   EEPROM.commit();
   broadcastInt("brake", mE.brake);
-  if (DEBUG) { Serial.println("setBrake(lights)"); }
+  if (DEBUG) { Serial.println(F("setBrake(lights)")); }
 }
 
 void setIndicate(uint8_t value) {
@@ -72,7 +72,7 @@ void setIndicate(uint8_t value) {
   EEPROM.write(6, mE.indicate);
   EEPROM.commit();
   broadcastInt("indicate", mE.indicate);
-  if (DEBUG) { Serial.println("setIndicate(lights)"); }
+  if (DEBUG) { Serial.println(F("setIndicate(lights)")); }
 }
 
 /*----------------------------set value - testing----------------------------*/
@@ -120,21 +120,27 @@ void setGlobalBrightness(uint8_t value)
 }
 
 void setHeadBrightness(uint8_t value) {
-  _headLightsBrightness = value;
+  //_headLightsBrightness = value;
   _headLightsColHSV.val = value;
-  EEPROM.write(10, _headLightsBrightness);
+  //EEPROM.write(10, _headLightsBrightness);
+  EEPROM.write(10, _headLightsColHSV.val);
   EEPROM.commit();
-  broadcastInt("headBrightness", _headLightsBrightness);
-  if (DEBUG) { Serial.print( F("Head Lights Brightness set to: ") ); Serial.println(_headLightsBrightness); }
+  //broadcastInt("headBrightness", _headLightsBrightness);
+  //if (DEBUG) { Serial.print( F("Head Lights Brightness set to: ") ); Serial.println(_headLightsBrightness); }
+  broadcastInt("headBrightness", _headLightsColHSV.val);
+  if (DEBUG) { Serial.print( F("Head Lights Brightness set to: ") ); Serial.println(_headLightsColHSV.val); }
 }
 
 void setRearBrightness(uint8_t value) {
-  _rearLightsBrightness = value;
+  //_rearLightsBrightness = value;
   _rearLightsColHSV.val = value;
-  EEPROM.write(11, _rearLightsBrightness);
+  //EEPROM.write(11, _rearLightsBrightness);
+  EEPROM.write(11, _rearLightsColHSV.val);
   EEPROM.commit();
-  broadcastInt("rearBrightness", _rearLightsBrightness);
-  if (DEBUG) { Serial.print( F("Rear Lights Brightness set to: ") ); Serial.println(_rearLightsBrightness); }
+  //broadcastInt("rearBrightness", _rearLightsBrightness);
+  //if (DEBUG) { Serial.print( F("Rear Lights Brightness set to: ") ); Serial.println(_rearLightsBrightness); }
+  broadcastInt("rearBrightness", _rearLightsColHSV.val);
+  if (DEBUG) { Serial.print( F("Rear Lights Brightness set to: ") ); Serial.println(_rearLightsColHSV.val); }
 }
 
 void setTrackLightsFadeAmount(uint8_t value) {
@@ -190,34 +196,7 @@ void setMainLightsSubModeByName(String name)
   }
 }
 
-//String setHeadLightsBrightness(uint8_t value) {  //byte j
-//  _headLightsBrightness = value;
-//  _headLightsColHSV.val = value;
-//}
-//
-//String setRearLightsBrightness(uint8_t value) {
-//  _rearLightsBrightness = v;
-//  _rearLightsColHSV.val = v;
-//}
 
-
-/*----------------------------util - led----------------------------*/
-//void setGlobalBrightness(byte b) {
-//  _ledGlobalBrightnessCur = b;
-//  FastLED.setBrightness(_ledGlobalBrightnessCur);
-//}
-
-/*----------------------------util main lights sub-mode----------------------------*/
-//void setMainLightsSubMode(byte m) {
-//  if ( m < 0 || m >= (_mainLightsSubModeTotal - 1) ) {
-//    m = 0;    //wrap-around at end/start to 0
-//  } else {
-//    _mainLightsSubMode = m;
-//  }
-//  EEPROM.write(8, _mainLightsSubMode);
-//  EEPROM.commit();
-//}
-//
 //void incrementMainLightsSubMode() {
 //  if ( _mainLightsSubMode >= (_mainLightsSubModeTotal - 1) ) {
 //    _mainLightsSubMode = 0;    //wrap-around at end back to 0

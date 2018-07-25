@@ -1,13 +1,21 @@
 /*----------------------------led display----------------------------*/
 void setupLEDs() {
   
-  //FastLED
+  //uint8_t volts = 0;
+  uint32_t milliamps = 0;
+  
   if (_batteryPowered == 0) {
-    FastLED.setMaxPowerInVoltsAndMilliamps(5, 450);  //USB powered
+    milliamps = 450;  //USB powered
   } else {
-    FastLED.setMaxPowerInVoltsAndMilliamps(5, 450);  //plugged into the computer //board TEST
-    //FastLED.setMaxPowerInVoltsAndMilliamps(5, 1800);  //limit power draw to 1.8A at 5v (with 7.4V 2700mAhour power supply this gives us a bit of head room for board, lights etc.)
-  } 
+    if (_curBoardProfile == 1) { 
+      milliamps = 1800; //Dervish Sama board
+    } else if (_curBoardProfile == 2) {
+      milliamps = 1800; //Drop-down board
+    } else {
+      milliamps = 450;  //plugged into the computer //board TEST
+    }
+  }
+  FastLED.setMaxPowerInVoltsAndMilliamps(5, milliamps);
   
   //FastLED doesn't like an array being used for the pins eg. _ledDOutPin[0]
   //head lights and left side need to be combined! ..might also split right side and brake lights.

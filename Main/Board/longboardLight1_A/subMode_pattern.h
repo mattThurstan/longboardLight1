@@ -9,10 +9,6 @@ void blank() {
 
 /* sub-mode 1 - glow */
 void glow() {
-  //_leds(ledSegment[1].first, ledSegment[2].last) = CRGB(16, 16, 16);
-//  for (byte i = 0; i < 26; i++) {
-//    _leds[_ledLeftFullOrder[i]] = CRGB(16, 16, 16);
-//  }
   _ledsRear = CRGB(16, 16, 16);
   _ledsLeft = CRGB(16, 16, 16);
   _ledsRight = _ledsLeft;
@@ -38,10 +34,8 @@ void loopTrackLights() {
   if (_ledMovePos > ledSegment[1].total) { _ledMovePos = _ledMovePos - ledSegment[1].total; } 
   else if (_ledMovePos < 1) { _ledMovePos = _ledMovePos + ledSegment[1].total; }
   
-  _ledsLeft[ ledSegment[1].total - _ledMovePos ] = CRGB::White;      //[ (ledSegment[1].total - 1) - _ledMovePos + 1]
+  _ledsLeft[ ledSegment[1].total - _ledMovePos ] = CRGB::White;
   _ledsRight[ ledSegment[2].total - _ledMovePos ] = CRGB::White;
-  
-  //FastLED.show(); //not here.. this would show before the headlights and rearlights
 }
 
 void mattKspTest()
@@ -87,8 +81,6 @@ void loopTrackLightsCol() {
   
   _ledsLeft[ ledSegment[1].total - _ledMovePos ] = solidColor;
   _ledsRight[ ledSegment[2].total - _ledMovePos ] = solidColor2;
-  
-  //FastLED.show(); //not here.. this would show before the headlights and rearlights
 }
 
 /* https://github.com/FastLED/FastLED/blob/master/examples/DemoReel100/DemoReel100.ino  */
@@ -194,9 +186,6 @@ void sinelonCol()
 /* https://github.com/FastLED/FastLED/blob/master/examples/Cylon/Cylon.ino */
 void cylon() 
 {
-  //_leds(ledSegment[1].first, ledSegment[1].last).fill_gradient_RGB(solidColor2, solidColor);
-  //_leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
-  
   static uint8_t cHue = 0;
   
   // First slide the led in one direction
@@ -210,7 +199,6 @@ void cylon()
     // leds[i] = CRGB::Black;
     fadeall();
     // Wait a little bit before we loop around and do it again
-    //delay(10);
     FastLED.delay(10);
   }
 
@@ -225,7 +213,6 @@ void cylon()
     // leds[i] = CRGB::Black;
     fadeall();
     // Wait a little bit before we loop around and do it again
-    //delay(10);
     FastLED.delay(10);
   }
   
@@ -233,16 +220,10 @@ void cylon()
 
 void cylonCol() 
 {
-  //_leds(ledSegment[1].first, ledSegment[1].last).fill_gradient_RGB(solidColor2, solidColor);
-  //_leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
-  
-  //static uint8_t cHue = 0;
-  
   // First slide the led in one direction
   for(int i = 0; i < ledSegment[1].total; i++) {
     // Set the i'th led to red 
     _ledsLeft[i] = solidColor; //CHSV(cHue++, 255, 255);
-    //_leds(ledSegment[2].first, ledSegment[2].last) = _leds(ledSegment[1].first, ledSegment[1].last);
     _ledsRight[i] = solidColor2; //CHSV(cHue++, 255, 255);
     
     // Show the leds
@@ -251,7 +232,6 @@ void cylonCol()
     // leds[i] = CRGB::Black;
     fadeall();
     // Wait a little bit before we loop around and do it again
-    //delay(10);
     FastLED.delay(10);
   }
 
@@ -267,7 +247,6 @@ void cylonCol()
     // leds[i] = CRGB::Black;
     fadeall();
     // Wait a little bit before we loop around and do it again
-    //delay(10);
     FastLED.delay(10);
   }
   

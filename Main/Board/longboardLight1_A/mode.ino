@@ -10,10 +10,10 @@ void loopModes() {
     if (mA.sleep == 0) {
       if (o.GetOrientation() == 0) { loopMainLights(); }
       if (o.GetOrientation() == 1) { /* fadeToBlackBy( _leds, _ledNum, 64); loopEmergencyFlash(); */ }  //upside-down is not working yet
-      if (o.GetOrientation() == 2) { loopBreathing(); mA.head = 0; /* modesA.head = false; */ mA.rear = 0;/*TEMP*/ } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
-      else { _fadeOut == false; mA.head = 1; /* modesA.head = true; */ mA.rear = 1;/*TEMP*/ }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
-      if (o.GetOrientation() == 3) { }  //down is not working yet (should be opposite of 2)
-      else { }
+      if (o.GetOrientation() == 2) { loopBreathing(); mA.head = 0; mA.rear = 1; } //breathing here is overlaid by rear lights. turn off headlights when you pickup the board so they don't blind you.
+      else { _fadeOut == false; mA.head = 1; mA.rear = 1; }  //turn the headlights back on when you put the board down.  ..this is a bad place to put this, potential future conflicts..
+      if (o.GetOrientation() == 3) { loopBreathing(); mA.head = 0; mA.rear = 0; }  //down is not working properly yet (should be opposite of 2)
+      else { _fadeOut == false; mA.head = 1; mA.rear = 1; }
       if (o.GetOrientation() == 4 || o.GetOrientation() == 5) { _leds.fadeToBlackBy(32); loopSideLight(); }
       loopHeadLights(); //..overlay AFTER the main bits ..these come last in the stack for safety reasons.
       loopRearLights(); //..
@@ -53,26 +53,16 @@ void loopHeadLights() {
 
 void loopRearLights() {
   if (mE.rear == 1) { 
-    if (mA.rear == 1) { 
+    if (mA.rear == 1) {
       _ledsRear = _rearLightsColHSV;
-    } else {
-      //if we do nothing, then the sub-modes can run all around the board
     }
   }
 }
 
-const unsigned long _pirHoldInterval = 1000; //150000;  //15000=15 sec. 30000=30 sec. 150000=2.5 mins.
-//unsigned long _pirHoldPrevMillis = 0;
-boolean _emergencyFlashFlip = false;
 /* Emergency flash (upside-down) */
 void loopEmergencyFlash() {
-//  unsigned long pirHoldCurMillis = millis();    //get current time
-//  if( (unsigned long)(pirHoldCurMillis - _pirHoldPrevMillis) >= _pirHoldInterval ) {
-//    //when the time has expired, do this..
-//    _emergencyFlashFlip = !_emergencyFlashFlip;
-//    _pirHoldPrevMillis = millis();              //store the current time (reset the timer)
-//  }
-  EVERY_N_MILLISECONDS(_pirHoldInterval) {
+  
+  EVERY_N_MILLISECONDS(_emergencyFlashInterval) {
       _emergencyFlashFlip = !_emergencyFlashFlip;
   }
   
@@ -89,10 +79,12 @@ void loopEmergencyFlash() {
 /* Emergency light (stood on a side) */
 void loopSideLight() {
   if (o.GetOrientation() == 4) {  
-    _ledsLeft = CRGB::White;
+    //left (turn on right)
+    _ledsRight = CRGB::White;
   } 
   else if (o.GetOrientation() == 5) { 
-    _ledsRight = CRGB::White;
+    //right (turn on left
+    _ledsLeft = CRGB::White;
   }
 }
 
@@ -116,7 +108,7 @@ CRGB c;
 
 void loopBreathing() {
   //'breathing'
-  if (mE.breathe == 1) { breathRiseFall(); } 
+  if (mE.breathe == 1) { breathRiseFall2(); } 
   else { _leds.fadeToBlackBy(32); }
 }
 
@@ -126,14 +118,14 @@ void breathRiseFall() {
 //  _ledsRear.fadeToBlackBy(32);
 //  _ledsFront.fadeToBlackBy(32);
 //  if (o.GetOrientation() == 2) {
-//    //_leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last).fadeToBlackBy(32);
-//    //_leds(ledSegment[2].last - _2totalDiv3+1, ledSegment[2].last) = _leds((ledSegment[1].last - _1totalDiv3)+1, ledSegment[1].last);
-//    _ledsLeft( (ledSegment[1].total - _1totalDiv3), (ledSegment[1].total - 1) ).fadeToBlackBy(32);
+//    //_leds((ledSegment[1].last - _1totalDiv)+1, ledSegment[1].last).fadeToBlackBy(32);
+//    //_leds(ledSegment[2].last - _2totalDiv+1, ledSegment[2].last) = _leds((ledSegment[1].last - _1totalDiv)+1, ledSegment[1].last);
+//    _ledsLeft( (ledSegment[1].total - _1totalDiv), (ledSegment[1].total - 1) ).fadeToBlackBy(32);
 //    _ledsRight = _ledsLeft;
 //  } else if (o.GetOrientation() == 3) {
-//    //_leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1).fadeToBlackBy(32);
-//    //_leds(ledSegment[2].first, (ledSegment[2].first + _2totalDiv3)-1) = _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv3)-1);
-//    _ledsLeft( 0, (_1totalDiv3 - 1) ).fadeToBlackBy(32);
+//    //_leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv)-1).fadeToBlackBy(32);
+//    //_leds(ledSegment[2].first, (ledSegment[2].first + _2totalDiv)-1) = _leds(ledSegment[1].first, (ledSegment[1].first + _1totalDiv)-1);
+//    _ledsLeft( 0, (_1totalDiv - 1) ).fadeToBlackBy(32);
 //    _ledsRight = _ledsLeft;
 //  }
   //this really needs a state machine. fade out all : bottom : rising : top : falling
@@ -146,15 +138,15 @@ void breathRiseFall() {
       c.g = _breathRiseFallCounter-_breathRiseFallSpacer;
       c.b = _breathRiseFallCounter-_breathRiseFallSpacer;
       if (o.GetOrientation() == 2) {
-        //_leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv3).fill_gradient_RGB(c, CRGB::Black );
-        //_leds(ledSegment[2].first, ledSegment[2].last - _2totalDiv3) = _leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv3);
-        _ledsLeft( 0, ( (ledSegment[1].total - 1) - _1totalDiv3 ) ).fill_gradient_RGB(c, CRGB::Black );
+        //_leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv).fill_gradient_RGB(c, CRGB::Black );
+        //_leds(ledSegment[2].first, ledSegment[2].last - _2totalDiv) = _leds(ledSegment[1].first, ledSegment[1].last - _1totalDiv);
+        _ledsLeft( 0, ( (ledSegment[1].total - 1) - _1totalDiv ) ).fill_gradient_RGB(c, CRGB::Black );
         _ledsRight = _ledsLeft;
         _ledsRear = _ledsLeft[0];
       } else if (o.GetOrientation() == 3) {
-        //_leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last).fill_gradient_RGB(CRGB::Black, c );
-        //_leds(ledSegment[2].first + _2totalDiv3, ledSegment[2].last) = _leds(ledSegment[1].first + _1totalDiv3, ledSegment[1].last);
-        _ledsLeft( _1totalDiv3, (ledSegment[1].total - 1)  ).fill_gradient_RGB(c, CRGB::Black );
+        //_leds(ledSegment[1].first + _1totalDiv, ledSegment[1].last).fill_gradient_RGB(CRGB::Black, c );
+        //_leds(ledSegment[2].first + _2totalDiv, ledSegment[2].last) = _leds(ledSegment[1].first + _1totalDiv, ledSegment[1].last);
+        _ledsLeft( _1totalDiv, (ledSegment[1].total - 1)  ).fill_gradient_RGB(c, CRGB::Black );
         _ledsRight = _ledsLeft;
         _ledsRear = _ledsLeft[ledSegment[1].total - 1];
       } else {
@@ -180,4 +172,51 @@ void breathRiseFall() {
   }
 
 } //END breathRiseFall
+
+
+/*
+ * The gradient function here is trying to smoothly turn on each led as it clocks up the row.
+ * I think what is really needed is each led to fade on, then the next, etc.
+ * This would require doing something like a 16bit fade number, the length of the led strip, 
+ * multiplied by 256 (steps), so we get a 256 fade on each led before moving onto the next.
+ * ...but this seems processor intensive and over-complicated for a little effect that you 
+ * only see out of the corner of you eye.
+ */
+
+uint8_t bBpm = 12;
+uint8_t bMax;
+uint8_t bPeak;
+
+void breathRiseFall2() {
+  _leds = CRGB::Black;
+  
+  if (o.GetOrientation() == 2 || o.GetOrientation() == 3) {
+    bMax = ( (ledSegment[1].total - 1) - _1totalDiv );
+  } else {
+    //fade all
+    bMax = 255; //here we are fading all leds so using this for the brightness instead of led position
+  }
+  
+  bPeak = beatsin8( bBpm, 0, bMax); //bpm, min, max
+  
+  if (o.GetOrientation() == 2) {
+    //fade bot to top
+    _ledsLeft( 0, bPeak ).fill_gradient_RGB( CRGB::White, CRGB::Black );
+    _ledsRight = _ledsLeft;
+    _ledsRear = _ledsLeft[0];
+  } else if (o.GetOrientation() == 3) {
+    //fade top to bot
+    //use right leds CRGBSet here as the array has already been reversed in setup
+    _ledsRight( 0, bPeak ).fill_gradient_RGB( CRGB::White, CRGB::Black );
+    _ledsLeft = _ledsRight;
+    _ledsFront = _ledsRight[0];
+  } else {
+    //fade all
+    c.r = bPeak;
+    c.g = bPeak;
+    c.b = bPeak;
+    _leds.fill_solid(c);  //use full CRGBArray
+  }
+  
+}
 

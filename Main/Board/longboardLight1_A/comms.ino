@@ -1,41 +1,44 @@
 /*----------------------------comms----------------------------*/
 void startComms() {
+  if (_wifiActive) { 
     
-  initializeWiFisoftAP();
-
-  httpUpdateServer.setup(&webServer);
-
-  webServerGetPostSetup();
+    initializeWiFisoftAP();
   
-  webServer.serveStatic("/", SPIFFS, "/", "max-age=86400");
-
-  // Set up mDNS responder:
-  // - first argument is the domain name, in this example
-  //   the fully-qualified domain name is "esp8266.local"
-  // - second argument is the IP address to advertise
-  //   we send our IP address on the WiFi network
-//  if (!MDNS.begin("LlC")) {    //HOSTNAME //"esp8266"
-//    Serial.println("Error setting up MDNS responder!");
-//    while(1) { 
-//      delay(1000);
-//    }
-//  }
-//  Serial.println("mDNS responder started");
-
-  webServer.begin();
-  if (DEBUG_COMMS) { Serial.println("HTTP web server started"); }
-
-  webSocketsServer.begin();
-  webSocketsServer.onEvent(webSocketEvent);
-  if (DEBUG_COMMS) { Serial.println("Web socket server started"); }
-
-  /* Setup the DNS server redirecting all the domains to the apIP */  
-//  dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
-//  dnsServer.start(DNS_PORT, "*", WiFi.softAPIP());
-
-  // Add service to MDNS-SD
-//  MDNS.addService("http", "tcp", 80);
-  if (DEBUG_COMMS) { Serial.println("Comms started / WIFI on"); }
+    httpUpdateServer.setup(&webServer);
+  
+    webServerGetPostSetup();
+    
+    webServer.serveStatic("/", SPIFFS, "/", "max-age=86400");
+  
+    // Set up mDNS responder:
+    // - first argument is the domain name, in this example
+    //   the fully-qualified domain name is "esp8266.local"
+    // - second argument is the IP address to advertise
+    //   we send our IP address on the WiFi network
+  //  if (!MDNS.begin("LlC")) {    //HOSTNAME //"esp8266"
+  //    Serial.println("Error setting up MDNS responder!");
+  //    while(1) { 
+  //      delay(1000);
+  //    }
+  //  }
+  //  Serial.println("mDNS responder started");
+  
+    webServer.begin();
+    if (DEBUG_COMMS) { Serial.println(F("HTTP web server started")); }
+  
+    webSocketsServer.begin();
+    webSocketsServer.onEvent(webSocketEvent);
+    if (DEBUG_COMMS) { Serial.println(F("Web socket server started")); }
+  
+    /* Setup the DNS server redirecting all the domains to the apIP */  
+  //  dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
+  //  dnsServer.start(DNS_PORT, "*", WiFi.softAPIP());
+  
+    // Add service to MDNS-SD
+  //  MDNS.addService("http", "tcp", 80);
+    if (DEBUG_COMMS) { Serial.println(F("Comms started / WIFI on")); }
+  
+  }
 }
 
 void stopComms() {
@@ -46,22 +49,27 @@ void stopComms() {
   //httpUpdateServer ???
   WiFi.disconnect();
   WiFi.mode(WIFI_OFF);
-  if (DEBUG_COMMS) { Serial.println("Comms stopped / WIFI off"); }
+  if (DEBUG_COMMS) { Serial.println(F("Comms stopped / WIFI off")); }
 }
 
 void initializeWiFisoftAP() 
 {
   WiFi.mode(WIFI_AP);
-/*
-  String AP_NameString = String(HOSTNAME);              // 'LlC-'
-  AP_NameString += String(ESP.getChipId(), HEX);
-
- * Everyone else will get the above,
- * but as this is my board..           ...later
- */
-  //String AP_NameString = "LlC_Thurstan";
-  String AP_NameString = "LlC_Sama";
-  //String AP_NameString = "LlC_Drop";
+  String AP_NameString = "";
+  if (_curBoardProfile == 1) { 
+    /*
+     * Everyone else will get the last options,
+     * but as these are my boards..
+     */
+    AP_NameString = "LlC_Sama";  //Dervish Sama board
+    //String AP_NameString = "LlC_Thurstan";
+  } else if (_curBoardProfile == 2) {
+    AP_NameString = "LlC_Drop"; //Drop-down board
+  } else {
+    //plugged into the computer //board TEST
+    AP_NameString = String(HOSTNAME);              // 'LlC-'
+    AP_NameString += String(ESP.getChipId(), HEX);
+  }
  
   char AP_NameChar[AP_NameString.length() + 1];
   memset(AP_NameChar, 0, AP_NameString.length() + 1);
@@ -70,7 +78,7 @@ void initializeWiFisoftAP()
     AP_NameChar[i] = AP_NameString.charAt(i);
   }
 
-  if (DEBUG_COMMS) { Serial.println("Starting AP"); }
+  if (DEBUG_COMMS) { Serial.println(F("Starting AP")); }
   
   //if WiFi password in use
   if (WiFiAPPSK != NULL) {     
@@ -88,11 +96,11 @@ void initializeWiFisoftAP()
 //  ETS_UART_INTR_ENABLE();
 
   if (DEBUG_COMMS) { 
-  Serial.println("Connect to Wi-Fi access point: ");
+  Serial.println(F("Connect to Wi-Fi access point: "));
   Serial.println(AP_NameChar);
 
   delay(500); //without delay the IP address can sometimes be blank
-  Serial.println("AP IP address: ");
+  Serial.println(F("AP IP address: "));
   Serial.println(WiFi.softAPIP());
   }
 }
@@ -111,25 +119,25 @@ void webServerGetPostSetup()
   webServer.on("/main", HTTP_GET, []() {
     String json = getMainFieldsJson(fields, fieldCount);
     webServer.send(200, "text/json", json);
-    if (DEBUG_COMMS) { Serial.println("..all HTTP_GET"); }
+    if (DEBUG_COMMS) { Serial.println(F("..all HTTP_GET")); }
   });
   
   webServer.on("/safety", HTTP_GET, []() {
     String json = getSafetyFieldsJson();
     webServer.send(200, "text/json", json);
-    if (DEBUG_COMMS) { Serial.println("..safety HTTP_GET"); }
+    if (DEBUG_COMMS) { Serial.println(F("..safety HTTP_GET")); }
   });
   
   webServer.on("/calibration", HTTP_GET, []() {
     String json = getCalibrationFieldsJson();
     webServer.send(200, "text/json", json);
-    if (DEBUG_COMMS) { Serial.println("..calibration HTTP_GET"); }
+    if (DEBUG_COMMS) { Serial.println(F("..calibration HTTP_GET")); }
   });
   
   webServer.on("/stats", HTTP_GET, []() {
     String json = getStatsFieldsJson();
     webServer.send(200, "text/json", json);
-    if (DEBUG_COMMS) { Serial.println("..stats HTTP_GET"); }
+    if (DEBUG_COMMS) { Serial.println(F("..stats HTTP_GET")); }
   });
 
   

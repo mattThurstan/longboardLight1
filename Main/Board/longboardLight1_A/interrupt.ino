@@ -49,10 +49,10 @@ void wheelInterrupt0() {
   //for the ESP8266
   if (DEBUG_INTERRUPT == true) {
     if ( digitalRead(_wheelSensorPin) ) {
-      Serial.print("HIGH");
+      Serial.print(F("HIGH"));
       Serial.println();
     } else {
-      Serial.print("LOW");
+      Serial.print(F("LOW"));
       Serial.println();
     }
   }

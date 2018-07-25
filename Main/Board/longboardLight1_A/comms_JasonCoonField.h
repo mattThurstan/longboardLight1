@@ -55,7 +55,7 @@ String getMainFieldsJson(FieldList fields, uint8_t count) {
   for (uint8_t i = 0; i < count; i++) {
     Field field = fields[i];
 
-    if (field.name == "sleep" || field.name == "head" || field.name == "rear" || field.name == "brake" || field.name == "indicate" || field.name == "headBrightness" || field.name == "rearBrightness" || field.name == "quickCalibration" || field.name == "fullCalibration") { 
+    if (field.name == "sleep" || field.name == "head" || field.name == "rear" || field.name == "brake" || field.name == "indicate" || field.name == "headBrightness" || field.name == "rearBrightness" || field.name == "quickCalibration" || field.name == "fullCalibration" || field.name == "boardProfile" || field.name == "curBoardProfile") { 
       //quick hack (sorry) cos i dont want these on the main page
     } else {
       json += "{\"name\":\"" + field.name + "\",\"label\":\"" + field.label + "\",\"type\":\"" + field.type + "\"";
@@ -82,7 +82,7 @@ String getMainFieldsJson(FieldList fields, uint8_t count) {
   
       json += "}";
   
-      if (i < count - 10) {    // 1 + 6  how many do we need to miss off the end of the list? - hack
+      if (i < count - 10) {    // 1 + 11  how many do we need to miss off the end of the list? - hack
         json += ",";
       }
         
@@ -92,7 +92,7 @@ String getMainFieldsJson(FieldList fields, uint8_t count) {
   json += "]";
 
   if (DEBUG_COMMS) { 
-  Serial.print("/main HTTP_GET returns: ");
+  Serial.print(F("/main HTTP_GET returns: "));
   Serial.println(json);
   }
 
@@ -113,11 +113,13 @@ String getSafetyFieldsJson() {
 
   json += "{\"name\":\"head\",\"label\":\"Head Lights\",\"type\":\"Section\"},";
   json += "{\"name\":\"head\",\"label\":\"Head Lights\",\"type\":\"Boolean\",\"value\":" + String(mE.head) + "},";
-  json += "{\"name\":\"headBrightness\",\"label\":\"Brightness\",\"type\":\"Number\",\"value\":" + String(_headLightsBrightness) + "},";
+  //json += "{\"name\":\"headBrightness\",\"label\":\"Brightness\",\"type\":\"Number\",\"value\":" + String(_headLightsBrightness) + "},";
+  json += "{\"name\":\"headBrightness\",\"label\":\"Brightness\",\"type\":\"Number\",\"value\":" + String(_headLightsColHSV.val) + "},";
   
   json += "{\"name\":\"rear\",\"label\":\"Rear Lights\",\"type\":\"Section\"},";
   json += "{\"name\":\"rear\",\"label\":\"Rear Lights\",\"type\":\"Boolean\",\"value\":" + String(mE.rear) + "},";
-  json += "{\"name\":\"rearBrightness\",\"label\":\"Brightness\",\"type\":\"Number\",\"value\":" + String(_rearLightsBrightness) + "},";
+  //json += "{\"name\":\"rearBrightness\",\"label\":\"Brightness\",\"type\":\"Number\",\"value\":" + String(_rearLightsBrightness) + "},";
+  json += "{\"name\":\"rearBrightness\",\"label\":\"Brightness\",\"type\":\"Number\",\"value\":" + String(_rearLightsColHSV.val) + "},";
   
   json += "{\"name\":\"other\",\"label\":\"Other Lights\",\"type\":\"Section\"},";
   json += "{\"name\":\"brake\",\"label\":\"Brake Lights\",\"type\":\"Boolean\",\"value\":" + String(mE.brake) + "},";
@@ -126,7 +128,7 @@ String getSafetyFieldsJson() {
   json += "]";
 
   if (DEBUG_COMMS) { 
-  Serial.print("/safety HTTP_GET returns: ");
+  Serial.print(F("/safety HTTP_GET returns: "));
   Serial.println(json);
   }
 
@@ -146,7 +148,7 @@ String getCalibrationFieldsJson()
   json += "]";
 
   if (DEBUG_COMMS) { 
-  Serial.print("/calibration HTTP_GET returns: ");
+  Serial.print(F("/calibration HTTP_GET returns: "));
   Serial.println(json);
   }
 
@@ -177,6 +179,7 @@ String getStatsFieldsJson()
   //curSessionUptime
   //totalHrsAwake
   //totalHrsAsleep
+  //board Profile
   
   json += "{\"name\":\"extras\",\"label\":\"Extras\",\"type\":\"Section\"},";
   json += "{\"name\":\"wifiOff\",\"label\":\"Turn the WIFI off\",\"type\":\"Button\",\"value\":" + String(0) + "},";
@@ -187,7 +190,7 @@ String getStatsFieldsJson()
   json += "]";
 
   if (DEBUG_COMMS) { 
-  Serial.print("/stats HTTP_GET returns: ");
+  Serial.print(F("/stats HTTP_GET returns: "));
   Serial.println(json);
   }
   

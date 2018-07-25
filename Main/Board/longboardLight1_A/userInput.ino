@@ -46,6 +46,7 @@ void loopButtons() {
       //doing the bare minimum here
       if ( _button[0].fell() ) {
         _buttonToggled[0] = true;
+        setupSerial();  //this has to be seperated due to startup order
         startComms();
         if (DEBUG) { Serial.println(F("Button 0 fell - WIFI on")); }
       }
