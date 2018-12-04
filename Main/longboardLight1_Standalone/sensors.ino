@@ -28,22 +28,50 @@ void setupSensors() {
   }
 }
 
+bool _zeroTemp = false;
 /* Sensor input loop (called from Main loop) */
 void loopSensors() {
   loopOrientation();
   loopWheel();
+
+//  //TEMP
+//  EVERY_N_SECONDS(30) {
+//    if (_zeroTemp == o.GetZeroMotionStatus()) {
+//      if (_zeroTemp = 1) {
+//        mA.sleep == 1; //put to sleep
+//      } else { 
+//        mA.sleep == 0; //wake up again
+//      }
+//    }
+//    Serial.print(F("Zero-motion status = "));
+//    Serial.print(o.GetZeroMotionStatus());
+//    Serial.println();
+//  }
+//  _zeroTemp = o.GetZeroMotionStatus();
 }
 
 /*----------------------------MPU6050 sensor----------------------------*/
+byte _oTemp = 255;
+byte _dTemp = 255;
+
 void loopOrientation() {
   EVERY_N_MILLISECONDS(_mpu6050ReadInterval) { o.ReadFiltered(); }
   EVERY_N_MILLISECONDS(_orientationInterval) { 
     o.ReadOrientation(); 
     if (o.GetOrientation() == 0 &&_mainLightsSubMode == 3) { o.ReadDirection(); }   /* main lights sub-mode 3 will always be kept 3 cos of this void */
-    if (DEBUG_SENSORS) { 
-      Serial.print(F("Orientation = "));
-      Serial.print(o.GetOrientation());
-      Serial.println();
+    if (DEBUG_SENSORS) {
+      if (o.GetOrientation() != _oTemp ) {
+        Serial.print(F("Orientation = "));
+        Serial.print(o.GetOrientation());
+        Serial.println();
+      }
+      _oTemp = o.GetOrientation();
+      if (o.GetDirection() != _dTemp ) {
+        Serial.print(F("Direction = "));
+        Serial.print(o.GetDirection());
+        Serial.println();
+      }
+      _dTemp = o.GetDirection();
     }
   }
 }

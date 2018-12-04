@@ -1,9 +1,7 @@
 /*
-    'longboardLight1_A' by Thurstan. LED longboard lights with motion tracking.
+    'longboardLight1_Standalone' by Thurstan. LED longboard lights with motion tracking.
 
-    -- longboardLight1_A MOVED AT V0.305 TO D1 MINI (ESP8266 (ESP12E)) --
-    
-    Copyright (C) 2018  MTS Standish (mattThurstan)
+    Copyright (C) 2018 MTS Standish (mattThurstan)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,15 +34,15 @@ extern "C" {
 #include <ESP8266HTTPUpdateServer.h>
 #include <WebSocketsServer.h>
 #include <FS.h>                                   //file server
-#include <ArduinoJson.h>
+#include <ArduinoJson.h>                          //still using 5.13.2
 #include <Bounce2.h>                              //buttons with de-bounce
 #include <FastLED.h>                              //WS2812B LED strip control and effects
 #include <MT_BoardWheel.h>                        //(single version) attempt to move all board wheel related items to a single library
 #include <MT_BoardOrientation.h>                  //attempt to move all board mpu6050 sensor related items to a single library
 
 /*----------------------------system----------------------------*/
-const String _progName = "longboardLight1_A";
-const String _progVers = "0.360";                 //breathing and calibration
+const String _progName = "longboardLight1_Standalone";
+const String _progVers = "0.40";                 //split to Standalone/WIFI/Mesh
 const uint8_t _batteryPowered = 1; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
 //ADC_MODE(ADC_VCC);                                //think this is need to be able to use ESP.getVcc() later.. ??? hmm.. problems
 const int _mainLoopDelay = 8;                     //just in case  - using FastLED.delay instead..
@@ -58,10 +56,10 @@ boolean _firstTimeSetupDone = false;              //starts false
  */
 #define SERIAL_SPEED 115200                       //Serial coms baud speed
 
-boolean DEBUG = true;                             //realtime serial debugging output - general
-boolean DEBUG_SENSORS = true;                     //realtime serial debugging output - sensors
+boolean DEBUG = false;                             //realtime serial debugging output - general
+boolean DEBUG_SENSORS = false;                     //realtime serial debugging output - sensors
 boolean DEBUG_INTERRUPT = false;                  //realtime serial debugging output - interrupts
-boolean DEBUG_COMMS = true;                       //realtime serial debugging output - comms
+boolean DEBUG_COMMS = false;                       //realtime serial debugging output - comms
 
 boolean DATA_LOGGING = true;                      //turn data logging on or off eg. rps/mps, dist travelled, etc. ( Note: tracking led mode ticks up _ledsMovePos - NOT this )
 

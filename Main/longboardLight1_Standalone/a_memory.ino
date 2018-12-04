@@ -81,7 +81,17 @@ void setDefaultSettings() {
   //offsets not done yet, requires splitting numbers, or just wait till get replacement board with WIFI/Bluetooth and more memory
   //not going to hold these in memory here as that would be duplicating what is in the library
   //_mpu6050AccelOffset[3] = {436, 1956, 1318};       //XYZ accel offsets to write to the MPU6050 - get from full calibration and save to memory
+  int16_t ao[3];
+  ao[0] = -566;
+  ao[1] = -6153;
+  ao[2] = 1511;
+  o.SetMPU6050AccelOffset(ao);
   //_mpu6050GyroOffset[3] = {9, -32, 69};             //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
+  int16_t go[3];
+  go[0] = -16;
+  go[1] = -14;
+  go[2] = -5;
+  o.SetMPU6050GyroOffset(go);
 }
 
 void loadAllSettings() {
