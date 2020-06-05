@@ -1,5 +1,6 @@
 # longboardLight1
-LED longboard light setup, by Thurstan
+LED longboard light setup, by Thurstan <br> 
+https://hackaday.io/project/26919-longboardlight1
 
 Repository is an Arduino project
 
