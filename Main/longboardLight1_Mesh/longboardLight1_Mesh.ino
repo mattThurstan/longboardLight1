@@ -1,7 +1,7 @@
 /*
     'longboardLight1_Mesh' by Thurstan. LED longboard lights with motion tracking.
 
-    Copyright (C) 2019 MTS Standish (mattThurstan)
+    Copyright (C) 2020 MTS Standish (mattThurstan)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,10 +24,10 @@
 
 
 /*----------------------------libraries----------------------------*/
+#include <MT_LightControlDefines.h>               // my network defines
 #include <EEPROM.h>                               // ESP8266 style EEPROM (using 512 bytes) - WeMos D1 (R2 &) mini, 80 MHz, 115200 baud, 4M, (3M SPIFFS)
 #include <FastLED.h>                              // WS2812B LED strip control and effects
 #include "painlessMesh.h"                         // painless mesh network
-#include <MT_LightControlDefines.h>               // my network defines
 #include <Bounce2.h>                              // buttons with de-bounce
 #include <MT_BoardWheel.h>                        // (single version) attempt to move all board wheel related items to a single library
 #include <MT_BoardOrientation.h>                  // attempt to move all board mpu6050 sensor related items to a single library
