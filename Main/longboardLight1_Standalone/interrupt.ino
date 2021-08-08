@@ -63,8 +63,8 @@ void wheelInterrupt0() {
   }
 
   //not sure if arduino pro mini 328 5V 16MHz is fast enough to do this ??? - seems ok so far..
+  // ESP8266 - runs fine, occasionally stutters when clashing with WIFI traffic.
   if (o.GetDirection() == 0) { _ledMovePos++; /*forward*/ }
   else if (o.GetDirection() == 1) { _ledMovePos--; /*backward*/ }
   
 }
-

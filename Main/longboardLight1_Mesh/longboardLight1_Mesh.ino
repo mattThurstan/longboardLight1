@@ -1,7 +1,7 @@
 /*
     'longboardLight1_Mesh' by Thurstan. LED longboard lights with motion tracking.
 
-    Copyright (C) 2020 MTS Standish (mattThurstan)
+    Copyright (C) 2021 MTS Standish (mattThurstan)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -266,7 +266,7 @@ void loop() {
   else if (_doQuickCalibration == 1) { quickCalibration(); }   //..if not, try for a quick one - this has issues!
   else {
     //run the loop normally
-    loopUserInputs();   //if a board with more interrupts for the buttons, that would cut out this whole loop!
+    loopUserInputs();   // a board with more interrupts for the buttons would cut out this whole loop!
     loopSensors();
     loopModes();
   }

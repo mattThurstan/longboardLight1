@@ -58,7 +58,12 @@ void loopOrientation() {
   EVERY_N_MILLISECONDS(_mpu6050ReadInterval) { o.ReadFiltered(); }
   EVERY_N_MILLISECONDS(_orientationInterval) { 
     o.ReadOrientation(); 
-    if (o.GetOrientation() == 0 &&_mainLightsSubMode == 3) { o.ReadDirection(); }   /* main lights sub-mode 3 will always be kept 3 cos of this void */
+
+    // Always 3 cos of sensors loopOrientation()
+    // Pattern 3 - loopTrackLights, "Track (basic)"
+    // main lights sub-mode 3 will always be kept 3 because of the following conditions:
+    if (o.GetOrientation() == 0 &&_mainLightsSubMode == 3) { o.ReadDirection(); }   /* 3 cos of sub-mode 3 */
+    
     if (DEBUG_SENSORS) {
       if (o.GetOrientation() != _oTemp ) {
         Serial.print(F("Orientation = "));
@@ -91,4 +96,3 @@ void loopWheel() {
     } //END timed-loop
   #endif  //END if DATA_LOGGING
 } //END loopWheel
-

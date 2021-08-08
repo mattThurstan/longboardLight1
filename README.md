@@ -34,7 +34,7 @@ Lighting system for a longboard. Using sensors to control brake lights, indicato
 - VVVV
 
 ### Licence
-- Written by MTS Standish (Thurstan|mattKsp) 2016
+- Written by MTS Standish (Thurstan|mattKsp) 2021
 - Released under GNU GPLv3 (see LICENCE file)
 
 This software is provided on an "AS-IS-BASIS"

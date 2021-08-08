@@ -1,7 +1,7 @@
 /*
     'longboardLight1_Standalone' by Thurstan. LED longboard lights with motion tracking.
 
-    Copyright (C) 2018 MTS Standish (mattThurstan)
+    Copyright (C) 2021 MTS Standish (mattThurstan)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -42,8 +42,8 @@ extern "C" {
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_Standalone";
-const String _progVers = "0.40";                 //split to Standalone/WIFI/Mesh
-const uint8_t _batteryPowered = 1; //take away const if power charge sensing ever gets implemented  //are we running on battery or plugged into the computer?
+const String _progVers = "0.41";                 // Standalone cleanup
+const uint8_t _batteryPowered = 1; //take away const if power charge sensing is implemented  //are we running on battery or plugged into the computer?
 //ADC_MODE(ADC_VCC);                                //think this is need to be able to use ESP.getVcc() later.. ??? hmm.. problems
 const int _mainLoopDelay = 8;                     //just in case  - using FastLED.delay instead..
 #define UPDATES_PER_SECOND 0           //120      //main loop FastLED show delay - 1000/120
@@ -458,4 +458,3 @@ void loop() {
 
   EVERY_N_MILLISECONDS( 20 ) { gHue++; } // slowly cycle the "base color" through the rainbow
 }
-
