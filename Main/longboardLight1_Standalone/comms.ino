@@ -62,7 +62,6 @@ void initializeWiFisoftAP()
      * but as these are my boards..
      */
     AP_NameString = "LlC_Sama";  //Dervish Sama board
-    //String AP_NameString = "LlC_Thurstan";
   } else if (_curBoardProfile == 2) {
     AP_NameString = "LlC_Drop"; //Drop-down board
   } else {
@@ -99,7 +98,7 @@ void initializeWiFisoftAP()
   Serial.println(F("Connect to Wi-Fi access point: "));
   Serial.println(AP_NameChar);
 
-  delay(500); //without delay the IP address can sometimes be blank
+  delay(500); // Without a delay the IP address can sometimes be blank.
   Serial.println(F("AP IP address: "));
   Serial.println(WiFi.softAPIP());
   }
@@ -108,12 +107,12 @@ void initializeWiFisoftAP()
 void handleRoot() { /* ??? */ }
 void handleNotFound() { /* ??? */ }
 
-//all the web get and post setup package requests you will ever need
+/* All the web get and post setup package requests you will ever need (apparently) */
 void webServerGetPostSetup() 
 {
   //webServer.on("/", handleRoot);
-  webServer.on("/generate_204", handleRoot);    //Android captive portal.
-  webServer.on("/fwlink", handleRoot);             //Microsoft captive portal.
+  webServer.on("/generate_204", handleRoot);        // Android captive portal.
+  webServer.on("/fwlink", handleRoot);              // Microsoft captive portal.
   webServer.onNotFound ( handleNotFound );
   
   webServer.on("/main", HTTP_GET, []() {
@@ -238,4 +237,3 @@ void webServerGetPostSetup()
 //  });
 //  
 }
-

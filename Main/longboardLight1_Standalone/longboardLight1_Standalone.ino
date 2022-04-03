@@ -42,7 +42,7 @@ extern "C" {
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_Standalone";
-const String _progVers = "0.41";                 // Standalone cleanup
+const String _progVers = "0.42";                 // Standalone cleanup 2
 const uint8_t _batteryPowered = 1; //take away const if power charge sensing is implemented  //are we running on battery or plugged into the computer?
 //ADC_MODE(ADC_VCC);                                //think this is need to be able to use ESP.getVcc() later.. ??? hmm.. problems
 const int _mainLoopDelay = 8;                     //just in case  - using FastLED.delay instead..
@@ -108,7 +108,9 @@ const byte _buttonPin[_buttonTotal] = { 2 }; //2 //D4, { 2, 16 } //array of user
 MT_BoardWheel w;
 
 /*----------------------------sensors - MPU6050 6-axis----------------------------*/
-/* MPU6050:             X=Right/Left, Y=Forward/Backward, Z=Up/Down
+/* MPU6050 - (GY-521 breakout board)
+ *  
+ * MPU6050:             X=Right/Left, Y=Forward/Backward, Z=Up/Down
  * orientation (byte):  0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
  * direction (byte):    -1=stationary, 0=forward, 1=back, 2=up, 3=down, 4=left, 5=right
  */
@@ -379,6 +381,7 @@ void setup() {
     Serial.println();
   }
 
+  // Print a list of files.
   SPIFFS.begin();
   {
     Dir dir = SPIFFS.openDir("/");
