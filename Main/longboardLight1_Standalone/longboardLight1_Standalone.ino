@@ -1,7 +1,7 @@
 /*
     'longboardLight1_Standalone' by Thurstan. LED longboard lights with motion tracking.
 
-    Copyright (C) 2021 MTS Standish (mattThurstan)
+    Copyright (C) 2026 MTS Standish (mattThurstan)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,27 +22,43 @@
     https://github.com/jasoncoon/esp8266-fastled-webserver
 */
 
+/*
+    For CodeCell C6 (ESP32-C6):
+    - Board: ESP32C6 Dev Module
+    - USB CDC On Boot: Enabled   // required for Serial over USB
+    - CPU Frequency: 160 MHz
+    - Flash Size: 8 MB (64 Mb)
+    - Partition Scheme: 8M with SPIFFS (3 MB APP / 1.5 MB SPIFFS)
+    - Port: Select the COM port for your CodeCell C6
+*/
 
-extern "C" {
-#include "user_interface.h"                       //for ESP8266 library access
-}
+//extern "C" {
+//#include "user_interface.h"                       //for ESP8266 library access   ???
+//}
+#include "esp_partition.h"                        //to check existing data partitions in Flash memory
 
 /*----------------------------libraries----------------------------*/
-#include <EEPROM.h>                               //ESP8266 style EEPROM (using 512 bytes) - WeMos D1 (R2 &) mini, 80 MHz, 115200 baud, 4M, (3M SPIFFS)
-#include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
-#include <ESP8266HTTPUpdateServer.h>
+#include <EEPROM.h>                               //
+#include <SPIFFS.h>                               //file server
+//#include <FS.h>                                   
+//#include <LittleFS.h>
+#include "Zigbee.h"
+//#include <ESP8266WiFi.h>
+//#include <ESP8266WebServer.h>
+//#include <ESP8266HTTPUpdateServer.h>
+#include <WiFi.h>
+#include <WebServer.h>
+#include <HTTPUpdateServer.h>
 #include <WebSocketsServer.h>
-#include <FS.h>                                   //file server
 #include <ArduinoJson.h>                          //still using 5.13.2
 #include <Bounce2.h>                              //buttons with de-bounce
 #include <FastLED.h>                              //WS2812B LED strip control and effects
 #include <MT_BoardWheel.h>                        //(single version) attempt to move all board wheel related items to a single library
-#include <MT_BoardOrientation.h>                  //attempt to move all board mpu6050 sensor related items to a single library
+#include <MT_BoardOrientationMPU6050.h>           //attempt to move all board mpu6050 sensor related items to a single library
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_Standalone";
-const String _progVers = "0.42";                 // Standalone cleanup 2
+const String _progVers = "0.5";                   // Move to ESP32-C6. Toggle between WIFI and Zigbee on startup.
 const uint8_t _batteryPowered = 1; //take away const if power charge sensing is implemented  //are we running on battery or plugged into the computer?
 //ADC_MODE(ADC_VCC);                                //think this is need to be able to use ESP.getVcc() later.. ??? hmm.. problems
 const int _mainLoopDelay = 8;                     //just in case  - using FastLED.delay instead..
@@ -56,7 +72,7 @@ boolean _firstTimeSetupDone = false;              //starts false
  */
 #define SERIAL_SPEED 115200                       //Serial coms baud speed
 
-boolean DEBUG = false;                             //realtime serial debugging output - general
+boolean DEBUG_GEN = false;                             //realtime serial debugging output - general
 boolean DEBUG_SENSORS = false;                     //realtime serial debugging output - sensors
 boolean DEBUG_INTERRUPT = false;                  //realtime serial debugging output - interrupts
 boolean DEBUG_COMMS = false;                       //realtime serial debugging output - comms
@@ -124,9 +140,11 @@ MT_BoardOrientation o;							  //declaration - sets defaults
 const char WiFiAPPSK[] = "";                      // AP mode password
 #define HOSTNAME "LlC_"                           //< WIFI Hostname. The initializeWiFi function adds a name or the Chip ID at the end.
 
-ESP8266WebServer webServer(80);
+//ESP8266WebServer webServer(80);
+WebServer webServer(80);
 WebSocketsServer webSocketsServer = WebSocketsServer(81);
-ESP8266HTTPUpdateServer httpUpdateServer;
+//ESP8266HTTPUpdateServer httpUpdateServer;
+HTTPUpdateServer httpUpdateServer;
 const byte DNS_PORT = 53;
 //DNSServer dnsServer;
 
@@ -254,8 +272,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
       {
         if (DEBUG_COMMS) { Serial.printf("[%u] get Text: %s\n", num, payload); }
 
-        StaticJsonBuffer<200> _jsonBuffer;
-        JsonObject& parsed = _jsonBuffer.parseObject(payload); //Parse message
+        //StaticJsonBuffer<200> _jsonBuffer;
+        JsonDocument _jsonBuffer; //doc  _jsonDoc
+        //JsonObject& parsed = _jsonBuffer.parseObject(payload); //Parse message
+        JsonObject parsed = _jsonBuffer.parseObject(payload); //Parse message
         
         if (!parsed.success()) {   //Check for errors in parsing
           if (DEBUG_COMMS) { Serial.println( F("Parsing failed") ); }
@@ -359,40 +379,32 @@ void setup() {
   
   EEPROM.begin(512);                              //tell it we are using an EEPROM area of 512 bytes
   setupSerial();                                  //..see 'util'
+  setupFileServer();
   loadAllSettings();                              //load any saved settings eg. save state when turn board power off. - not fully implemented yet !!!
   setupInterrupts();                              //set any interrupts..
   delay(3000);                                    //..after setting interrupts, give the power, LED strip, etc. a couple of secs to stabilise
 
-  if (DEBUG) { 
+  if (DEBUG_GEN) { 
     Serial.println();
     Serial.print( F("Welcome to Gardening For Nomes part 4!") ); Serial.println();
     Serial.print( F("Your host for todays proceedings is.. ") ); //Serial.println();
     //Serial.print( F("Program Name: ") ); 
     Serial.println(_progName);
     Serial.print( F("Program Version: ") ); Serial.println(_progVers);
-    Serial.print( F("Heap: ") ); Serial.println(system_get_free_heap_size());
-    Serial.print( F("Boot Vers: ") ); Serial.println(system_get_boot_version());
-    Serial.print( F("CPU: ") ); Serial.println(system_get_cpu_freq());
-    Serial.print( F("SDK: ") ); Serial.println(system_get_sdk_version());
-    Serial.print( F("Chip ID: ") ); Serial.println(system_get_chip_id());
-    Serial.print( F("Flash ID: ") ); Serial.println(spi_flash_get_id());
-    Serial.print( F("Flash Size: ") ); Serial.println(ESP.getFlashChipRealSize());
-    Serial.print( F("Vcc: ") ); Serial.println(ESP.getVcc());
+    //Serial.print( F("Heap: ") ); Serial.println(system_get_free_heap_size());
+    Serial.print( F("Heap: ") ); Serial.println(esp_get_free_heap_size());
+    //Serial.print( F("Boot Vers: ") ); Serial.println(system_get_boot_version());
+    //Serial.print( F("CPU: ") ); Serial.println(system_get_cpu_freq());
+    //Serial.print( F("SDK: ") ); Serial.println(system_get_sdk_version());
+    Serial.print( F("SDK: ") ); Serial.println(esp_get_idf_version());
+    //Serial.print( F("Chip ID: ") ); Serial.println(system_get_chip_id());
+    //Serial.print( F("Flash ID: ") ); Serial.println(spi_flash_get_id());
+    //Serial.print( F("Flash Size: ") ); Serial.println(ESP.getFlashChipRealSize());
+    Serial.print( F("Flash Size: ") ); Serial.println(ESP.getFlashChipSize());
+    //Serial.print( F("Vcc: ") ); Serial.println(ESP.getVcc());
     Serial.println();
   }
-
-  // Print a list of files.
-  SPIFFS.begin();
-  {
-    Dir dir = SPIFFS.openDir("/");
-    while (dir.next()) {
-      String fileName = dir.fileName();
-      size_t fileSize = dir.fileSize();
-      if (DEBUG) { Serial.printf("FS File: %s, size: %s\n", fileName.c_str(), String(fileSize).c_str()); }
-    }
-    if (DEBUG) { Serial.printf("\n"); }
-  }
-  
+ 
   startComms();                                   //WIFI gets turned on by a physical button. WIFI gets turned off via webpage or by the board going to sleep.
   
   setupLEDs();                                    //setup LEDs first and then use as setup indicator lights
@@ -415,7 +427,7 @@ void setup() {
   _orientationTestSideMidpoint = ledSegment[1].total / 2; //change it later, easier for 2 segments
   //checkStartupButtons();  //check to see if any button has been held down during startup eg. full calibration
   //
-  if (DEBUG) { 
+  if (DEBUG_GEN) { 
   //everything done? ok then..
     Serial.print( F("Setup done") );
     Serial.println();
@@ -430,7 +442,7 @@ void setup() {
 
 void loop() {
 /*  if(_firstTimeSetupDone == false) {
-    if (DEBUG) { } 
+    if (DEBUG_GEN) { } 
     //
     _firstTimeSetupDone = true;
   }

@@ -67,7 +67,8 @@ void initializeWiFisoftAP()
   } else {
     //plugged into the computer //board TEST
     AP_NameString = String(HOSTNAME);              // 'LlC-'
-    AP_NameString += String(ESP.getChipId(), HEX);
+    //AP_NameString += String(ESP.getChipId(), HEX);
+    AP_NameString += String(chipId, HEX);
   }
  
   char AP_NameChar[AP_NameString.length() + 1];
@@ -103,6 +104,16 @@ void initializeWiFisoftAP()
   Serial.println(WiFi.softAPIP());
   }
 }
+
+uint32_t chipId() 
+{
+  uint32_t id = 0;
+  for(int i=0; i<17; i=i+8) {
+    id |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+  }
+  //Serial.printf("%08X\n", id);
+  return id;
+} 
 
 void handleRoot() { /* ??? */ }
 void handleNotFound() { /* ??? */ }

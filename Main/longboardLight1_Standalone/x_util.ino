@@ -12,9 +12,9 @@ String getBatteryLevel() {
 /*----------------------------util - serial----------------------------*/
 void setupSerial() {
   
-  if (_wifiActive || DEBUG || DEBUG_INTERRUPT || DEBUG_COMMS || DATA_LOGGING) { 
+  if (_wifiActive || DEBUG_GEN || DEBUG_INTERRUPT || DEBUG_COMMS || DATA_LOGGING) { 
     Serial.begin(SERIAL_SPEED);
-    if (DEBUG) {
+    if (DEBUG_GEN) {
       delay(100);
       //Serial.setDebugOutput(true);    // ???
       //_inputString.reserve(200);              // reserve 200 bytes for the inputString:
@@ -30,7 +30,7 @@ void setupSerial() {
 }
 
 void stopSerial() {
-  if (!_wifiActive && !DEBUG && !DEBUG_INTERRUPT && !DEBUG_COMMS && !DATA_LOGGING) { 
+  if (!_wifiActive && !DEBUG_GEN && !DEBUG_INTERRUPT && !DEBUG_COMMS && !DATA_LOGGING) { 
     Serial.end(); 
   }
 }
@@ -42,7 +42,7 @@ void stopSerial() {
  response.  Multiple bytes of data may be available.
  */
 //void serialEvent() {
-//  #ifdef DEBUG
+//  #ifdef DEBUG_GEN
 //    while (Serial.available()) {
 //      char inChar = (char)Serial.read();      // get the new byte:
 //      _inputString += inChar;                 // add it to the inputString:

@@ -39,7 +39,7 @@ void setBreathe(uint8_t value)
   EEPROM.write(2, mE.breathe);
   EEPROM.commit();
   broadcastInt("breathe", mE.breathe);
-  if (DEBUG) { Serial.println(F("setBreathe(lights)")); }
+  if (DEBUG_GEN) { Serial.println(F("setBreathe(lights)")); }
 }
 
 void setHead(uint8_t value) 
@@ -48,7 +48,7 @@ void setHead(uint8_t value)
   EEPROM.write(3, mE.head);
   EEPROM.commit();
   broadcastInt("head", mE.head);
-  if (DEBUG) { Serial.println(F("setHead(lights)")); }
+  if (DEBUG_GEN) { Serial.println(F("setHead(lights)")); }
 }
 
 void setRear(uint8_t value) {
@@ -56,7 +56,7 @@ void setRear(uint8_t value) {
   EEPROM.write(4, mE.rear);
   EEPROM.commit();
   broadcastInt("rear", mE.rear);
-  if (DEBUG) { Serial.println(F("setRear(lights)")); }
+  if (DEBUG_GEN) { Serial.println(F("setRear(lights)")); }
 }
 
 void setBrake(uint8_t value) {
@@ -64,7 +64,7 @@ void setBrake(uint8_t value) {
   EEPROM.write(5, mE.brake);
   EEPROM.commit();
   broadcastInt("brake", mE.brake);
-  if (DEBUG) { Serial.println(F("setBrake(lights)")); }
+  if (DEBUG_GEN) { Serial.println(F("setBrake(lights)")); }
 }
 
 void setIndicate(uint8_t value) {
@@ -72,7 +72,7 @@ void setIndicate(uint8_t value) {
   EEPROM.write(6, mE.indicate);
   EEPROM.commit();
   broadcastInt("indicate", mE.indicate);
-  if (DEBUG) { Serial.println(F("setIndicate(lights)")); }
+  if (DEBUG_GEN) { Serial.println(F("setIndicate(lights)")); }
 }
 
 /*----------------------------set value - testing----------------------------*/
@@ -116,7 +116,7 @@ void setGlobalBrightness(uint8_t value)
   EEPROM.write(9, _ledGlobalBrightnessCur);
   EEPROM.commit();
   broadcastInt("globalBrightness", _ledGlobalBrightnessCur);
-  if (DEBUG) { Serial.print( F("Global Brightness set to: ") ); Serial.println(_ledGlobalBrightnessCur); }
+  if (DEBUG_GEN) { Serial.print( F("Global Brightness set to: ") ); Serial.println(_ledGlobalBrightnessCur); }
 }
 
 void setHeadBrightness(uint8_t value) {
@@ -126,9 +126,9 @@ void setHeadBrightness(uint8_t value) {
   EEPROM.write(10, _headLightsColHSV.val);
   EEPROM.commit();
   //broadcastInt("headBrightness", _headLightsBrightness);
-  //if (DEBUG) { Serial.print( F("Head Lights Brightness set to: ") ); Serial.println(_headLightsBrightness); }
+  //if (DEBUG_GEN) { Serial.print( F("Head Lights Brightness set to: ") ); Serial.println(_headLightsBrightness); }
   broadcastInt("headBrightness", _headLightsColHSV.val);
-  if (DEBUG) { Serial.print( F("Head Lights Brightness set to: ") ); Serial.println(_headLightsColHSV.val); }
+  if (DEBUG_GEN) { Serial.print( F("Head Lights Brightness set to: ") ); Serial.println(_headLightsColHSV.val); }
 }
 
 void setRearBrightness(uint8_t value) {
@@ -138,9 +138,9 @@ void setRearBrightness(uint8_t value) {
   EEPROM.write(11, _rearLightsColHSV.val);
   EEPROM.commit();
   //broadcastInt("rearBrightness", _rearLightsBrightness);
-  //if (DEBUG) { Serial.print( F("Rear Lights Brightness set to: ") ); Serial.println(_rearLightsBrightness); }
+  //if (DEBUG_GEN) { Serial.print( F("Rear Lights Brightness set to: ") ); Serial.println(_rearLightsBrightness); }
   broadcastInt("rearBrightness", _rearLightsColHSV.val);
-  if (DEBUG) { Serial.print( F("Rear Lights Brightness set to: ") ); Serial.println(_rearLightsColHSV.val); }
+  if (DEBUG_GEN) { Serial.print( F("Rear Lights Brightness set to: ") ); Serial.println(_rearLightsColHSV.val); }
 }
 
 void setTrackLightsFadeAmount(uint8_t value) {
@@ -148,7 +148,7 @@ void setTrackLightsFadeAmount(uint8_t value) {
   EEPROM.write(12, _trackLightsFadeAmount);
   EEPROM.commit();
   broadcastInt("trackLightsFadeAmount", _trackLightsFadeAmount);
-  if (DEBUG) { Serial.print( F("Track Lights Fade Amount set to: ") ); Serial.println(_trackLightsFadeAmount); }
+  if (DEBUG_GEN) { Serial.print( F("Track Lights Fade Amount set to: ") ); Serial.println(_trackLightsFadeAmount); }
 }
 
 //void setSolidColor(CRGB color) { setSolidColor(color.r, color.g, color.b); }

@@ -9,21 +9,19 @@ Lighting system for a longboard. Using sensors to control brake lights, indicato
 
 ### Equipment
 #### Hardware
-- Arduino Mini Pro board
-  * 5v
-  * ATmega328
-  * 16 MHz clock speed
-  * 1K EEPROM
-- D1 Mini board
-  * 3.3v
-  * ESP8266
+- CodeCell C6 
+  * ESP32-C6-MINI-1-H8
+  * 3.3v/5v
+  * 8MB Flash + 512KB SRAM
+  * WiFi 6 / BLE 5 / Zigbee
+  * BQ24232 battery management
+  * VCNL4040 light sensor / proximity
+  * BN0085 9-axis IMU
 - WS2812B addressable LED strips
   * pixel order = GRB
-- Movement sensors
-  * ~~ADXL335~~
-  * MPU6050 (GY-521 breakout board)
+  * approx. 2A
 - Wheel tracking sensor
-  * probably hall effect sensor and magnets
+  * hall effect sensor and magnets
 - 7.4V LiPo Battery
 - >6V to 5V Convertor
   
@@ -31,10 +29,9 @@ Lighting system for a longboard. Using sensors to control brake lights, indicato
 - Arduino
 - FastLED library  https://github.com/FastLED/FastLED
 - I2CdevLib  https://www.i2cdevlib.com  https://github.com/jrowberg/i2cdevlib
-- VVVV
 
 ### Licence
-- Written by MTS Standish (Thurstan|mattKsp) 2021
+- Written by MTS Standish (Thurstan|mattKsp) 2026
 - Released under GNU GPLv3 (see LICENCE file)
 
 This software is provided on an "AS-IS-BASIS"
@@ -62,3 +59,4 @@ http://www.geekmomprojects.com/gyroscopes-and-accelerometers-on-a-chip/ <br>
 http://engineering.stackexchange.com/questions/3348/calculating-pitch-yaw-and-roll-from-mag-acc-and-gyro-data <br> 
 http://www.nxp.com/assets/documents/data/en/application-notes/AN3461.pdf <br> 
 http://theboredengineers.com/2012/09/the-quadcopter-get-its-orientation-from-sensors/ <br> 
+https://microbots.io/products/codecell-c6?srsltid=AfmBOopTWXuwjsbL_Bt63ITD7-n81sR28a9Ag49fXUb-_uSjcXBQ-8W9 <br>

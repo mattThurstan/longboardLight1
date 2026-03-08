@@ -46,9 +46,9 @@ void loopButtons() {
       //doing the bare minimum here
       if ( _button[0].fell() ) {
         _buttonToggled[0] = true;
-        setupSerial();  //this has to be seperated due to startup order
-        startComms();
-        if (DEBUG) { Serial.println(F("Button 0 fell - WIFI on")); }
+        //setupSerial();  //this has to be seperated due to startup order
+        //startComms();
+        if (DEBUG_GEN) { Serial.println(F("Button 0 fell - WIFI on")); }
       }
       
     }
@@ -78,7 +78,7 @@ void loopButtons() {
 //          //  if (_sleepActive == true) { _sleepActive = false; } 
 //          //  else if (_sleepActive == false) { _sleepActive = true; }
 //        } 
-//        #ifdef DEBUG
+//        #ifdef DEBUG_GEN
 //          Serial.print(F("Button fell "));
 //          Serial.print(i);
 //          Serial.println();

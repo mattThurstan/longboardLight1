@@ -1,13 +1,13 @@
 /*----------------------------calibration----------------------------*/
 
 void quickCalibration() {
-  if (DEBUG) { 
+  if (DEBUG_GEN) { 
     Serial.print(F("Quick calibration started"));
     Serial.println();
   }
   delay(3000);      //..it's all ok, we really do want to halt the thread!
   o.QuickCalibration();
-  if (DEBUG) { 
+  if (DEBUG_GEN) { 
     Serial.print(F("Quick calibration done"));
     Serial.println();
   }
@@ -16,7 +16,7 @@ void quickCalibration() {
 }
 
 void fullCalibration() {
-  if (DEBUG) { 
+  if (DEBUG_GEN) { 
     Serial.println(F("Full calibration started"));
     Serial.println(F("Current.."));
 	printCalibrationOffsets();
@@ -35,7 +35,7 @@ void fullCalibration() {
   mWriteInt(50, o.GetMPU6050GyroOffsetZ());
   EEPROM.commit();
   
-  if (DEBUG) 
+  if (DEBUG_GEN) 
   {
 	Serial.println(F("Results.."));
 	printCalibrationOffsets();

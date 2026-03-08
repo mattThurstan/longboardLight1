@@ -160,7 +160,8 @@ String getStatsFieldsJson()
   String smaxMps = String(w.GetMaxMps());
   String sdistTraveledForward = String(w.GetDistTraveledForward());
   String sdistTraveledBackward = String(w.GetDistTraveledBackward());
-  String vcc = String(ESP.getVcc());
+  //String vcc = String(ESP.getVcc());  //ESP8266
+  String vcc = "5.0v";
   
   String json = "[";
 

@@ -1,4 +1,25 @@
 /*----------------------------memory load/save---------------------*/
+void setupFileServer() {
+  if (!SPIFFS.begin(true)) {
+    if (DEBUG_GEN) { Serial.println("An error occurred whilst mounting SPIFFS"); }
+    return; 
+  }
+}
+
+/*
+  // Print a list of files.
+  SPIFFS.begin();
+  {
+    Dir dir = SPIFFS.openDir("/");
+    while (dir.next()) {
+      String fileName = dir.fileName();
+      size_t fileSize = dir.fileSize();
+      if (DEBUG_GEN) { Serial.printf("FS File: %s, size: %s\n", fileName.c_str(), String(fileSize).c_str()); }
+    }
+    if (DEBUG_GEN) { Serial.printf("\n"); }
+  }
+*/ 
+}
 
 /*
  * NOTE - all eeprom saves will be wiped when a new sketch is uploaded, but will persist thru normal use.
@@ -54,7 +75,7 @@
  * 
  */
 void setDefaultSettings() {
-  if (DEBUG) { 
+  if (DEBUG_GEN) { 
     Serial.print(F("Setting default settings"));
     Serial.println();
   }
@@ -99,7 +120,7 @@ void loadAllSettings() {
   
   //if system settings saved flag set at pos 7 is '1', then we have system data to be read from memory.. failsafe
   if (EEPROM.read(7) == 1) {
-    if (DEBUG) { 
+    if (DEBUG_GEN) { 
       Serial.print(F("Loading settings"));
       Serial.println();
     }
@@ -153,7 +174,7 @@ void loadAllSettings() {
 }
 
 void saveAllSettings() {
-  if (DEBUG) { 
+  if (DEBUG_GEN) { 
     Serial.print(F("Saving settings"));
     Serial.println();
   }
@@ -186,7 +207,7 @@ void saveAllSettings() {
 
 //this is the one to call..
 void clearAllSettings() {
-  if (DEBUG) { 
+  if (DEBUG_GEN) { 
     Serial.print(F("Clearing settings"));
     Serial.println();
   }
