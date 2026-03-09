@@ -41,7 +41,7 @@
 #include <SPIFFS.h>                               //file server
 //#include <FS.h>                                   
 //#include <LittleFS.h>
-#include "Zigbee.h"
+//#include "Zigbee.h"
 //#include <ESP8266WiFi.h>
 //#include <ESP8266WebServer.h>
 //#include <ESP8266HTTPUpdateServer.h>
@@ -49,7 +49,7 @@
 #include <WebServer.h>
 #include <HTTPUpdateServer.h>
 #include <WebSocketsServer.h>
-#include <ArduinoJson.h>                          //still using 5.13.2
+#include <ArduinoJson.h>                          
 #include <Bounce2.h>                              //buttons with de-bounce
 #include <FastLED.h>                              //WS2812B LED strip control and effects
 #include <MT_BoardWheel.h>                        //(single version) attempt to move all board wheel related items to a single library
@@ -57,20 +57,22 @@
 
 /*----------------------------system----------------------------*/
 const String _progName = "longboardLight1_CodeCellC6";
-const String _progVers = "0.51";                  // Move to ESP32-C6.
+const String _progVers = "0.51";                  // Moved to CodeCell C6.
 const uint8_t _batteryPowered = 1; //take away const if power charge sensing is implemented  //are we running on battery or plugged into the computer?
 //ADC_MODE(ADC_VCC);                                //think this is need to be able to use ESP.getVcc() later.. ??? hmm.. problems
 
-const int _mainLoopDelay = 0;                     //8
-//#define UPDATES_PER_SECOND 0           //120      //main loop FastLED show delay - 1000/120
 boolean _firstTimeSetupDone = false;              //starts false
+
+const int _mainLoopDelay = 0;                     //8
+const uint8_t _codeCellRunInterval = 20;          //10(times per sec)=(every)100ms, 20=50ms, 25=40ms, (30=recurring), 40=25ms, 50=20ms, 100=10ms
+const unsigned long _orDirUpdateInterval = 500;   //orientation and direction update interval in milliseconds
 
 #define SERIAL_SPEED 115200                       //Serial coms baud speed
 
-boolean DEBUG_GEN = false;                             //realtime serial debugging output - general
-boolean DEBUG_SENSORS = false;                     //realtime serial debugging output - sensors
+boolean DEBUG_GEN = false;                        //realtime serial debugging output - general
+boolean DEBUG_SENSORS = true;                     //realtime serial debugging output - sensors
 boolean DEBUG_INTERRUPT = false;                  //realtime serial debugging output - interrupts
-boolean DEBUG_COMMS = false;                       //realtime serial debugging output - comms
+boolean DEBUG_COMMS = false;                      //realtime serial debugging output - comms
 
 //boolean DATA_LOGGING = true;                      //turn data logging on or off eg. rps/mps, dist travelled, etc. ( Note: tracking led mode ticks up _ledsMovePos - NOT this )
 
@@ -102,24 +104,18 @@ float Yaw = 0.0;
 
 
 /*----------------------------arduino pins----------------------------*/
-//MPU6050 on I2C. Power with 5v, data connect to board with either 3.3v or 5v.
-//I2C SDA = A4 (Pro Mini) or  4(D2) (D1 Mini)
-//I2C SCL = A5 (Pro Mini) or  5(D1) (D1 Mini) 
-const byte _wheelSensorPin = 0; //0  //D3            //wheel sensor input (!!interrupt pin!!!) Using built-in pullup
-const byte _ledDOutPin0 = 14;     //D5            //rear/all lights
-//const byte _ledDOutPin1 = 12;     //D6            //left
-//const byte _ledDOutPin2 = 13;     //D7            //right and head lights
-const byte _buttonTotal = 1; //2                  //total buttons in use
-const byte _buttonPin[_buttonTotal] = { 2 }; //2 //D4, { 2, 16 } //array of user input buttons - uses _buttonTotal   ..ran out of internal pullups on ESP8266. next button has to have external pullup. see user input setup
-/*
- * Pinout 
- */
+//Power VCC with 5v, data connect to board with either 3.3v or 5v.
+const byte _wheelSensorPin = 23;                  //wheel sensor input (!!interrupt pin!!!) Using built-in pullup
+const byte _ledDOutPin0 = 21;                     //lights
+//const byte _ledDOutPin1 = 22;                     //
+const byte _buttonTotal = 1; //2                  //total buttons in use - DON'T USE 2, 8, 9 for internal pullup
+const byte _buttonPin[_buttonTotal] = { 1 }; //{ 1, 3 } //array of user input buttons - uses _buttonTotal 
 
 /*----------------------------sensors - wheels----------------------------*/
 //latching bipolar hall effect sensor mounted on chassis, with 8 magents mounted on wheel
 MT_BoardWheel w;
 
-/*----------------------------sensors - MPU6050 6-axis----------------------------*/
+/*----------------------------sensors - IMU----------------------------*/
 /*  
  * IMU:                 X=Right/Left, Y=Forward/Backward, Z=Up/Down
  * orientation (byte):  0=flat, 1=upside-down, 2=up, 3=down, 4=left-side, 5=right-side
@@ -127,6 +123,7 @@ MT_BoardWheel w;
  */
 //const unsigned long _mpu6050ReadInterval = 20;    //read loop interval in milliseconds
 //const unsigned long _orientationInterval = 100;   //main orientation read loop interval in milliseconds
+
 byte _orientationTestSideMidpoint = 0;            //side LED strip midpoint, calculated in startup
 MT_BoardOrientation o;							  //declaration - sets defaults
 
@@ -198,8 +195,12 @@ volatile byte _ledMovePos = 0;                    //center point for tracking LE
 CRGB solidColor = CRGB::White;   //TEMP
 CRGB solidColor2 = CRGB::Red;  //TEMP
 uint8_t gHue = 0;                                 //rotating "base color" used by many of the patterns
+
 const unsigned long _emergencyFlashInterval = 1000; //150000;  //15000=15 sec. 30000=30 sec. 150000=2.5 mins.
 boolean _emergencyFlashFlip = false;
+ 
+const unsigned long _indicatorFlashInterval = 500;
+boolean _indicatorFlashFlip = false;
 
 /*----------------------------modes----------------------------*/
 /* In standby the board 'breathes' (glows gently) at 12 times a minute (average breathing rate of sleeping adult).
@@ -270,14 +271,16 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
         //StaticJsonBuffer<200> _jsonBuffer;
         JsonDocument _jsonBuffer; //doc  _jsonDoc
         //JsonObject& parsed = _jsonBuffer.parseObject(payload); //Parse message
-        JsonObject parsed = _jsonBuffer.parseObject(payload); //Parse message
-        
-        if (!parsed.success()) {   //Check for errors in parsing
-          if (DEBUG_COMMS) { Serial.println( F("Parsing failed") ); }
+        //JsonObject parsed = _jsonBuffer.parseObject(payload); //Parse message
+        DeserializationError error = deserializeJson(_jsonBuffer, payload);
+
+        if (error) {   //Check for errors in parsing
+          if (DEBUG_COMMS) { Serial.println( F("Deserialize Json failed") ); }
           //for (uint8_t i = 0; i <length; i++) {
           //  Serial.print(payload[i]);
           //}
           //Serial.println();
+          Serial.println(error.c_str());
           return;
         }
 
@@ -293,13 +296,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
       //String nn = parsed["name"];
       //String snn = nn;
 
-        String nn = parsed["name"];
-        uint8_t vv = parsed["value"];
+        //String nn = parsed["name"];
+        String nn = _jsonBuffer["name"];
+        uint8_t vv = _jsonBuffer["value"];
           
         if (nn == "solidColor" || nn == "solidColor2") {
-          uint8_t r = parsed["r"];
-          uint8_t g = parsed["g"];
-          uint8_t b = parsed["b"];
+          uint8_t r = _jsonBuffer["r"];
+          uint8_t g = _jsonBuffer["g"];
+          uint8_t b = _jsonBuffer["b"];
           if (nn == "solidColor") {
             setSolidColor(r, g, b);
           } else {
@@ -317,12 +321,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
           } else if  (nn == "curTestMode") {
             setCurTestMode(vv);
           } else if  (nn == "curTestModeName") {
-            String nom = parsed["value"];
+            String nom = _jsonBuffer["value"];
             setCurTestModeByName(nom);
           } else if  (nn == "subMode") {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
             setMainLightsSubMode(vv);
           } else if  (nn == "subModeName") {
-            String nem = parsed["value"];
+            String nem = _jsonBuffer["value"];
             setMainLightsSubModeByName(nem);
           } else if  (nn == "globalBrightness") {
             setGlobalBrightness(vv);
@@ -359,7 +363,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
     case WStype_BIN:
       {
         if (DEBUG_COMMS) { Serial.printf("[%u] get binary length: %u\n", num, length); }
-        hexdump(payload, length);
+        //hexdump(payload, length);
       }
       break;
   }
@@ -453,10 +457,12 @@ void loop() {
   //cut everything out of the loop and do calibrations - put board flat and press button to start these loops
   //check for full calibration bt first
   if (_doFullCalibration == 1) { 
-    fullCalibration(); 
+    //fullCalibration(); 
     _doQuickCalibration = 0; //just in case - if we have just done a full one, we don't need to do a quick one.
   }
-  else if (_doQuickCalibration == 1) { quickCalibration(); }   //..if not, try for a quick one - this has issues!
+  else if (_doQuickCalibration == 1) { 
+    //quickCalibration(); 
+  }   //..if not, try for a quick one - this has issues!
   else {
     //run the loop normally
     loopUserInputs();   //if a board with more interrupts for the buttons, that would cut out this whole loop!

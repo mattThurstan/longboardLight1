@@ -89,17 +89,30 @@ void loopSideLight() {
 }
 
 /* Indicator flash (turn left/right) */
+//Next stage is nice fades on/off and gradients overlaid on whatever is going on in the underneath layers. 
 void loopIndicatorFlash() {
   if (mE.indicate == 1) { 
-    //0=null, 1=Left, 2=Right
+    EVERY_N_MILLISECONDS(_indicatorFlashInterval) {
+      _indicatorFlashFlip = !_indicatorFlashFlip; //invert(flip)
+    }
+  
     if (o.GetIndicator() == 0) {
-      //
+      // null
     } else if (o.GetIndicator() == 1) {
       // left
+      if (_indicatorFlashFlip) {
+        _ledsLeft( 0, _1totalDiv ).fill_gradient_RGB(CRGB::Orange, CRGB::Orange );
+        _ledsLeft( (ledSegment[1].total-1) - _1totalDiv, ledSegment[1].total-1 ).fill_gradient_RGB(CRGB::Orange, CRGB::Orange );
+      }  
     } else if (o.GetIndicator() == 2) {
       //right
+      if (_indicatorFlashFlip) {
+        _ledsRight( 0, _2totalDiv ).fill_gradient_RGB(CRGB::Orange, CRGB::Black );
+        _ledsRight( (ledSegment[2].total-1) - _2totalDiv, ledSegment[2].total-1 ).fill_gradient_RGB(CRGB::Orange, CRGB::Orange );
+      }
     }
   }
+
 }
 
 /*----------------------------Breathing----------------------------*/
@@ -226,4 +239,3 @@ void breathRiseFall2() {
   }
   
 }
-

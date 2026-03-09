@@ -19,7 +19,6 @@ void setupFileServer() {
     if (DEBUG_GEN) { Serial.printf("\n"); }
   }
 */ 
-}
 
 /*
  * NOTE - all eeprom saves will be wiped when a new sketch is uploaded, but will persist thru normal use.
@@ -102,17 +101,17 @@ void setDefaultSettings() {
   //offsets not done yet, requires splitting numbers, or just wait till get replacement board with WIFI/Bluetooth and more memory
   //not going to hold these in memory here as that would be duplicating what is in the library
   //_mpu6050AccelOffset[3] = {436, 1956, 1318};       //XYZ accel offsets to write to the MPU6050 - get from full calibration and save to memory
-  int16_t ao[3];
-  ao[0] = -566;
-  ao[1] = -6153;
-  ao[2] = 1511;
-  o.SetMPU6050AccelOffset(ao);
+  //int16_t ao[3];
+  //ao[0] = -566;
+  //ao[1] = -6153;
+  //ao[2] = 1511;
+  //o.SetMPU6050AccelOffset(ao);
   //_mpu6050GyroOffset[3] = {9, -32, 69};             //XYZ gyro offsets to write to the MPU6050 - get from full calibration and save to memory
-  int16_t go[3];
-  go[0] = -16;
-  go[1] = -14;
-  go[2] = -5;
-  o.SetMPU6050GyroOffset(go);
+  //int16_t go[3];
+  //[0] = -16;
+  //go[1] = -14;
+  //go[2] = -5;
+  //o.SetMPU6050GyroOffset(go);
 }
 
 void loadAllSettings() {
@@ -154,17 +153,17 @@ void loadAllSettings() {
     
     //power = EEPROM.read(19);
 
-    int16_t ao[3];
-    ao[0] = mGetInt(30);
-    ao[1] = mGetInt(34);
-    ao[2] = mGetInt(38);
-    o.SetMPU6050AccelOffset(ao);
+    //int16_t ao[3];
+    //ao[0] = mGetInt(30);
+    //ao[1] = mGetInt(34);
+    //ao[2] = mGetInt(38);
+    //o.SetMPU6050AccelOffset(ao);
     
-    int16_t go[3];
-    go[0] = mGetInt(42);
-    go[1] = mGetInt(46);
-    go[2] = mGetInt(50);
-    o.SetMPU6050GyroOffset(go);
+    //int16_t go[3];
+    //go[0] = mGetInt(42);
+    //go[1] = mGetInt(46);
+    //go[2] = mGetInt(50);
+    //o.SetMPU6050GyroOffset(go);
     
   } else {
     //set defaults then saveSettings
@@ -194,13 +193,13 @@ void saveAllSettings() {
   EEPROM.write(11, _rearLightsColHSV.val);
   EEPROM.write(12, _trackLightsFadeAmount);
 
-  mWriteInt(30, o.GetMPU6050AccelOffsetX());
-  mWriteInt(34, o.GetMPU6050AccelOffsetY());
-  mWriteInt(38, o.GetMPU6050AccelOffsetZ());
+  //mWriteInt(30, o.GetMPU6050AccelOffsetX());
+  //mWriteInt(34, o.GetMPU6050AccelOffsetY());
+  //mWriteInt(38, o.GetMPU6050AccelOffsetZ());
 
-  mWriteInt(42, o.GetMPU6050GyroOffsetX());
-  mWriteInt(46, o.GetMPU6050GyroOffsetY());
-  mWriteInt(50, o.GetMPU6050GyroOffsetZ());
+  //mWriteInt(42, o.GetMPU6050GyroOffsetX());
+  //mWriteInt(46, o.GetMPU6050GyroOffsetY());
+  //mWriteInt(50, o.GetMPU6050GyroOffsetZ());
 
   EEPROM.commit();
 }

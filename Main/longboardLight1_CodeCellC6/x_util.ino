@@ -12,7 +12,7 @@ String getBatteryLevel() {
 /*----------------------------util - serial----------------------------*/
 void setupSerial() {
   
-  if (_wifiActive || DEBUG_GEN || DEBUG_INTERRUPT || DEBUG_COMMS || DATA_LOGGING) { 
+  if (_wifiActive || DEBUG_GEN || DEBUG_INTERRUPT || DEBUG_COMMS) { //DATA_LOGGING
     Serial.begin(SERIAL_SPEED);
     if (DEBUG_GEN) {
       delay(100);
@@ -30,7 +30,7 @@ void setupSerial() {
 }
 
 void stopSerial() {
-  if (!_wifiActive && !DEBUG_GEN && !DEBUG_INTERRUPT && !DEBUG_COMMS && !DATA_LOGGING) { 
+  if (!_wifiActive && !DEBUG_GEN && !DEBUG_INTERRUPT && !DEBUG_COMMS) { //!DATA_LOGGING
     Serial.end(); 
   }
 }

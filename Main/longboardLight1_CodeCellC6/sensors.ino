@@ -1,17 +1,13 @@
 /*----------------------------sensors----------------------------*/
 
 void setupSensors() {
-  //o.Init(); //need to pass values if any available from memory - still use this and set seperately
-  //o.InitWithVars(a[3], b[3]);
   //o.InitWithVars(uint8_t accelYAverageSize = 10, float accelThreshold = 100.00, uint8_t indYAverageSize = 10, float indThreshold = 200.00);
-  o.InitWithVars(10, 100.00, 10, 200.00);
+  o.InitWithVars(_codeCellRunInterval, 100.00, _codeCellRunInterval, 200.00);
+  //I have taken out a lot of smoothing code based on the idea that BNO085 has far cleaner data than MPU6050. 
+  //Can put back if still needed.
 
   //setting up wheel pin using '_wheelSensorPin' because hard to handle interrupts from inside a library.
-  
   w.Init(_wheelSensorPin, 0.0345, 8); //currently only using 1 sensor/wheel. (69mm wheel with 8 magnets)
-  //w.SetupWheel(1, _wheelSensorPin[1], 0.0345, 8);  
-  
-  if (DEBUG_SENSORS) { }
 }
 
 /*----------------------------loop----------------------------*/
@@ -38,44 +34,50 @@ void loopSensors() {
 //  _zeroTemp = o.GetZeroMotionStatus();
 }
 
-//byte _oTemp = 255;
-//byte _dTemp = 255;
-
 void loopOrientation() {
-  //EVERY_N_MILLISECONDS(_mpu6050ReadInterval) { o.ReadFiltered(); }
-  //EVERY_N_MILLISECONDS() {  //_orientationInterval
-    //o.ReadOrientation(); 
-  //}
   
-  if (myCodeCell.Run(10)) {                   // Run service loop at 10 Hz (every 100 ms)
+  if (myCodeCell.Run(_codeCellRunInterval)) {                   // Run service loop at 10 Hz (every 100 ms)
+
     myCodeCell.Motion_AccelerometerRead(accelX, accelY, accelZ);  // Read acceleration values
-    Serial.print("X: "); Serial.print(accelX);     // Print X value
-    Serial.print("  Y: "); Serial.print(accelY);   // Print Y value
-    Serial.print("  Z: "); Serial.println(accelZ); // Print Z value
-    
     myCodeCell.Motion_RotationRead(Roll, Pitch, Yaw); // Read latest rotation values
-    Serial.printf("Roll: %.2f°, Pitch: %.2f°, Yaw: %.2f°\n", Roll, Pitch, Yaw); // Print  output
-    
-    Serial.print("State: ");
+/*
+    if (DEBUG_SENSORS) { 
+      Serial.print("X: "); Serial.print(accelX);     // Print X value
+      Serial.print("  Y: "); Serial.print(accelY);   // Print Y value
+      Serial.print("  Z: "); Serial.println(accelZ); // Print Z value
+      Serial.printf("Roll: %.2f°, Pitch: %.2f°, Yaw: %.2f°\n", Roll, Pitch, Yaw); // Print  output
+      Serial.print("State: ");
+    }
+*/
+    //uint16_t stateRead = myCodeCell.Motion_StateRead();
+    //if (stateRead != 4) {}
+
     switch (myCodeCell.Motion_StateRead()) {
+      default:
+        //if (DEBUG_SENSORS) { Serial.println("0 - Unknown"); } //0
+        //..and this.
+        break;
       case MOTION_STATE_ONTABLE:
-        Serial.println("On Table");
+        //if (DEBUG_SENSORS) { Serial.println("1 - On Table"); }  //1
         //also this..
         break;
       case MOTION_STATE_STATIONARY:
-        Serial.println("Stationary");
+        //if (DEBUG_SENSORS) { Serial.println("2 - Stationary"); }  //2
         //use this and timer for triggering sleep.
         //start with the code from up the page.
         break;
-      default:
-        Serial.println("Unknown");
-        //..and this.
+      case MOTION_STATE_STABLE:
+        //Serial.println("3 - Motion Stopped - Stabilizing"); //3
+        break;
+      case MOTION_STATE_MOTION:
+        //Serial.println("4 - In Motion");  //4
         break;
     }
 
-    o.AddToAverage(accelY, roll);
-    
-    /* I may move all of the following to a Second loop (1000ms), or Half Second (500ms). */
+    o.AddToAverage(accelY, Pitch);
+  }
+
+  EVERY_N_MILLISECONDS(_orDirUpdateInterval) {   
 
     o.DoUpdateOrientation(Roll, Pitch, Yaw);
 	  o.DoUpdateIndicator();
@@ -88,9 +90,9 @@ void loopOrientation() {
     if (DEBUG_SENSORS) {
       Serial.print(F("Orientation = "));
       Serial.print(o.GetOrientation());
-      Serial.println();
-      Serial.print(F("Direction = "));
-      Serial.print(o.GetDirection());
+      Serial.print(F(" | Direction = "));
+      Serial.print(o.GetDirection()); 
+      Serial.printf(" | Roll: %.2f°, Pitch: %.2f°, Yaw: %.2f°\n", Roll, Pitch, Yaw); // Print  output
       Serial.println();
     }
   }
@@ -100,16 +102,14 @@ void loopOrientation() {
 /*----------------------------wheel sensors----------------------------*/
 /* Wheel data logging
  * update the wheels with orientation info 
+ * update every second
  * - currently just direction
  * - this is seperate to the straight 1-1 tracking used in sub-modes 
  */
 void loopWheel() {
-  //#ifdef DATA_LOGGING 
-    EVERY_N_MILLISECONDS(1000) {                     //FastLED based non-blocking delay to update/display the sequence.
-      detachInterrupt(_wheelSensorPin);     //..no interrupts whilst we process !!!
-      //w.DoUpdate(o.GetDirection()); // !!! need to swap '_directionCur' for a direct line to the mpu6050 library var !!!
-      w.DoUpdateEverySec(o.GetDirection());
-      attachInterrupt(digitalPinToInterrupt(_wheelSensorPin), wheelInterrupt0, CHANGE);  //re-attach the interrupt !!!
-    } //END timed-loop
-  //#endif  //END if DATA_LOGGING
-} //END loopWheel
+  EVERY_N_MILLISECONDS(1000) {                      //FastLED based non-blocking delay to update/display the sequence.
+    detachInterrupt(_wheelSensorPin);               //..no interrupts whilst we process !!!
+    w.DoUpdateEverySec(o.GetDirection());
+    attachInterrupt(digitalPinToInterrupt(_wheelSensorPin), wheelInterrupt0, CHANGE);  //re-attach the interrupt !!!
+  } 
+} 

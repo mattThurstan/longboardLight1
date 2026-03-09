@@ -68,7 +68,7 @@ void initializeWiFisoftAP()
     //plugged into the computer //board TEST
     AP_NameString = String(HOSTNAME);              // 'LlC-'
     //AP_NameString += String(ESP.getChipId(), HEX);
-    AP_NameString += String(chipId, HEX);
+//    AP_NameString += String(chipId, HEX);
   }
  
   char AP_NameChar[AP_NameString.length() + 1];
@@ -96,12 +96,12 @@ void initializeWiFisoftAP()
 //  ETS_UART_INTR_ENABLE();
 
   if (DEBUG_COMMS) { 
-  Serial.println(F("Connect to Wi-Fi access point: "));
-  Serial.println(AP_NameChar);
+    Serial.println(F("Connect to Wi-Fi access point: "));
+    Serial.println(AP_NameChar);
 
-  delay(500); // Without a delay the IP address can sometimes be blank.
-  Serial.println(F("AP IP address: "));
-  Serial.println(WiFi.softAPIP());
+    delay(500); // Without a delay the IP address can sometimes be blank.
+    Serial.println(F("AP IP address: "));
+    Serial.println(WiFi.softAPIP());
   }
 }
 

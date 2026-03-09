@@ -151,8 +151,8 @@ void rainbowCol()
 {
   // FastLED's built-in rainbow generator
   //fill_rainbow( _leds, _ledNum, gHue, 7);
-  _ledsLeft.fill_rainbow(solidColor, 7);
-  _ledsRight.fill_rainbow(solidColor2, 7);
+  _ledsLeft.fill_rainbow(gHue, 7); //erm, solidColor is not a hue number
+  _ledsRight.fill_rainbow(gHue, 7);
 }
 
 void rainbowWithGlitterCol() 

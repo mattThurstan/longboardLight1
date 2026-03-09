@@ -23,7 +23,8 @@ void setupLEDs() {
   //FastLED.addLeds<WS2812B, _ledDOutPin1, GRB>(_leds, ledSegment[1].first, ledSegment[1].total).setCorrection( TypicalSMD5050 );  //left strip
   //FastLED.addLeds<WS2812B, _ledDOutPin2, GRB>(_leds, ledSegment[2].first, (ledSegment[2].total + ledSegment[3].total)).setCorrection( TypicalSMD5050 );  //right strip + head lights
   FastLED.addLeds<WS2812B, _ledDOutPin0, GRB>(_leds, 0, _ledNum).setCorrection( TypicalSMD5050 );  //all lights 1 loop
-  
+  // ---def want to spilt left/right. mabye even down the middle of the back/front aswell.---
+  // that way it also balances the power. the data line can either be 2 (left/right), or 1 (loop at the front).
 
   FastLED.setBrightness(_ledGlobalBrightnessCur);       //set global brightness
   FastLED.setTemperature(UncorrectedTemperature);       //set first temperature
